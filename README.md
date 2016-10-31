@@ -228,7 +228,7 @@ assert(std::any_cast<int>(x) == 10);
 ```
 
 ### std::string_view
-The class template basic_string_view describes an object that can refer to a constant contiguous sequence of `char`-like objects with the first element of the sequence at position zero. Useful for providing an abstraction on top of strings (e.g. for parsing).
+A non-owning reference to a string. Useful for providing an abstraction on top of strings (e.g. for parsing).
 ```c++
 // Regular strings.
 std::string_view cppstr{ "foo" };
