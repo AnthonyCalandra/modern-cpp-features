@@ -7,7 +7,7 @@ C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
 - [folding expressions](#folding-expressions)
-- [new Rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction---from---braced---init---list)
+- [new rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction---from---braced---init---list)
 - [constexpr lambda](#constexpr-lambda)
 - [inline variables](#inline-variables)
 - [nested namespaces](#nested-namespaces)
@@ -16,12 +16,12 @@ C++17 includes the following new language features:
 - [constexpr if](#constexpr-if)
 
 C++17 includes the following new library features:
-- [std::variant](#std::variant)
-- [std::optional](#std::optional)
-- [std::any](#std::any)
-- [std::string_view](#std::string_view)
-- [std::invoke](#std::invoke)
-- [std::apply](#std::apply)
+- [std::variant](#stdvariant)
+- [std::optional](#stdoptional)
+- [std::any](#stdany)
+- [std::string_view](#stdstring_view)
+- [std::invoke](#stdinvoke)
+- [std::apply](#stdapply)
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
 
 ## C++17 Language Features
@@ -81,7 +81,7 @@ auto x3{ 3 }; // decltype(x3) is int
 auto x4{ 3.0 }; // decltype(x4) is double
 ```
 
-### Constexpr lambda
+### constexpr lambda
 Compile-time lambdas using `constexpr`.
 ```c++
 auto identity = [] (int n) constexpr { return n; };
@@ -168,7 +168,7 @@ switch (Foo gadget(args); auto s = gadget.status()) {
 }
 ```
 
-### Constexpr if
+### constexpr if
 Write code that is instantiated depending on a compile-time condition.
 ```c++
 template <typename T>
