@@ -1,6 +1,8 @@
 # C++11/14/17
 
 ## Overview
+Many of these descriptions and examples come from their proposal papers, summarized in my own words.
+
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
