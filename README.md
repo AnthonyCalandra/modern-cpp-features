@@ -365,7 +365,7 @@ auto f(const int& i) {
  return i;
 }
 
-// Forward `const int&` as the return type.
+// Return type is `const int&`.
 decltype(auto) g(const int& i) {
  return i;
 }
