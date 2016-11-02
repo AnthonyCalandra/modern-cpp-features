@@ -24,6 +24,11 @@ C++17 includes the following new library features:
 - [std::apply](#stdapply)
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
 
+C++14 includes the following new language features:
+- [binary literals](#binary-literals)
+- [return type deduction](#return-type-deduction)
+- [decltype(auto)](#decltypeauto)
+
 ## C++17 Language Features
 
 ### Template argument deduction for class templates
@@ -61,7 +66,7 @@ bool logicalAnd(Args... args) {
 }
 bool b = true;
 bool& b2 = b;
-assert(logicalAnd(b, b2, true) == true);
+logicalAnd(b, b2, true); // == true
 ```
 ```c++
 template<typename... Args>
@@ -69,7 +74,7 @@ auto sum(Args... args) {
     // Unary folding.
     return (... + args);
 }
-assert(sum(1.0, 2.0f, 3) == 6.0);
+sum(1.0, 2.0f, 3); // == 6.0
 ```
 
 ### New rules for auto deduction from braced-init-list
@@ -85,7 +90,7 @@ auto x4{ 3.0 }; // decltype(x4) is double
 Compile-time lambdas using `constexpr`.
 ```c++
 auto identity = [] (int n) constexpr { return n; };
-constexpr int i = identity(123);
+static_assert(identity(123) == 123);
 ```
 ```c++
 constexpr auto add = [] (int x, int y) {
@@ -93,12 +98,14 @@ constexpr auto add = [] (int x, int y) {
   auto R = [=] { return y; };
   return [=] { return L() + R(); };
 };
+
 static_assert(add(1, 2)() == 3);
 ```
 ```c++
 constexpr int addOne(int n) {
   return [n] { return n + 1; }();
 }
+
 static_assert(addOne(1) == 2);
 ```
 
@@ -138,9 +145,10 @@ using Coordinate = std::pair<int, int>;
 Coordinate origin() {
   return Coordinate{0, 0};
 }
+
 const auto [ x, y ] = origin();
-assert(x == 0);
-assert(y == 0);
+x; // == 0
+y; // == 0
 ```
 
 ### Selection statements with initializer
@@ -192,11 +200,11 @@ static_assert(isIntegral<S>() == false);
 The class template `std::variant` represents a type-safe `union`. An instance of `std::variant` at any given time holds a value of one of its alternative types (it's also possible for it to be valueless).
 ```c++
 std::variant<int, double> v{ 12 };
-assert(std::get<int>(v) == 12);
-assert(std::get<0>(v) == 12);
+std::get<int>(v); // == 12
+std::get<0>(v); // == 12
 v = 12.0;
-assert(std::get<double>(v) == 12.0);
-assert(std::get<1>(v) == 12.0);
+std::get<double>(v); // == 12.0
+std::get<1>(v); // == 12.0
 ```
 
 ### std::optional
@@ -209,8 +217,9 @@ std::optional<std::string> create(bool b) {
     return {};
   }
 }
-assert(create(false).value_or("empty") == "empty");
-assert(create(true).value() == "Godzilla");
+
+create(false).value_or("empty"); // == "empty"
+create(true).value(); // == "Godzilla"
 // optional-returning factory functions are usable as conditions of while and if
 if (auto str = create(true)) {
   // ...
@@ -221,10 +230,10 @@ if (auto str = create(true)) {
 A type-safe container for single values of any type.
 ```c++
 std::any x{ 5 };
-assert(x.has_value() == true);
-assert(std::any_cast<int>(x) == 5);
+x.has_value() // == true
+std::any_cast<int>(x) // == 5
 std::any_cast<int&>(x) = 10;
-assert(std::any_cast<int>(x) == 10);
+std::any_cast<int>(x) // == 10
 ```
 
 ### std::string_view
@@ -242,8 +251,8 @@ std::string_view array_v(array, sizeof array);
 std::string str{ "   trim me" };
 std::string_view v{ str };
 v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
-assert(str == "   trim me");
-assert(v == "trim me");
+str; //  == "   trim me"
+v; // == "trim me"
 ```
 
 ### std::invoke
@@ -264,7 +273,7 @@ auto add = [] (int x, int y) {
   return x + y;
 };
 Proxy<decltype(add)> p{ add };
-assert(p(1, 2) == 3);
+p(1, 2); // == 3
 ```
 
 ### std::apply
@@ -273,7 +282,7 @@ Invoke a `Callable` object with a tuple of arguments.
 auto add = [] (int x, int y) {
   return x + y;
 };
-assert(std::apply(add, std::make_tuple( 1, 2 )) == 3);
+std::apply(add, std::make_tuple( 1, 2 )); // == 3
 ```
 
 ### Splicing for maps and sets
@@ -317,7 +326,54 @@ m.insert(std::move(e));
 ```
 
 ## C++14 Language Features
-TODO
+
+### Binary literals
+Binary literals provide a convenient way to represent a base-2 number.
+```c++
+0b110 // 6
+0b11111111 // 255
+```
+
+### Return type deduction
+Using an `auto` return type in C++14, the compiler will attempt to deduce the type for you. With lambdas, you can now deduce its return type using `auto`, making it generic.
+```c++
+// Deduce return type as `int`.
+auto f(int i) {
+ return i;
+}
+```
+```c++
+template <typename T>
+auto& f(T& t) {
+  return t;
+}
+
+auto g = [](auto x) -> auto& { return f(x); };
+int& y = g(123); // reference to `x`
+```
+
+### decltype(auto)
+The `decltype(auto)` type-specifier designates a placeholder type that will be deduced __later__. Common uses of this type-specifier include forwarding return types while keeping their references or "const-ness".
+
+`auto` will not deduce the declared type, while `decltype(auto)` does:
+```c++
+// Note: Especially useful for generic code!
+
+// Return type is `int`.
+auto f(const int& i) {
+ return i;
+}
+
+// Forward `const int&` as the return type.
+decltype(auto) g(const int& i) {
+ return i;
+}
+
+int x = 123;
+static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
+static_assert(std::is_same<int, decltype(f(x))>::value == 1);
+static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
+```
 
 ## C++14 Library Features
 TODO
