@@ -348,8 +348,9 @@ auto& f(T& t) {
   return t;
 }
 
-auto g = [](auto x) -> auto& { return f(x); };
-int& y = g(123); // reference to `x`
+auto g = [](auto& x) -> auto& { return f(x); };
+int y = 123;
+int& z = g(y); // reference to `y`
 ```
 
 ### decltype(auto)
