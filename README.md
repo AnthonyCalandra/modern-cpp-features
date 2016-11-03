@@ -26,8 +26,11 @@ C++17 includes the following new library features:
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
+- [generic lambda expressions](#generic-lambda-expressions)
 - [return type deduction](#return-type-deduction)
 - [decltype(auto)](#decltypeauto)
+- [variadic templates](#variadic-templates)
+- [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
 
 ## C++17 Language Features
 
@@ -330,12 +333,20 @@ m.insert(std::move(e));
 ### Binary literals
 Binary literals provide a convenient way to represent a base-2 number.
 ```c++
-0b110 // 6
-0b11111111 // 255
+0b110 // == 6
+0b11111111 // == 255
+```
+
+### Generic lambda expressions
+C++14 now allows the `auto` type-specifier in the parameter list, enabling polymorphic lambdas.
+```c++
+auto identity = [](auto x) { return x; };
+int three = identity(3); // == 3
+std::string foo = identity("foo"); // == "foo"
 ```
 
 ### Return type deduction
-Using an `auto` return type in C++14, the compiler will attempt to deduce the type for you. With lambdas, you can now deduce its return type using `auto`, making it generic.
+Using an `auto` return type in C++14, the compiler will attempt to deduce the type for you. With lambdas, you can now deduce its return type using `auto`, which makes returning a deduced reference or rvalue reference possible.
 ```c++
 // Deduce return type as `int`.
 auto f(int i) {
@@ -348,15 +359,26 @@ auto& f(T& t) {
   return t;
 }
 
+// Returns a reference to a deduced type.
 auto g = [](auto& x) -> auto& { return f(x); };
 int y = 123;
 int& z = g(y); // reference to `y`
 ```
 
 ### decltype(auto)
-The `decltype(auto)` type-specifier designates a placeholder type that will be deduced __later__. Common uses of this type-specifier include forwarding return types while keeping their references or "const-ness".
-
-`auto` will not deduce the declared type, while `decltype(auto)` does:
+The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references or "const-ness", while `auto` will not.
+```c++
+const int x = 0;
+auto x1 = x; // int
+decltype(auto) x2 = x; // const int
+int y = 0;
+int& y1 = y;
+auto y2 = y; // int
+decltype(auto) y3 = y; // int&
+int&& z = 0;
+auto z1 = std::move(z); // int
+decltype(auto) z2 = std::move(z); // int&&
+```
 ```c++
 // Note: Especially useful for generic code!
 
@@ -374,6 +396,30 @@ int x = 123;
 static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
 static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
+```
+
+### Variadic templates
+The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
+```c++
+template <typename... T>
+struct arity {
+  constexpr static int value = sizeof...(T);
+};
+static_assert(arity<>::value == 0);
+static_assert(arity<char, short, int>::value == 3);
+```
+
+### Relaxing constraints on constexpr functions
+In C++11, `constexpr` function bodies could only contain a very limited set of syntax, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntax expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
+```c++
+constexpr int factorial(int n) {
+  if (n <= 1) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
+}
+factorial(5); // == 120
 ```
 
 ## C++14 Library Features
