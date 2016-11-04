@@ -32,6 +32,9 @@ C++14 includes the following new language features:
 - [variadic templates](#variadic-templates)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
 
+C++14 includes the following new library features:
+- [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
+
 ## C++17 Language Features
 
 ### Template argument deduction for class templates
@@ -423,7 +426,23 @@ factorial(5); // == 120
 ```
 
 ## C++14 Library Features
-TODO
+
+### User-defined literals for standard library types
+New user-defined literals for standard library types, including new built-in literals for `chrono` and `basic_string`. These can be `constexpr` meaning they can be used at compile-time. Some uses for these literals include compile-time integer parsing, binary literals, and imaginary number literals.
+```c++
+constexpr int operator"" _test(unsigned long long x) {
+  return 0;
+}
+123_test; // == 0
+```
+
+Built in literals for `chrono`:
+```c++
+using namespace std::chrono_literals;
+auto day = 24h;
+day.count(); // == 24
+std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
+```
 
 ## C++11 Language Features
 TODO
