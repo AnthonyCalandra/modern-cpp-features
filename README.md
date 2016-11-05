@@ -38,6 +38,10 @@ C++14 includes the following new library features:
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
 - [variadic templates](#variadic-templates)
+- [rvalue references](#rvalue-references)
+
+C++11 includes the following new library features:
+- [std::move](#stdmove)
 
 ## C++17 Language Features
 
@@ -450,7 +454,29 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 ## C++11 Language Features
 
 ### Move semantics
+Move semantics is mostly about performance optimization: the ability to move an object without the expensive overhead of copying. The difference between a copy and a move is that a copy leaves the source unchanged, and a move will leave the source either unchanged or radically different -- depending on what the source is. For plain old data, a move is the same as a copy.
 
+To move an object means to transfer ownership of some resource it manages to another object. You could think of this as changing pointers held by the source object to be moved, or now held, by the destination object; the resource remains in its location in memory. Such an inexpensive transfer of resources is extremely useful when the source is an `rvalue`, where the potentially dangerous side-effect of changing the source after the move is redundant since the source is a temporary object that won't be accessible later.
+
+Moves also make it possible to transfer objects such as `std::unique_ptr`s, smart pointers that are designed to hold a pointer to a unique object, from one scope to another.
+
+See the sections on: rvalue references, defining move special member functions, `std::move`, `std::forward`.
+
+### Rvalue references
+C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A` is created with the syntax `A&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments while maintaining information about them as lvalues/rvalues in a generic way.
+
+`auto` type deduction with lvalues and rvalues:
+```c++
+int x = 0; // `x` is an lvalue of type `int`
+int& xl = x; // `xl` is an lvalue of type `int&`
+int&& xr = x; // compiler error -- `x` is an lvalue
+int&& xr2 = 0; // `xr2` is an lvalue of type `int&&`
+auto& al = x; // `al` is an lvalue of type `int&`
+auto&& al2 = x; // `al2` is an lvalue of type `int&`
+auto&& ar = 0; // `ar` is an lvalue of type `int&&`
+```
+
+See also: `std::move`, `std::forward`.
 
 ### Variadic templates
 The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
@@ -464,4 +490,15 @@ static_assert(arity<char, short, int>::value == 3);
 ```
 
 ## C++11 Library Features
+
+### std::move
 TODO
+
+Definition of `std::move` (performing a move is nothing more than casting to an rvalue):
+```c++
+template <typename T>
+typename remove_reference<T>::type&& move(T&& arg)
+{
+  return static_cast<typename remove_reference<T>::type&&>(arg);
+}
+```
