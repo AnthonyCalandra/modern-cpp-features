@@ -29,12 +29,15 @@ C++14 includes the following new language features:
 - [generic lambda expressions](#generic-lambda-expressions)
 - [return type deduction](#return-type-deduction)
 - [decltype(auto)](#decltypeauto)
-- [variadic templates](#variadic-templates)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile---time-integer-sequences)
+
+C++11 includes the following new language features:
+- [move semantics](#move-semantics)
+- [variadic templates](#variadic-templates)
 
 ## C++17 Language Features
 
@@ -402,17 +405,6 @@ static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
 
-### Variadic templates
-The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
-```c++
-template <typename... T>
-struct arity {
-  constexpr static int value = sizeof...(T);
-};
-static_assert(arity<>::value == 0);
-static_assert(arity<char, short, int>::value == 3);
-```
-
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntax, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntax expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
 ```c++
@@ -456,7 +448,20 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 ```
 
 ## C++11 Language Features
-TODO
+
+### Move semantics
+
+
+### Variadic templates
+The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
+```c++
+template <typename... T>
+struct arity {
+  constexpr static int value = sizeof...(T);
+};
+static_assert(arity<>::value == 0);
+static_assert(arity<char, short, int>::value == 3);
+```
 
 ## C++11 Library Features
 TODO
