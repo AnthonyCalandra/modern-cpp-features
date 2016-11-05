@@ -34,6 +34,7 @@ C++14 includes the following new language features:
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
+- [compile-time integer sequences](#compile---time-integer-sequences)
 
 ## C++17 Language Features
 
@@ -434,6 +435,24 @@ using namespace std::chrono_literals;
 auto day = 24h;
 day.count(); // == 24
 std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
+```
+
+### Compile-time integer sequences
+The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
+* `std::make_integer_sequence<T, N...>` - creates a sequence of `0, ..., N - 1` with type `T`.
+* `std::index_sequence_for<T...>` - converts a template parameter pack into an integer sequence.
+
+Convert an array into a tuple:
+```c++
+template<typename Array, std::size_t... I>
+decltype(auto) a2t_impl(const Array& a, std::integer_sequence<std::size_t, I...>) {
+  return std::make_tuple(a[I]...);
+}
+
+template<typename T, std::size_t N, typename Indices = std::make_index_sequence<N>>
+decltype(auto) a2t(const std::array<T, N>& a) {
+  return a2t_impl(a, Indices());
+}
 ```
 
 ## C++11 Language Features
