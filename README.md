@@ -44,6 +44,12 @@ C++11 includes the following new language features:
 - [auto](#auto)
 - [lambda expressions](#lambda-expressions)
 - [decltype](#decltype)
+- [template aliases](#template-aliases)
+- [nullptr](#nullptr)
+- [strongly-typed enums](#strongly---typed-enums)
+- [attributes](#attributes)
+- [constexpr](#constexpr)
+- [delegating constructors](#delegating-constructors)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -596,6 +602,87 @@ auto add(X x, Y y) -> decltype(x + y) {
 }
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
+
+### Template aliases
+Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.
+```c++
+template <typename T>
+using Vec = std::vector<T>;
+Vec<int> v{}; // std::vector<int>
+
+using String = std::string;
+String s{"foo"};
+```
+
+### nullptr
+C++11 introduces a new null pointer type designed to replace C's `NULL` macro. `nullptr` itself is of type `std::nullptr_t` and can be implicitly converted into pointer types, and unlike `NULL`, not convertible to integral types except `bool`.
+```c++
+void foo(int);
+void foo(char*);
+foo(NULL); // error -- ambiguous
+foo(nullptr); // calls foo(char*)
+```
+
+### Strongly-typed enums
+Type-safe enums that solve a variety of problems with C-style enums including: implicit conversions, inability to specify the underlying type, scope pollution.
+```c++
+// Specifying underlying type as `unsigned int`
+enum class Color : unsigned int { Red = 0xff0000, Green = 0xff00, Blue = 0xff };
+// `Red`/`Green` in `Alert` don't conflict with `Color`
+enum class Alert : bool { Red, Green };
+Color c = Color::Red;
+```
+
+### Attributes
+Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, etc.
+```c++
+// `noreturn` attribute indicates `f` doesn't return.
+[[ noreturn ]] void f() {
+  throw "error";
+}
+```
+
+### constexpr
+Constant expressions are expressions evaluated by the compiler at compile-time. Only non-complex computations can be carried out in a constant expression. Use the `constexpr` specifier to indicate the variable, function, etc. is a constant expression.
+```c++
+constexpr int square(int x) {
+  return x * x;
+}
+
+int square2(int x) {
+  return x * x;
+}
+
+int a = square(2);  // mov DWORD PTR [rbp-4], 4
+
+int b = square2(2); // mov edi, 2
+                    // call square2(int)
+                    // mov DWORD PTR [rbp-8], eax
+```
+
+`constexpr` values are those that the compiler can evaluate at compile-time:
+```c++
+const int x = 123;
+constexpr const int& y = x; // error -- constexpr variable `y` must be initialized by a constant expression
+```
+
+Constant expressions with classes:
+```c++
+struct Complex {
+  constexpr Complex(double r, double i) : re(r), im(i) { }
+  constexpr double real() { return re; }
+  constexpr double imag() { return im; }
+
+private:
+  double re;
+  double im;
+};
+
+constexpr Complex I(0, 1);
+```
+
+### Delegating constructors
+TODO
 
 ## C++11 Library Features
 
