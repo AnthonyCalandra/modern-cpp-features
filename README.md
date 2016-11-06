@@ -39,6 +39,11 @@ C++11 includes the following new language features:
 - [move semantics](#move-semantics)
 - [variadic templates](#variadic-templates)
 - [rvalue references](#rvalue-references)
+- [initializer lists](#initializer-lists)
+- [static assertions](#static-assertions)
+- [auto](#auto)
+- [lambda expressions](#lambda-expressions)
+- [decltype](#decltype)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -487,6 +492,109 @@ struct arity {
 };
 static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
+```
+
+### Initializer lists
+A lightweight array-like container of elements created using a "braced list" syntax. For example, `{ 1, 2, 3 }` creates a sequences of integers, that has type `std::initializer_list<int>`. Useful as a replacement to passing a vector of objects to a function.
+```c++
+int sum(const std::initializer_list<int>& list) {
+  int total = 0;
+  for (auto& e : list) {
+    total += e;
+  }
+
+  return total;
+}
+
+auto list = { 1, 2, 3 };
+f(list); // == 6
+f({ 1, 2, 3 }); // == 6
+f({}); // == 0
+```
+
+### Static assertions
+Assertions that are evaluated at compile-time.
+```c++
+constexpr int x = 0;
+constexpr int y = 1;
+static_assert(x == y, "x != y");
+```
+
+### auto
+`auto`-typed variables are deduced by the compiler according to the type of their initializer.
+```c++
+auto a = 3.14; // double
+auto b = 1; // int
+auto& c = b; // int&
+auto d = { 0 }; // std::initializer_list<int>
+auto&& e = 1; // int&&
+auto&& f = b; // int&
+auto g = new auto(123); // int*
+const auto h = 1; // const int
+auto i = 1, j = 2, k = 3; // int, int, int
+auto l = 1, m = true, n = 1.61; // error -- `l` deduced to be int, `m` is bool
+auto o; // error -- `o` requires initializer
+```
+
+Extremely useful for readability, especially for complicated types:
+```c++
+std::vector<int> v = ...;
+std::vector<int>::const_iterator cit = v.cbegin();
+// vs.
+auto cit = v.cbegin();
+```
+
+Functions can also deduce the return type using `auto`. In C++11, a return type must be specified either explicitly, or using `decltype` like so:
+```c++
+template <typename X, typename Y>
+auto add(X x, Y y) -> decltype(x + y) {
+  return x + y;
+}
+add(1, 2); // == 3
+add(1, 2.0); // == 3.0
+add(1.5, 1.5); // == 3.0
+```
+The trailing return type in the above example is the _declared type_ (see section on `decltype`) of the expression `x + y`. For example, if `x` is an integer and `y` is a double, `decltype(x + y)` is a double. Therefore, the above function will deduce the type depending on what type the expression `x + y` yields. Notice that the trailing return type has access to its parameters, and `this` when appropriate.
+
+### Lambda expressions
+A `lambda` is an unnamed function object capable of capturing variables in scope. It features: a _capture list_; an optional set of parameters with an optional trailing return type; and a body. Examples of capture lists:
+* `[]` - captures nothing.
+* `[=]` - capture local objects (local variables, parameters) in scope by value.
+* `[&]` - capture local objects (local variables, parameters) in scope by reference.
+* `[this]` - capture `this` pointer by value.
+* `[a, &b]` - capture objects `a` by value, `b` by reference.
+
+```c++
+int x = 1;
+
+auto getX = [=]{ return x; };
+getX(); // == 1
+
+auto addX = [=](int y) { return x + y; };
+addX(1); // == 2
+
+auto getXRef = [&]() -> int& { return x; };
+getXRef(); // int& to `x`
+```
+
+### decltype
+`decltype` is an operator which returns the _declared type_ of an expression passed to it. Examples of `decltype`:
+```c++
+int a = 1; // `a` is declared as type `int`
+decltype(x) b = a; // `decltype(x)` is `int`
+const int& c = a; // `c` is declared as type `const int&`
+decltype(c) d = a; // `decltype(c)` is `const int&`
+decltype(123) e = 123; // `decltype(123)` is `int`
+int&& f = 1; // `f` is declared as type `int&&`
+decltype(f) g = 1; // `decltype(f) is `int&&`
+decltype((a)) h = x; // `decltype((a))` is int&
+```
+```c++
+template <typename X, typename Y>
+auto add(X x, Y y) -> decltype(x + y) {
+  return x + y;
+}
+add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
 
 ## C++11 Library Features
