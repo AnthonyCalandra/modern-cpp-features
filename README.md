@@ -50,9 +50,17 @@ C++11 includes the following new language features:
 - [attributes](#attributes)
 - [constexpr](#constexpr)
 - [delegating constructors](#delegating-constructors)
+- [user-defined literals](#user---defined-literals)
+- [explicit virtual overrides](#explicit-virtual-overrides)
+- [default functions](#default-functions)
+- [deleted functions](#deleted-functions)
+- [range-based for loops](#range---based-for-loops)
+- [special member functions for move semantics](#special-member-functions-for-move-semantics)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
+- [std::forward](#stdforward)
+- [std::to_string](#stdtostring)
 
 ## C++17 Language Features
 
@@ -682,7 +690,138 @@ constexpr Complex I(0, 1);
 ```
 
 ### Delegating constructors
-TODO
+Constructors can now call other constructors in the same class using an initializer list.
+```c++
+struct Foo {
+  int foo;
+  Foo(int foo) : foo(foo) {}
+  Foo() : Foo(0) {}
+};
+
+Foo foo{};
+foo.foo; // == 0
+```
+
+### User-defined literals
+User-defined literals allow you to extend the language and add your own syntax. To create a literal, define a `T operator "" X(...) { ... }` function that returns a type `T`, with a name `X`. Note that the name of this function defines the name of the literal. Any literal names not starting with an underscore are reserved and won't be invoked. There are rules on what parameters a user-defined literal function should accept, according to what type the literal is called on.
+
+Converting Celcius to Fahrenheit:
+```c++
+// `unsigned long long` parameter required for integer literal.
+long long operator "" _celcius(unsigned long long tempCelcius) {
+  return std::llround(tempCelcius * 1.8 + 32);
+}
+24_celcius; // == 75
+```
+
+String to integer conversion:
+```c++
+// `const char*` and `std::size_t` required as parameters.
+int operator "" _int(const char* str, std::size_t) {
+  return std::stoi(str);
+}
+
+"123"_int; // == 123, with type `int`
+```
+
+### Explicit virtual overrides
+Specifies that a virtual function overrides another virtual function. If the virtual function does not override a parent's virtual function, throws a compiler error.
+```c++
+struct A {
+  virtual void foo();
+  void bar();
+};
+
+struct B : A {
+  void foo() override; // correct -- B::foo overrides A::foo
+  void bar() override; // error -- A::bar is not virtual
+  void baz() override; // error -- B::baz does not override A::baz
+};
+```
+
+### Default functions
+A more elegant, efficient way to provide a default implementation of a function, such as a constructor.
+```c++
+struct A {
+  A() = default;
+  A(int x) : x(x) {}
+  int x{ 1 };
+};
+A a{}; // a.x == 1
+A a2{ 123 }; // a.x == 123
+```
+
+With inheritance:
+```c++
+struct B {
+  B() : x(1);
+  int x;
+};
+
+struct C : B {
+  // Calls B::B
+  C() = default;
+};
+
+C c{}; // c.x == 1
+```
+
+### Deleted functions
+A more elegant, efficient way to provide a deleted implementation of a function. Useful for preventing copies on objects.
+```c++
+class A {
+  int x;
+
+public:
+  A(int x) : x(x) {};
+  A(const A&) = delete;
+  A& operator=(const A&) = delete;
+};
+
+A x{ 123 };
+A y = x; // error -- call to deleted copy constructor
+y = x; // error -- operator= deleted
+```
+
+### Range-based for loops
+Syntactic sugar for iterating over a container's elements.
+```c++
+std::array<int, 5> a{ 1, 2, 3, 4, 5 };
+for (int& x : a) x *= 2;
+// a == { 2, 4, 6, 8, 10 }
+```
+
+Note the difference when using `int` as opposed to `int&`:
+```c++
+std::array<int, 5> a{ 1, 2, 3, 4, 5 };
+for (int x : a) x *= 2;
+// a == { 1, 2, 3, 4, 5 }
+```
+
+### Special member functions for move semantics
+The copy constructor and copy assignment operator are called when copies are made, and with C++11's introduction of move semantics, there is now a move constructor and move assignment operator for moves.
+```c++
+struct A {
+  std::string s;
+  A() : s("test") {}
+  A(const A& o) : s(o.s) {}
+  A(A&& o) : s(std::move(o.s)) {}
+  A& operator=(A&& other) {
+   s = std::move(other.s);
+   return *this;
+  }
+};
+
+A f(A a) {
+  return a;
+}
+
+A a1 = f(A{}); // move-constructed from rvalue temporary
+A a2 = std::move(a1); // move-constructed using std::move
+A a3 = A{};
+a2 = std::move(a3); // move-assignment using std::move
+a1 = f(A{}); // move-assignment from rvalue temporary
+```
 
 ## C++11 Library Features
 
@@ -696,4 +835,14 @@ typename remove_reference<T>::type&& move(T&& arg)
 {
   return static_cast<typename remove_reference<T>::type&&>(arg);
 }
+```
+
+### std::forward
+TODO
+
+### std::to_string
+Converts a numeric argument to a `std::string`.
+```c++
+std::to_string(1.2); // == "1.2"
+std::to_string(123); // == "123"
 ```
