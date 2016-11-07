@@ -806,8 +806,8 @@ struct A {
   A() : s("test") {}
   A(const A& o) : s(o.s) {}
   A(A&& o) : s(std::move(o.s)) {}
-  A& operator=(A&& other) {
-   s = std::move(other.s);
+  A& operator=(A&& o) {
+   s = std::move(o.s);
    return *this;
   }
 };
