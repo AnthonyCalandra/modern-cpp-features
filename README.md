@@ -60,7 +60,7 @@ C++11 includes the following new language features:
 C++11 includes the following new library features:
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
-- [std::to_string](#stdtostring)
+- [std::to_string](#stdto_string)
 
 ## C++17 Language Features
 
