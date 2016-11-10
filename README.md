@@ -61,6 +61,14 @@ C++11 includes the following new library features:
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
 - [std::to_string](#stdto_string)
+- [type traits](#type-traits)
+- [smart pointers](#smart-pointers)
+- [std::chrono](#stdchrono)
+- [tuples](#tuples)
+- [std::tie](#stdtie)
+- [std::array](#stdarray)
+- [unordered containers](#unordered-containers)
+- [memory model](#memory-model)
 
 ## C++17 Language Features
 
@@ -831,8 +839,7 @@ TODO
 Definition of `std::move` (performing a move is nothing more than casting to an rvalue):
 ```c++
 template <typename T>
-typename remove_reference<T>::type&& move(T&& arg)
-{
+typename remove_reference<T>::type&& move(T&& arg) {
   return static_cast<typename remove_reference<T>::type&&>(arg);
 }
 ```
@@ -846,3 +853,84 @@ Converts a numeric argument to a `std::string`.
 std::to_string(1.2); // == "1.2"
 std::to_string(123); // == "123"
 ```
+
+### Type traits
+Type traits defines a compile-time template-based interface to query or modify the properties of types.
+```c++
+static_assert(std::is_integral<int>::value == 1);
+static_assert(std::is_same<int, int>::value == 1);
+static_assert(std::is_same<std::conditional<true, int, double>::type, int>::value == 1);
+```
+
+### Smart pointers
+C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17. `std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers.
+```c++
+std::unique_ptr<Foo> p1(new Foo);  // `p1` owns `Foo`
+if (p1) p1->bar();
+
+{
+  std::unique_ptr<Foo> p2(std::move(p1));  // Now `p2` owns `Foo`
+  f(*p2);
+
+  p1 = std::move(p2);  // Ownership returns to `p1` -- `p2` gets destroyed
+}
+
+if (p1) p1->bar();
+// `Foo` instance is destroyed when `p1` goes out of scope
+```
+
+### std::chrono
+The chrono library contains a set of utility functions and types that deal with _durations_, _clocks_, and _time points_. One use case of this library is benchmarking code:
+```c++
+std::chrono::time_point<std::chrono::system_clock> start, end;
+start = std::chrono::system_clock::now();
+// Some computations...
+end = std::chrono::system_clock::now();
+
+std::chrono::duration<double> elapsed_seconds = end-start;
+
+elapsed_seconds.count(); // t number of seconds, represented as a `double`
+```
+
+### Tuples
+Tuples are a fixed-size collection of heterogeneous values. Access the elements of a `std::tuple` by unpacking using `std::tie` (see section), or using `std::get`.
+```c++
+// `playerProfile` has type `std::tuple<int, std::string, std::string>`.
+auto playerProfile = std::make_tuple(51, "Frans Nielsen", "NYI");
+std::get<0>(playerProfile); // 51
+std::get<1>(playerProfile); // "Frans Nielsen"
+std::get<2>(playerProfile); // "NYI"
+```
+
+### std::tie
+Creates a tuple of lvalue references. Useful for unpacking `std::pair` and `std::tuple` objects. Use `std::ignore` as a placeholder for ignored values. In C++17, structured bindings should be used instead.
+```c++
+// With tuples...
+std::string playerName;
+std::tie(std::ignore, playerName, std::ignore) = std::make_tuple(91, "John Tavares", "NYI");
+
+// With pairs...
+std::string yes, no;
+std::tie(yes, no) = std::make_pair("yes", "no");
+```
+
+### std::array
+`std::array` is a container built on top of a C-style array. Supports common container operations such as sorting.
+```c++
+std::array<int, 3> a = {2, 1, 3};
+std::sort(a.begin(), a.end()); // a == { 1, 2, 3 }
+for (int& x : a) x *= 2; // a == { 2, 4, 6 }
+```
+
+### Unordered containers
+These containers maintain average constant-time complexity for search, insert, and remove operations. In order to achieve constant-time complexity, sacrifices order for speed by hashing elements into buckets. There are four unordered containers:
+* `unordered_set`
+* `unordered_multiset`
+* `unordered_map`
+* `unordered_multimap`
+
+### Memory model
+C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
+
+## Acknowledgements
+TODO
