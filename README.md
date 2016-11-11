@@ -713,13 +713,13 @@ foo.foo; // == 0
 ### User-defined literals
 User-defined literals allow you to extend the language and add your own syntax. To create a literal, define a `T operator "" X(...) { ... }` function that returns a type `T`, with a name `X`. Note that the name of this function defines the name of the literal. Any literal names not starting with an underscore are reserved and won't be invoked. There are rules on what parameters a user-defined literal function should accept, according to what type the literal is called on.
 
-Converting Celcius to Fahrenheit:
+Converting Celsius to Fahrenheit:
 ```c++
 // `unsigned long long` parameter required for integer literal.
-long long operator "" _celcius(unsigned long long tempCelcius) {
-  return std::llround(tempCelcius * 1.8 + 32);
+long long operator "" _celsius(unsigned long long tempCelsius) {
+  return std::llround(tempCelsius * 1.8 + 32);
 }
-24_celcius; // == 75
+24_celsius; // == 75
 ```
 
 String to integer conversion:
