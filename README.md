@@ -1,7 +1,7 @@
 # C++11/14/17
 
 ## Overview
-Many of these descriptions and examples come from their proposal papers, summarized in my own words.
+Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -834,9 +834,9 @@ a1 = f(A{}); // move-assignment from rvalue temporary
 ## C++11 Library Features
 
 ### std::move
-TODO
+`std::move` indicates that the object passed to it may be moved, or in other words, moved from one object to another without a copy. The object passed in should not be used after the move in certain situations.
 
-Definition of `std::move` (performing a move is nothing more than casting to an rvalue):
+A definition of `std::move` (performing a move is nothing more than casting to an rvalue):
 ```c++
 template <typename T>
 typename remove_reference<T>::type&& move(T&& arg) {
@@ -844,8 +844,47 @@ typename remove_reference<T>::type&& move(T&& arg) {
 }
 ```
 
+Transferring `std::unique_ptr`s:
+```c++
+std::unique_ptr<int> p1{ new int };
+std::unique_ptr<int> p2 = p1; // error -- cannot copy unique pointers
+std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p2`
+                                         // now unsafe to dereference object held by `p1`
+```
+
 ### std::forward
-TODO
+Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Forwarding gets its power from _template argument deduction_:
+* `T& &` becomes `T&`
+* `T& &&` becomes `T&`
+* `T&& &` becomes `T&`
+* `T&& &&` becomes `T&&`
+
+A definition of `std::forward`:
+```c++
+template <typename T>
+T&& forward(typename remove_reference<T>::type& arg) {
+  return static_cast<T&&>(arg);
+}
+```
+
+An example of a function `wrapper` which just forwards other `A` objects to a new `A` object's copy or move constructor:
+```c++
+struct A {
+  A() = default;
+  A(const A& o) { std::cout << "copied" << std::endl; }
+  A(A&& o) { std::cout << "moved" << std::endl; }
+};
+
+template <typename T>
+A wrapper(T&& arg) {
+  return A{ std::forward<T>(arg) };
+}
+
+wrapper(A{}); // moved
+A a{};
+wrapper(a); // copied
+wrapper(std::move(a)); // moved
+```
 
 ### std::to_string
 Converts a numeric argument to a `std::string`.
@@ -933,4 +972,18 @@ These containers maintain average constant-time complexity for search, insert, a
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
 
 ## Acknowledgements
-TODO
+* [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
+* [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
+* [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
+* [Compiler explorer](https://godbolt.org/)
+* [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended book!
+* [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
+* [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
+* [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
+* And many more SO posts I'm forgetting...
+
+## Author
+Anthony Calandra
+
+## License
+MIT
