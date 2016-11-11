@@ -370,9 +370,10 @@ m.insert(std::move(e));
 
 ### Binary literals
 Binary literals provide a convenient way to represent a base-2 number.
+It is possible to separate digits with `'`.
 ```c++
 0b110 // == 6
-0b11111111 // == 255
+0b1111'1111 // == 255
 ```
 
 ### Generic lambda expressions
