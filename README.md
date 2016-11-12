@@ -27,6 +27,7 @@ C++17 includes the following new library features:
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
 - [generic lambda expressions](#generic-lambda-expressions)
+- [lambda capture initializers](#lambda-capture-initializers)
 - [return type deduction](#return-type-deduction)
 - [decltype(auto)](#decltypeauto)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
@@ -383,6 +384,35 @@ C++14 now allows the `auto` type-specifier in the parameter list, enabling polym
 auto identity = [](auto x) { return x; };
 int three = identity(3); // == 3
 std::string foo = identity("foo"); // == "foo"
+```
+
+### Lambda capture initializers
+This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).
+```c++
+int factory(int i) { return i * 10; }
+auto f = [x = factory(2)] { return x; }; // returns 20
+
+auto generator = [x = 0] () mutable { return x++; };
+auto a = generator(); // a = 0
+auto b = generator(); // b = 1
+```
+Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
+```c++
+auto p = std::make_unique<int>(1);
+
+auto task1 = [=] { return *p = 5; } // ERROR: std::unique_ptr cannot be copied
+// vs.
+auto task2 = [p = std::move(p)] { *p = 5; }; // OK: p is move-constructed into the closure object
+// the original p is empty after task2 is created
+```
+Using this reference-captures can have different names than the referenced variable.
+```c++
+auto x = 1;
+auto f = [&r = x, x = x * 10] {
+ ++r;
+ return r + x;
+};
+f(); // sets x to 2 and returns 12
 ```
 
 ### Return type deduction
