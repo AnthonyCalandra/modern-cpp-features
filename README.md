@@ -75,14 +75,15 @@ C++11 includes the following new library features:
 ### Template argument deduction for class templates
 Automatic template argument deduction much like how it's done for functions, but now including class constructors.
 ```c++
-template <typename T>
+template <typename T = float>
 struct MyContainer {
   T val;
+  MyContainer() : val() {}
   MyContainer(T val) : val(val) {}
   // ...
 };
 MyContainer c1{ 1 }; // OK MyContainer<int>
-MyContainer c2; // OK MyContainer<>
+MyContainer c2; // OK MyContainer<float>
 ```
 
 ### Declaring non-type template parameters with auto
@@ -370,9 +371,10 @@ m.insert(std::move(e));
 
 ### Binary literals
 Binary literals provide a convenient way to represent a base-2 number.
+It is possible to separate digits with `'`.
 ```c++
 0b110 // == 6
-0b11111111 // == 255
+0b1111'1111 // == 255
 ```
 
 ### Generic lambda expressions
@@ -713,13 +715,13 @@ foo.foo; // == 0
 ### User-defined literals
 User-defined literals allow you to extend the language and add your own syntax. To create a literal, define a `T operator "" X(...) { ... }` function that returns a type `T`, with a name `X`. Note that the name of this function defines the name of the literal. Any literal names not starting with an underscore are reserved and won't be invoked. There are rules on what parameters a user-defined literal function should accept, according to what type the literal is called on.
 
-Converting Celcius to Fahrenheit:
+Converting Celsius to Fahrenheit:
 ```c++
 // `unsigned long long` parameter required for integer literal.
-long long operator "" _celcius(unsigned long long tempCelcius) {
-  return std::llround(tempCelcius * 1.8 + 32);
+long long operator "" _celsius(unsigned long long tempCelsius) {
+  return std::llround(tempCelsius * 1.8 + 32);
 }
-24_celcius; // == 75
+24_celsius; // == 75
 ```
 
 String to integer conversion:
