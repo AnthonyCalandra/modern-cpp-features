@@ -5,9 +5,9 @@ Many of these descriptions and examples come from various resources (see [Acknow
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
-- [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
+- [declaring non-type template parameters with auto](#declaring-nontype-template-parameters-with-auto)
 - [folding expressions](#folding-expressions)
-- [new rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction---from---braced---init---list)
+- [new rules for auto deduction from braced-init-list](#new-rules-for-auto-deduction-from-bracedinitlist)
 - [constexpr lambda](#constexpr-lambda)
 - [inline variables](#inline-variables)
 - [nested namespaces](#nested-namespaces)
@@ -33,7 +33,7 @@ C++14 includes the following new language features:
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
-- [compile-time integer sequences](#compile---time-integer-sequences)
+- [compile-time integer sequences](#compiletime-integer-sequences)
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -46,15 +46,15 @@ C++11 includes the following new language features:
 - [decltype](#decltype)
 - [template aliases](#template-aliases)
 - [nullptr](#nullptr)
-- [strongly-typed enums](#strongly---typed-enums)
+- [strongly-typed enums](#stronglytyped-enums)
 - [attributes](#attributes)
 - [constexpr](#constexpr)
 - [delegating constructors](#delegating-constructors)
-- [user-defined literals](#user---defined-literals)
+- [user-defined literals](#userdefined-literals)
 - [explicit virtual overrides](#explicit-virtual-overrides)
 - [default functions](#default-functions)
 - [deleted functions](#deleted-functions)
-- [range-based for loops](#range---based-for-loops)
+- [range-based for loops](#rangebased-for-loops)
 - [special member functions for move semantics](#special-member-functions-for-move-semantics)
 
 C++11 includes the following new library features:
