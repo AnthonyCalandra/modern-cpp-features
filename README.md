@@ -404,7 +404,7 @@ Because it is now possible to _move_ (or _forward_) values into a lambda that co
 ```c++
 auto p = std::make_unique<int>(1);
 
-auto task1 = [=] {*p = 5; }; // ERROR: std::unique_ptr cannot be copied
+auto task1 = [=] { *p = 5; }; // ERROR: std::unique_ptr cannot be copied
 // vs.
 auto task2 = [p = std::move(p)] { *p = 5; }; // OK: p is move-constructed into the closure object
 // the original p is empty after task2 is created
@@ -1030,6 +1030,11 @@ C++11 introduces a memory model for C++, which means library support for threadi
 
 ## Author
 Anthony Calandra
+
+## Content Contributors
+Those who have added new content will be listed here in no particular order.
+* [thukydides](https://github.com/thukydides) - mentioned binary digit separators.
+* [mknejp](https://github.com/mknejp) - lambda capture initializers and `mutable` keyword.
 
 ## License
 MIT
