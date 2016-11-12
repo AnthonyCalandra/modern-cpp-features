@@ -75,14 +75,15 @@ C++11 includes the following new library features:
 ### Template argument deduction for class templates
 Automatic template argument deduction much like how it's done for functions, but now including class constructors.
 ```c++
-template <typename T>
+template <typename T = float>
 struct MyContainer {
   T val;
+  MyContainer() : val() {}
   MyContainer(T val) : val(val) {}
   // ...
 };
 MyContainer c1{ 1 }; // OK MyContainer<int>
-MyContainer c2; // OK MyContainer<>
+MyContainer c2; // OK MyContainer<float>
 ```
 
 ### Declaring non-type template parameters with auto
