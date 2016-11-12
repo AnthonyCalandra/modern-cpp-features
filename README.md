@@ -605,7 +605,7 @@ getXRef(); // int& to `x`
 `decltype` is an operator which returns the _declared type_ of an expression passed to it. Examples of `decltype`:
 ```c++
 int a = 1; // `a` is declared as type `int`
-decltype(x) b = a; // `decltype(x)` is `int`
+decltype(a) b = a; // `decltype(a)` is `int`
 const int& c = a; // `c` is declared as type `const int&`
 decltype(c) d = a; // `decltype(c)` is `const int&`
 decltype(123) e = 123; // `decltype(123)` is `int`
