@@ -392,15 +392,19 @@ This allows creating lambda captures initialized with arbitrary expressions. The
 int factory(int i) { return i * 10; }
 auto f = [x = factory(2)] { return x; }; // returns 20
 
-auto generator = [x = 0] () mutable { return x++; };
-auto a = generator(); // a = 0
-auto b = generator(); // b = 1
+auto generator = [x = 0] () mutable {
+  // this would no compile without 'mutable' as we are modifying x on each call
+  return x++;
+};
+auto a = generator(); // == 0
+auto b = generator(); // == 1
+auto c = generator(); // == 2
 ```
 Because it is now possible to _move_ (or _forward_) values into a lambda that could previously be only captured by copy or reference we can now capture move-only types in a lambda by value. Note that in the below example the `p` in the capture-list of `task2` on the left-hand-side of `=` is a new variable private to the lambda body and does not refer to the original `p`.
 ```c++
 auto p = std::make_unique<int>(1);
 
-auto task1 = [=] { return *p = 5; } // ERROR: std::unique_ptr cannot be copied
+auto task1 = [=] {*p = 5; }; // ERROR: std::unique_ptr cannot be copied
 // vs.
 auto task2 = [p = std::move(p)] { *p = 5; }; // OK: p is move-constructed into the closure object
 // the original p is empty after task2 is created
@@ -409,8 +413,8 @@ Using this reference-captures can have different names than the referenced varia
 ```c++
 auto x = 1;
 auto f = [&r = x, x = x * 10] {
- ++r;
- return r + x;
+  ++r;
+  return r + x;
 };
 f(); // sets x to 2 and returns 12
 ```
@@ -629,6 +633,16 @@ addX(1); // == 2
 
 auto getXRef = [&]() -> int& { return x; };
 getXRef(); // int& to `x`
+```
+By default value-captures cannot be modified inside the lambda because the compiler-generated method is marked as `const`. The `mutable` keyword allows modifying captured variables. The keyword is placed after the parameter-list (which must be present even if it is empty).
+```c++
+int x = 1;
+
+auto f1 = [&x] { x = 2; }; // OK: x is a reference and modifies the original
+
+auto f2 = [x] { x = 2; }; // ERROR: the lambda can only perform const-operations on the captured value
+// vs.
+auto f3 = [x] () mutable { x = 2; }; // OK: the lambda can perform any operations on the captured value
 ```
 
 ### decltype
