@@ -393,7 +393,7 @@ int factory(int i) { return i * 10; }
 auto f = [x = factory(2)] { return x; }; // returns 20
 
 auto generator = [x = 0] () mutable {
-  // this would no compile without 'mutable' as we are modifying x on each call
+  // this would not compile without 'mutable' as we are modifying x on each call
   return x++;
 };
 auto a = generator(); // == 0
