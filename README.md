@@ -1060,9 +1060,7 @@ C++11 introduces a memory model for C++, which means library support for threadi
 Anthony Calandra
 
 ## Content Contributors
-Those who have added new content will be listed here in no particular order.
-* [thukydides](https://github.com/thukydides) - mentioned binary digit separators.
-* [mknejp](https://github.com/mknejp) - lambda capture initializers and `mutable` keyword.
+See: https://github.com/AnthonyCalandra/modern-cpp-features/graphs/contributors
 
 ## License
 MIT
