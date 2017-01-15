@@ -15,6 +15,7 @@ C++17 includes the following new language features:
 - [structured bindings](#structured-bindings)
 - [selection statements with initializer](#selection-statements-with-initializer)
 - [constexpr if](#constexpr-if)
+- [utf-8 character literals](#utf-8-character-literals)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -257,6 +258,12 @@ static_assert(isIntegral<char>() == true);
 static_assert(isIntegral<double>() == false);
 struct S {};
 static_assert(isIntegral<S>() == false);
+```
+
+### UTF-8 Character Literals
+A character literal that begins with `u8` is a character literal of type `char`. The value of a UTF-8 character literal is equal to its ISO 10646 code point value.
+```c++
+char x = u8'x';
 ```
 
 ## C++17 Library Features
