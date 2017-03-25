@@ -489,7 +489,7 @@ auto x1 = x; // int
 decltype(auto) x2 = x; // const int
 int y = 0;
 int& y1 = y;
-auto y2 = y; // int
+auto y2 = y1; // int
 decltype(auto) y3 = y1; // int&
 int&& z = 0;
 auto z1 = std::move(z); // int
@@ -607,9 +607,9 @@ int sum(const std::initializer_list<int>& list) {
 }
 
 auto list = { 1, 2, 3 };
-f(list); // == 6
-f({ 1, 2, 3 }); // == 6
-f({}); // == 0
+sum(list); // == 6
+sum({ 1, 2, 3 }); // == 6
+sum({}); // == 0
 ```
 
 ### Static assertions
