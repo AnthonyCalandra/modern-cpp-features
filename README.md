@@ -62,6 +62,7 @@ C++11 includes the following new language features:
 - [range-based for loops](#range-based-for-loops)
 - [special member functions for move semantics](#special-member-functions-for-move-semantics)
 - [converting constructors](#converting-constructors)
+- [explicit conversion functions](#explicit-conversion-functions)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -973,6 +974,26 @@ A a{0, 0}; // calls A::A(std::initializer_list<int>)
 A b(0, 0); // calls A::A(int, int)
 A c = {0, 0}; // calls A::A(std::initializer_list<int>)
 A d{0, 0, 0}; // calls A::A(std::initializer_list<int>)
+```
+
+### Explicit conversion functions
+Conversion functions can now be made explicit using the `explicit` specifier.
+```c++
+struct A {
+  operator bool() const { return true; }
+};
+
+struct B {
+  explicit operator bool() const { return true; }
+};
+
+A a{};
+if (a); // OK calls A::operator bool()
+bool ba = a; // OK copy-initialization selects A::operator bool()
+
+B b{};
+if (b); // OK calls B::operator bool()
+bool bb = b; // error copy-initialization does not consider B::operator bool()
 ```
 
 ## C++11 Library Features
