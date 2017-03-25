@@ -61,6 +61,7 @@ C++11 includes the following new language features:
 - [deleted functions](#deleted-functions)
 - [range-based for loops](#range-based-for-loops)
 - [special member functions for move semantics](#special-member-functions-for-move-semantics)
+- [converting constructors](#converting-constructors)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -942,6 +943,36 @@ A a2 = std::move(a1); // move-constructed using std::move
 A a3 = A{};
 a2 = std::move(a3); // move-assignment using std::move
 a1 = f(A{}); // move-assignment from rvalue temporary
+```
+
+### Converting constructors
+Converting constructors will convert values of braced list syntax into constructor arguments.
+```c++
+struct A {
+  A(int) {}
+  A(int, int) {}
+  A(int, int, int) {}
+};
+
+A a{0, 0}; // calls A::A(int, int)
+A b(0, 0); // calls A::A(int, int)
+A c = {0, 0}; // calls A::A(int, int)
+A d{0, 0, 0}; // calls A::A(int, int, int)
+```
+
+Note that if a constructor accepts a `std::initializer_list`, it will be called instead:
+```c++
+struct A {
+  A(int) {}
+  A(int, int) {}
+  A(int, int, int) {}
+  A(std::initializer_list<int>) {}
+};
+
+A a{0, 0}; // calls A::A(std::initializer_list<int>)
+A b(0, 0); // calls A::A(int, int)
+A c = {0, 0}; // calls A::A(std::initializer_list<int>)
+A d{0, 0, 0}; // calls A::A(std::initializer_list<int>)
 ```
 
 ## C++11 Library Features
