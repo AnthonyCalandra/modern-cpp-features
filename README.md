@@ -16,6 +16,7 @@ C++17 includes the following new language features:
 - [selection statements with initializer](#selection-statements-with-initializer)
 - [constexpr if](#constexpr-if)
 - [utf-8 character literals](#utf-8-character-literals)
+- [direct-list-initialization of enums](#direct-list-initialization-of-enums)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -264,6 +265,16 @@ static_assert(isIntegral<S>() == false);
 A character literal that begins with `u8` is a character literal of type `char`. The value of a UTF-8 character literal is equal to its ISO 10646 code point value.
 ```c++
 char x = u8'x';
+```
+
+### Direct List Initialization of Enums
+Enums can now be initialized using braced syntax.
+```c++
+enum byte : unsigned char {};
+byte b{0}; // OK
+byte c{-1}; // ERROR
+byte d = byte{1}; // OK
+byte e = byte{256}; // ERROR
 ```
 
 ## C++17 Library Features
