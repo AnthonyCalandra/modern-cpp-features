@@ -1,4 +1,4 @@
-# C++11/14/17
+# C++17/14/11
 
 ## Overview
 Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
@@ -515,7 +515,7 @@ static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
 
 ### Relaxing constraints on constexpr functions
-In C++11, `constexpr` function bodies could only contain a very limited set of syntax, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntax expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
+In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
 ```c++
 constexpr int factorial(int n) {
   if (n <= 1) {
@@ -676,7 +676,7 @@ addX(1); // == 2
 auto getXRef = [&]() -> int& { return x; };
 getXRef(); // int& to `x`
 ```
-By default value-captures cannot be modified inside the lambda because the compiler-generated method is marked as `const`. The `mutable` keyword allows modifying captured variables. The keyword is placed after the parameter-list (which must be present even if it is empty).
+By default, value-captures cannot be modified inside the lambda because the compiler-generated method is marked as `const`. The `mutable` keyword allows modifying captured variables. The keyword is placed after the parameter-list (which must be present even if it is empty).
 ```c++
 int x = 1;
 
