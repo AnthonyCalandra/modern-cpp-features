@@ -64,6 +64,7 @@ C++11 includes the following new language features:
 - [converting constructors](#converting-constructors)
 - [explicit conversion functions](#explicit-conversion-functions)
 - [inline-namespaces](#inline-namespaces)
+- [non-static data member initializers](#non-static-data-member-initializers)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -1013,6 +1014,23 @@ namespace Program {
 int version {Program::getVersion()};              // Uses getVersion() from Version2
 int oldVersion {Program::Version1::getVersion()}; // Uses getVersion() from Version1
 bool firstVersion {Program::isFirstVersion()};    // Does not compile when Version2 is added
+```
+
+### Non-static data member initializers
+Allows non-static data members to be initialized where they are declared, potentially cleaning up constructors of default initializations.
+
+```c++
+// Default initialization prior to C++11
+class Human {
+    Human() : age(0) {}
+  private:
+    unsigned age;
+};
+// Default initialization on C++11
+class Human {
+  private:
+    unsigned age = 0;
+};
 ```
 
 ## C++11 Library Features
