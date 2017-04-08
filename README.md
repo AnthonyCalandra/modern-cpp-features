@@ -1029,7 +1029,7 @@ class Human {
 // Default initialization on C++11
 class Human {
   private:
-    unsigned age = 0;
+    unsigned age{0};
 };
 ```
 
