@@ -65,6 +65,7 @@ C++11 includes the following new language features:
 - [explicit conversion functions](#explicit-conversion-functions)
 - [inline-namespaces](#inline-namespaces)
 - [non-static data member initializers](#non-static-data-member-initializers)
+- [right angle brackets](#right-angle-brackets)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -1031,6 +1032,15 @@ class Human {
   private:
     unsigned age{0};
 };
+```
+
+
+### Right angle Brackets
+C++11 is now able to infer when a series of right angle brackets is used as an operator or as a closing statement of typedef, without having to add whitespace.
+
+```c++
+typedef std::map<int, std::map <int, std::map <int, int> > > cpp98LongTypedef;
+typedef std::map<int, std::map <int, std::map <int, int>>>   cpp11LongTypedef;
 ```
 
 ## C++11 Library Features
