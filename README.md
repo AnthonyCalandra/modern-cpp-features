@@ -34,6 +34,7 @@ C++14 includes the following new language features:
 - [return type deduction](#return-type-deduction)
 - [decltype(auto)](#decltypeauto)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
+- [variable templates](#variable-templates)
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
@@ -528,6 +529,16 @@ constexpr int factorial(int n) {
   }
 }
 factorial(5); // == 120
+```
+
+### Variable Templates
+C++14 allows variables to be templated:
+
+```c++
+template<class T>
+constexpr T pi = T(3.1415926535897932385);
+template<class T>
+constexpr T e  = T(2.7182818284590452353);
 ```
 
 ## C++14 Library Features
