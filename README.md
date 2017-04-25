@@ -34,6 +34,7 @@ C++14 includes the following new language features:
 - [return type deduction](#return-type-deduction)
 - [decltype(auto)](#decltypeauto)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
+- [variable templates](#variable-templates)
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
@@ -63,6 +64,9 @@ C++11 includes the following new language features:
 - [special member functions for move semantics](#special-member-functions-for-move-semantics)
 - [converting constructors](#converting-constructors)
 - [explicit conversion functions](#explicit-conversion-functions)
+- [inline-namespaces](#inline-namespaces)
+- [non-static data member initializers](#non-static-data-member-initializers)
+- [right angle brackets](#right-angle-brackets)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -525,6 +529,16 @@ constexpr int factorial(int n) {
   }
 }
 factorial(5); // == 120
+```
+
+### Variable Templates
+C++14 allows variables to be templated:
+
+```c++
+template<class T>
+constexpr T pi = T(3.1415926535897932385);
+template<class T>
+constexpr T e  = T(2.7182818284590452353);
 ```
 
 ## C++14 Library Features
@@ -994,6 +1008,50 @@ bool ba = a; // OK copy-initialization selects A::operator bool()
 B b{};
 if (b); // OK calls B::operator bool()
 bool bb = b; // error copy-initialization does not consider B::operator bool()
+```
+### Inline namespaces
+All members of an inline namespace are treated as if they were part of its parent namespace, allowing specialization of functions and easing the process of versioning. This is a transitive property, if A contains B, which in turn contains C and both B and C are inline namespaces, C's members can be used as if they were on A.
+
+```c++
+namespace Program {
+  namespace Version1 {
+    int getVersion() { return 1; }
+    bool isFirstVersion() { return true; }
+  }
+  inline namespace Version2 {
+    int getVersion() { return 2; }
+  }
+}
+
+int version {Program::getVersion()};              // Uses getVersion() from Version2
+int oldVersion {Program::Version1::getVersion()}; // Uses getVersion() from Version1
+bool firstVersion {Program::isFirstVersion()};    // Does not compile when Version2 is added
+```
+
+### Non-static data member initializers
+Allows non-static data members to be initialized where they are declared, potentially cleaning up constructors of default initializations.
+
+```c++
+// Default initialization prior to C++11
+class Human {
+    Human() : age(0) {}
+  private:
+    unsigned age;
+};
+// Default initialization on C++11
+class Human {
+  private:
+    unsigned age{0};
+};
+```
+
+
+### Right angle Brackets
+C++11 is now able to infer when a series of right angle brackets is used as an operator or as a closing statement of typedef, without having to add whitespace.
+
+```c++
+typedef std::map<int, std::map <int, std::map <int, int> > > cpp98LongTypedef;
+typedef std::map<int, std::map <int, std::map <int, int>>>   cpp11LongTypedef;
 ```
 
 ## C++11 Library Features
