@@ -997,6 +997,16 @@ A c = {0, 0}; // calls A::A(int, int)
 A d{0, 0, 0}; // calls A::A(int, int, int)
 ```
 
+Note that the braced list syntax does not allow narrowing:
+```c++
+struct A {
+  A(int) {}
+};
+
+A a(1.1); // OK
+A b{1.1}; // Error narrowing conversion from double to int
+```
+
 Note that if a constructor accepts a `std::initializer_list`, it will be called instead:
 ```c++
 struct A {
