@@ -39,6 +39,7 @@ C++14 includes the following new language features:
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile-time-integer-sequences)
+- [std::make_unique](#stdmake_unique)
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -79,6 +80,7 @@ C++11 includes the following new library features:
 - [std::tie](#stdtie)
 - [std::array](#stdarray)
 - [unordered containers](#unordered-containers)
+- [std::make_shared](#stdmake_shared)
 - [memory model](#memory-model)
 
 ## C++17 Language Features
@@ -217,7 +219,7 @@ namespace A::B::C {
 ```
 
 ### Structured bindings
-A proposal for de-structuring initialization, that would allow writing `auto {x, y, z} = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](#tuples), `std::pair`, [`std::array`](#stdarray), and aggregate structures.
+A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](#tuples), `std::pair`, [`std::array`](#stdarray), and aggregate structures.
 ```c++
 using Coordinate = std::pair<int, int>;
 Coordinate origin() {
@@ -574,6 +576,21 @@ decltype(auto) a2t(const std::array<T, N>& a) {
   return a2t_impl(a, Indices());
 }
 ```
+
+### std::make_unique
+`std::make_unique` is the recommended way to create instances of `std::unique_ptr`s due to the following reasons:
+* Avoid having to use the `new` operator.
+* Prevents code repetition when specifying the underlying type the pointer shall hold.
+* Most importantly, it provides exception-safety. Suppose we were calling a function `foo` like so:
+```c++
+foo(std::unique_ptr<T>{ new T{} }, function_that_throws(), std::unique_ptr<T>{ new T{} });
+```
+The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_unique`, we are given exception-safety:
+```c++
+foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
+```
+
+See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
 ## C++11 Language Features
 
@@ -1130,13 +1147,15 @@ static_assert(std::is_same<std::conditional<true, int, double>::type, int>::valu
 ```
 
 ### Smart pointers
-C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17. `std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers.
+C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17.
+
+`std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](#stdmake_unique) and [std::make_shared](#stdmake_shared).**
 ```c++
-std::unique_ptr<Foo> p1(new Foo);  // `p1` owns `Foo`
+std::unique_ptr<Foo> p1 { new Foo{} };  // `p1` owns `Foo`
 if (p1) p1->bar();
 
 {
-  std::unique_ptr<Foo> p2(std::move(p1));  // Now `p2` owns `Foo`
+  std::unique_ptr<Foo> p2 { std::move(p1) };  // Now `p2` owns `Foo`
   f(*p2);
 
   p1 = std::move(p2);  // Ownership returns to `p1` -- `p2` gets destroyed
@@ -1144,6 +1163,27 @@ if (p1) p1->bar();
 
 if (p1) p1->bar();
 // `Foo` instance is destroyed when `p1` goes out of scope
+```
+
+A `std::shared_ptr` is a smart pointer that manages a resource that is shared across multiple owners. A shared pointer holds a _control block_ which has a few components such as the managed object and a reference counter. All control block access is thread-safe, however, manipulating the managed object itself is *not* thread-safe.
+```c++
+void foo(std::shared_ptr<T> t) {
+  // Do something with `t`...
+}
+
+void bar(std::shared_ptr<T> t) {
+  // Do something with `t`...
+}
+
+void baz(std::shared_ptr<T> t) {
+  // Do something with `t`...
+}
+
+std::shared_ptr<T> p1 { new T{} };
+// Perhaps these take place in another threads?
+foo(p1);
+bar(p1);
+baz(p1);
 ```
 
 ### std::chrono
@@ -1195,6 +1235,22 @@ These containers maintain average constant-time complexity for search, insert, a
 * `unordered_multiset`
 * `unordered_map`
 * `unordered_multimap`
+
+### std::make_shared
+`std::make_shared` is the recommended way to create instances of `std::shared_ptr`s due to the following reasons:
+* Avoid having to use the `new` operator.
+* Prevents code repetition when specifying the underlying type the pointer shall hold.
+* It provides exception-safety. Suppose we were calling a function `foo` like so:
+```c++
+foo(std::shared_ptr<T>{ new T{} }, function_that_throws(), std::shared_ptr<T>{ new T{} });
+```
+The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_unique`, we are given exception-safety:
+```c++
+foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
+```
+* Prevents having to do two allocations. When calling `std::shared_ptr{ new T{} }`, we have to allocate memory for `T`, then in the shared pointer we have to allocate memory for the control block within the pointer.
+
+See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
 ### Memory model
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
