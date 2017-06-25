@@ -1254,9 +1254,9 @@ These containers maintain average constant-time complexity for search, insert, a
 ```c++
 foo(std::shared_ptr<T>{ new T{} }, function_that_throws(), std::shared_ptr<T>{ new T{} });
 ```
-The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_unique`, we are given exception-safety:
+The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_shared`, we are given exception-safety:
 ```c++
-foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
+foo(std::make_shared<T>(), function_that_throws(), std::make_shared<T>());
 ```
 * Prevents having to do two allocations. When calling `std::shared_ptr{ new T{} }`, we have to allocate memory for `T`, then in the shared pointer we have to allocate memory for the control block within the pointer.
 
