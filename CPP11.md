@@ -456,7 +456,7 @@ struct A {
   A(int) {}
 };
 
-A a(1.1); // OK
+A a(1); // OK
 A b{1.1}; // Error narrowing conversion from double to int
 ```
 
