@@ -34,6 +34,7 @@ C++11 includes the following new language features:
 C++11 includes the following new library features:
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
+- [std::threads](#stdthreads)
 - [std::to_string](#stdto_string)
 - [type traits](#type-traits)
 - [smart pointers](#smart-pointers)
@@ -592,6 +593,21 @@ wrapper(A{}); // moved
 A a{};
 wrapper(a); // copied
 wrapper(std::move(a)); // moved
+```
+
+### std::threads
+With the `threads` library it becomes easier to spawn, manage and kill threads. In the example below, multiple threads are spawned to do different calculations and then the program waits for all of them to finish.
+
+```c++
+void foo(bool clause) { /*do something...*/ }
+
+std::vector<std::thread> threadsVector;
+threadsVector.emplace_back([](){
+    //Lambda function that will be invoked    
+});
+threadsVector.emplace_back(foo, true);  // thread will run foo(true)
+for (auto& thread : threadsVector)
+    thread.join(); // Wait for threads to finish
 ```
 
 ### std::to_string
