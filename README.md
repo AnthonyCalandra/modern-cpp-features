@@ -1201,10 +1201,10 @@ baz(p1);
 ### std::chrono
 The chrono library contains a set of utility functions and types that deal with _durations_, _clocks_, and _time points_. One use case of this library is benchmarking code:
 ```c++
-std::chrono::time_point<std::chrono::system_clock> start, end;
-start = std::chrono::system_clock::now();
+std::chrono::time_point<std::chrono::steady_clock> start, end;
+start = std::chrono::steady_clock::now();
 // Some computations...
-end = std::chrono::system_clock::now();
+end = std::chrono::steady_clock::now();
 
 std::chrono::duration<double> elapsed_seconds = end-start;
 
