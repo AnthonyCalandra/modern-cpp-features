@@ -28,6 +28,7 @@ C++17 includes the following new library features:
 - [std::invoke](#stdinvoke)
 - [std::apply](#stdapply)
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
+- [parallel algorithms](#parallel-algorithms)
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -421,6 +422,17 @@ auto e = m.extract(2);
 e.key() = 4;
 m.insert(std::move(e));
 // m == { { 1, "one" }, { 3, "three" }, { 4, "two" } }
+```
+
+### Parallel algorithms
+Many of the STL algorithms, such as the `copy`, `find` and `sort` methods, started to support the so called "parallel execution policies": `seq`, `par` and `par_unseq` which translate to "sequentially", "parallel" and "parallel unsequenced".
+
+```c++
+    std::vector<int> longVector;
+    // Find element using parallel execution policy
+    auto result1 = std::find(std::execution::par, std::begin(longVector), std::end(longVector), 2);
+    // Sort elements using sequential execution policy
+    auto result2 = std::sort(std::execution::seq, std::begin(longVector), std::end(longVector));
 ```
 
 ## C++14 Language Features
