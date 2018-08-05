@@ -32,6 +32,7 @@ C++11 includes the following new language features:
 - [right angle brackets](#right-angle-brackets)
 
 C++11 includes the following new library features:
+- [std::atomic](#stdatomic)
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
 - [std::to_string](#stdto_string)
@@ -540,6 +541,15 @@ typedef std::map<int, std::map <int, std::map <int, int>>>   cpp11LongTypedef;
 ```
 
 ## C++11 Library Features
+
+### std::atomic
+The atomic library provides convenience specializations to ensure atomic operations occur on variables, easing the creation of a thread-safe class without having to use mutexes/locks to avoid race conditions.
+
+If multiple threads were to modify the values below concurrently, the behavior for the `atomic` one would be well defined, whereas it wouldn't for the plain `int`.
+```c++
+std::atomic<int> atomicValue {0};
+int value {0};
+```
 
 ### std::move
 `std::move` indicates that the object passed to it may be moved, or in other words, moved from one object to another without a copy. The object passed in should not be used after the move in certain situations.
