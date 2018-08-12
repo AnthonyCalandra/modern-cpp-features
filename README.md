@@ -74,6 +74,7 @@ C++11 includes the following new language features:
 C++11 includes the following new library features:
 - [std::move](#stdmove)
 - [std::forward](#stdforward)
+- [std::thread](#stdthread)
 - [std::to_string](#stdto_string)
 - [type traits](#type-traits)
 - [smart pointers](#smart-pointers)
@@ -1143,6 +1144,21 @@ wrapper(a); // copied
 wrapper(std::move(a)); // moved
 ```
 
+### std::thread
+The `std::thread` library provides a standard way to control threads, such as spawning and killing them. In the example below, multiple threads are spawned to do different calculations and then the program waits for all of them to finish.
+
+```c++
+void foo(bool clause) { /* do something... */ }
+
+std::vector<std::thread> threadsVector;
+threadsVector.emplace_back([]() {
+    // Lambda function that will be invoked    
+});
+threadsVector.emplace_back(foo, true);  // thread will run foo(true)
+for (auto& thread : threadsVector)
+    thread.join(); // Wait for threads to finish
+```
+
 ### std::to_string
 Converts a numeric argument to a `std::string`.
 ```c++
@@ -1266,6 +1282,8 @@ See the section on [smart pointers](#smart-pointers) for more information on `st
 
 ### Memory model
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
+
+See the sections on: [std::thread](#stdthread)
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
