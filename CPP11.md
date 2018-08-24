@@ -683,7 +683,7 @@ elapsed_seconds.count(); // t number of seconds, represented as a `double`
 ### Tuples
 Tuples are a fixed-size collection of heterogeneous values. Access the elements of a `std::tuple` by unpacking using [`std::tie`](#stdtie), or using `std::get`.
 ```c++
-// `playerProfile` has type `std::tuple<int, std::string, std::string>`.
+// `playerProfile` has type `std::tuple<int, const char*, const char*>`.
 auto playerProfile = std::make_tuple(51, "Frans Nielsen", "NYI");
 std::get<0>(playerProfile); // 51
 std::get<1>(playerProfile); // "Frans Nielsen"
