@@ -27,8 +27,9 @@ C++17 includes the following new library features:
 - [std::string_view](#stdstring_view)
 - [std::invoke](#stdinvoke)
 - [std::apply](#stdapply)
-- [splicing for maps and sets](#splicing-for-maps-and-sets)
 - [std::filesystem](#stdfilesystem)
+- [std::byte](#stdbyte)
+- [splicing for maps and sets](#splicing-for-maps-and-sets)
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -385,6 +386,33 @@ auto add = [] (int x, int y) {
 std::apply(add, std::make_tuple( 1, 2 )); // == 3
 ```
 
+### std::filesystem
+The new `std::filesystem` library provides a standard way to manipulate files, directories, and paths in a filesystem.
+
+Here, a big file is copied to a temporary path if there is available space:
+```c++
+const auto bigFilePath {"bigFileToCopy"};
+if (std::filesystem::exists(bigFilePath)) {   
+  const auto bigFileSize {std::filesystem::file_size(bigFilePath)};
+  std::filesystem::path tmpPath {"/tmp"};
+  if (std::filesystem::space(tmpPath).available > bigFileSize) {
+    std::filesystem::create_directory(tmpPath.append("example"));
+    std::filesystem::copy_file(bigFilePath, tmpPath.append("newFile"));
+  }
+}
+```
+
+### std::byte
+The new `std::byte` type provides a standard way of representing data as a byte. Benefits of using `std::byte` over `char` or `unsigned char` is that it is not a character type, and is also not an arithmetic type; while the only operator overloads available are bitwise operations.
+```c++
+std::byte a {0};
+std::byte b {0xFF};
+int i = std::to_integer<int>(b); // 0xFF
+std::byte c = a & b;
+int j = std::to_integer<int>(c); // 0
+```
+Note that `std::byte` is simply an enum, and braced initialization of enums become possible thanks to [direct-list-initialization of enums](#direct-list-initialization-of-enums).
+
 ### Splicing for maps and sets
 Moving nodes and merging containers without the overhead of expensive copies, moves, or heap allocations/deallocations.
 
@@ -423,21 +451,6 @@ auto e = m.extract(2);
 e.key() = 4;
 m.insert(std::move(e));
 // m == { { 1, "one" }, { 3, "three" }, { 4, "two" } }
-```
-### std::filesystem
-The new `std::filesystem` library provides a standard way to manipulate files, directories, and paths in a filesystem.
-
-Here, a big file is copied to a temporary path if there is available space:
-```c++
-const auto bigFilePath {"bigFileToCopy"};
-if (std::filesystem::exists(bigFilePath)) {   
-  const auto bigFileSize {std::filesystem::file_size(bigFilePath)};
-  std::filesystem::path tmpPath {"/tmp"};
-  if (std::filesystem::space(tmpPath).available > bigFileSize) {
-    std::filesystem::create_directory(tmpPath.append("example"));
-    std::filesystem::copy_file(bigFilePath, tmpPath.append("newFile"));
-  }
-}
 ```
 
 ## C++14 Language Features
