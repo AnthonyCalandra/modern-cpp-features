@@ -287,7 +287,7 @@ std::string_view cppstr{ "foo" };
 std::wstring_view wcstr_v{ L"baz" };
 // Character arrays.
 char array[3] = {'b', 'a', 'r'};
-std::string_view array_v(array, sizeof array);
+std::string_view array_v(array, std::size(array));
 ```
 ```c++
 std::string str{ "   trim me" };
