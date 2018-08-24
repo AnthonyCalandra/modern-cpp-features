@@ -512,7 +512,7 @@ int& z = g(y); // reference to `y`
 ```
 
 ### decltype(auto)
-The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references or "const-ness", while `auto` will not.
+The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references and cv-qualifiers, while `auto` will not.
 ```c++
 const int x = 0;
 auto x1 = x; // int
@@ -543,6 +543,8 @@ static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
 static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
+
+See also: [`decltype`](#decltype).
 
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
@@ -743,7 +745,7 @@ auto f3 = [x] () mutable { x = 2; }; // OK: the lambda can perform any operation
 ```
 
 ### decltype
-`decltype` is an operator which returns the _declared type_ of an expression passed to it. Examples of `decltype`:
+`decltype` is an operator which returns the _declared type_ of an expression passed to it. cv-qualifiers and references are maintained if they are part of the expression. Examples of `decltype`:
 ```c++
 int a = 1; // `a` is declared as type `int`
 decltype(a) b = a; // `decltype(a)` is `int`
@@ -761,6 +763,8 @@ auto add(X x, Y y) -> decltype(x + y) {
 }
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
+
+See also: [`decltype(auto)`](#decltypeauto).
 
 ### Template aliases
 Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.

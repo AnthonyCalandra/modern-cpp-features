@@ -178,7 +178,7 @@ auto f3 = [x] () mutable { x = 2; }; // OK: the lambda can perform any operation
 ```
 
 ### decltype
-`decltype` is an operator which returns the _declared type_ of an expression passed to it. Examples of `decltype`:
+`decltype` is an operator which returns the _declared type_ of an expression passed to it. cv-qualifiers and references are maintained if they are part of the expression. Examples of `decltype`:
 ```c++
 int a = 1; // `a` is declared as type `int`
 decltype(a) b = a; // `decltype(a)` is `int`
@@ -196,6 +196,8 @@ auto add(X x, Y y) -> decltype(x + y) {
 }
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
+
+See also: `decltype(auto)` (C++14).
 
 ### Template aliases
 Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.

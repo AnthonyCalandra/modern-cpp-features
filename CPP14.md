@@ -89,7 +89,7 @@ int& z = g(y); // reference to `y`
 ```
 
 ### decltype(auto)
-The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references or "const-ness", while `auto` will not.
+The `decltype(auto)` type-specifier also deduces a type like `auto` does. However, it deduces return types while keeping their references and cv-qualifiers, while `auto` will not.
 ```c++
 const int x = 0;
 auto x1 = x; // int
@@ -120,6 +120,8 @@ static_assert(std::is_same<const int&, decltype(f(x))>::value == 0);
 static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
+
+See also: `decltype` (C++11).
 
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
