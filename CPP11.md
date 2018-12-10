@@ -740,7 +740,7 @@ C++11 introduces a memory model for C++, which means library support for threadi
 See the sections on: [std::thread](#stdthread)
 
 ### std::async
-`std::async` runs function asynchronously or perform lazy evaluation, then returns a `std::future` which holds the result of that function call.
+`std::async` runs the given function either asynchronously or lazily-evaluated, then returns a `std::future` which holds the result of that function call.
 
 The first parameter is the policy which can be:
 1. `std::launch::async | std::launch::deferred` It is up to the implementation whether to perform asynchronous execution or lazy evaluation.
@@ -749,15 +749,12 @@ The first parameter is the policy which can be:
 
 ```
 int foo() {
-    /*do something here, then return the result*/
-    
+    /* Do something here, then return the result. */
     return 1000;
 }
 
-
 auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
-
 ```
 
 ## Acknowledgements
