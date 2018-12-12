@@ -7,6 +7,7 @@ C++11 includes the following new language features:
 - [move semantics](#move-semantics)
 - [variadic templates](#variadic-templates)
 - [rvalue references](#rvalue-references)
+- [forwarding references](#forwarding-references)
 - [initializer lists](#initializer-lists)
 - [static assertions](#static-assertions)
 - [auto](#auto)
@@ -56,23 +57,62 @@ To move an object means to transfer ownership of some resource it manages to ano
 
 Moves also make it possible to transfer objects such as `std::unique_ptr`s, [smart pointers](#smart-pointers) that are designed to hold a pointer to a unique object, from one scope to another.
 
-See the sections on: [rvalue references](#rvalue-references), [defining move special member functions](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward).
+See the sections on: [rvalue references](#rvalue-references), [defining move special member functions](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
 
 ### Rvalue references
-C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A` is created with the syntax `A&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments while maintaining information about them as lvalues/rvalues in a generic way.
+C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A`, which is a non-template type parameter (such as `int`, or a user-defined type), is created with the syntax `A&&`. Rvalue references only bind to rvalues.
 
-`auto` type deduction with lvalues and rvalues:
+Type deduction with lvalues and rvalues:
 ```c++
 int x = 0; // `x` is an lvalue of type `int`
 int& xl = x; // `xl` is an lvalue of type `int&`
 int&& xr = x; // compiler error -- `x` is an lvalue
-int&& xr2 = 0; // `xr2` is an lvalue of type `int&&`
-auto& al = x; // `al` is an lvalue of type `int&`
-auto&& al2 = x; // `al2` is an lvalue of type `int&`
-auto&& ar = 0; // `ar` is an lvalue of type `int&&`
+int&& xr2 = 0; // `xr2` is an lvalue of type `int&&` -- binds to the rvalue temporary, `0`
 ```
 
-See also: [`std::move`](#stdmove), [`std::forward`](#stdforward).
+See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
+
+### Forwarding references
+Also known (unofficially) as _universal references_. A forwarding reference is created with the syntax `T&&` where `T` is a template type parameter, or using `auto&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments that are either lvalues or rvalues.
+
+Forwarding references allow a reference to bind to either an lvalue or rvalue depending on the type. Forwarding references follow the rules of _reference collapsing_:
+* `T& &` becomes `T&`
+* `T& &&` becomes `T&`
+* `T&& &` becomes `T&`
+* `T&& &&` becomes `T&&`
+
+`auto` type deduction with lvalues and rvalues:
+```c++
+int x = 0; // `x` is an lvalue of type `int`
+auto&& al = x; // `al` is an lvalue of type `int&` -- binds to the lvalue, `x`
+auto&& ar = 0; // `ar` is an lvalue of type `int&&` -- binds to the rvalue temporary, `0`
+```
+
+Template type parameter deduction with lvalues and rvalues:
+```c++
+// Since C++14 or later:
+void f(auto&& t) {
+  // ...
+}
+
+// Since C++11 or later:
+template <typename T>
+void f(T&& t) {
+  // ...
+}
+
+int x = 0;
+f(0); // deduces as f(int&&)
+f(x); // deduces as f(int&)
+
+int& y = x;
+f(y); // deduces as f(int& &&) => f(int&)
+
+int&& z = 0;
+f(z); // deduces as f(int&& &&) => f(int&&)
+```
+
+See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`rvalue references`](#rvalue-references).
 
 ### Variadic templates
 The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
@@ -565,11 +605,7 @@ std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p3`
 ```
 
 ### std::forward
-Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Forwarding gets its power from _template argument deduction_:
-* `T& &` becomes `T&`
-* `T& &&` becomes `T&`
-* `T&& &` becomes `T&`
-* `T&& &&` becomes `T&&`
+Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Used in conjunction with [`forwarding references`](#forwarding-references).
 
 A definition of `std::forward`:
 ```c++
@@ -597,6 +633,8 @@ A a{};
 wrapper(a); // copied
 wrapper(std::move(a)); // moved
 ```
+
+See also: [`forwarding references`](#forwarding-references), [`rvalue references`](#rvalue-references).
 
 ### std::thread
 The `std::thread` library provides a standard way to control threads, such as spawning and killing them. In the example below, multiple threads are spawned to do different calculations and then the program waits for all of them to finish.
