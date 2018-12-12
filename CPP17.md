@@ -42,14 +42,14 @@ struct MyContainer {
   MyContainer(T val) : val(val) {}
   // ...
 };
-MyContainer c1{ 1 }; // OK MyContainer<int>
+MyContainer c1 {1}; // OK MyContainer<int>
 MyContainer c2; // OK MyContainer<float>
 ```
 
 ### Declaring non-type template parameters with auto
 Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
 ```c++
-template <auto ... seq>
+template <auto... seq>
 struct my_integer_sequence {
   // Implementation here ...
 };
@@ -85,22 +85,22 @@ sum(1.0, 2.0f, 3); // == 6.0
 ```
 
 ### New rules for auto deduction from braced-init-list
-Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x{ 3 };` deduces a `std::initializer_list<int>`, which now deduces to `int`.
+Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
-auto x1{ 1, 2, 3 }; // error: not a single element
-auto x2 = { 1, 2, 3 }; // decltype(x2) is std::initializer_list<int>
-auto x3{ 3 }; // decltype(x3) is int
-auto x4{ 3.0 }; // decltype(x4) is double
+auto x1 {1, 2, 3}; // error: not a single element
+auto x2 = {1, 2, 3}; // decltype(x2) is std::initializer_list<int>
+auto x3 {3}; // decltype(x3) is int
+auto x4 {3.0}; // decltype(x4) is double
 ```
 
 ### constexpr lambda
 Compile-time lambdas using `constexpr`.
 ```c++
-auto identity = [] (int n) constexpr { return n; };
+auto identity = [](int n) constexpr { return n; };
 static_assert(identity(123) == 123);
 ```
 ```c++
-constexpr auto add = [] (int x, int y) {
+constexpr auto add = [](int x, int y) {
   auto L = [=] { return x; };
   auto R = [=] { return y; };
   return [=] { return L() + R(); };
@@ -120,7 +120,7 @@ static_assert(addOne(1) == 2);
 Capturing `this` in a lambda's environment was previously reference-only. An example of where this is problematic is asynchronous code using callbacks that require an object to be available, potentially past its lifetime. `*this` (C++17) will now make a copy of the current object, while `this` (C++11) continues to capture by reference.
 ```c++
 struct MyObj {
-  int value{ 123 };
+  int value {123};
   auto getValueCopy() {
     return [*this] { return value; };
   }
@@ -231,8 +231,8 @@ char x = u8'x';
 Enums can now be initialized using braced syntax.
 ```c++
 enum byte : unsigned char {};
-byte b{0}; // OK
-byte c{-1}; // ERROR
+byte b {0}; // OK
+byte c {-1}; // ERROR
 byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
 ```
@@ -272,7 +272,7 @@ if (auto str = create(true)) {
 ### std::any
 A type-safe container for single values of any type.
 ```c++
-std::any x{ 5 };
+std::any x {5};
 x.has_value() // == true
 std::any_cast<int>(x) // == 5
 std::any_cast<int&>(x) = 10;
@@ -283,16 +283,16 @@ std::any_cast<int>(x) // == 10
 A non-owning reference to a string. Useful for providing an abstraction on top of strings (e.g. for parsing).
 ```c++
 // Regular strings.
-std::string_view cppstr{ "foo" };
+std::string_view cppstr {"foo"};
 // Wide strings.
-std::wstring_view wcstr_v{ L"baz" };
+std::wstring_view wcstr_v {L"baz"};
 // Character arrays.
 char array[3] = {'b', 'a', 'r'};
 std::string_view array_v(array, std::size(array));
 ```
 ```c++
-std::string str{ "   trim me" };
-std::string_view v{ str };
+std::string str {"   trim me"};
+std::string_view v {str};
 v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
 str; //  == "   trim me"
 v; // == "trim me"
@@ -312,20 +312,20 @@ public:
         return std::invoke(c, std::forward<Args>(args)...);
     }
 };
-auto add = [] (int x, int y) {
+auto add = [](int x, int y) {
   return x + y;
 };
-Proxy<decltype(add)> p{ add };
+Proxy<decltype(add)> p {add};
 p(1, 2); // == 3
 ```
 
 ### std::apply
 Invoke a `Callable` object with a tuple of arguments.
 ```c++
-auto add = [] (int x, int y) {
+auto add = [](int x, int y) {
   return x + y;
 };
-std::apply(add, std::make_tuple( 1, 2 )); // == 3
+std::apply(add, std::make_tuple(1, 2)); // == 3
 ```
 
 ### std::filesystem
@@ -360,8 +360,8 @@ Moving nodes and merging containers without the overhead of expensive copies, mo
 
 Moving elements from one map to another:
 ```c++
-std::map<int, string> src{ { 1, "one" }, { 2, "two" }, { 3, "buckle my shoe" } };
-std::map<int, string> dst{ { 3, "three" } };
+std::map<int, string> src {{1, "one"}, {2, "two"}, {3, "buckle my shoe"}};
+std::map<int, string> dst {{3, "three"}};
 dst.insert(src.extract(src.find(1))); // Cheap remove and insert of { 1, "one" } from `src` to `dst`.
 dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src` to `dst`.
 // dst == { { 1, "one" }, { 2, "two" }, { 3, "three" } };
@@ -369,8 +369,8 @@ dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src
 
 Inserting an entire set:
 ```c++
-std::set<int> src{1, 3, 5};
-std::set<int> dst{2, 4, 5};
+std::set<int> src {1, 3, 5};
+std::set<int> dst {2, 4, 5};
 dst.merge(src);
 // src == { 5 }
 // dst == { 1, 2, 3, 4, 5 }
@@ -388,7 +388,7 @@ s2.insert(elementFactory());
 
 Changing the key of a map element:
 ```c++
-std::map<int, string> m{ { 1, "one" }, { 2, "two" }, { 3, "three" } };
+std::map<int, string> m {{1, "one"}, {2, "two"}, {3, "three"}};
 auto e = m.extract(2);
 e.key() = 4;
 m.insert(std::move(e));

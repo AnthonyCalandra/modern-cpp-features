@@ -103,14 +103,14 @@ struct MyContainer {
   MyContainer(T val) : val(val) {}
   // ...
 };
-MyContainer c1{ 1 }; // OK MyContainer<int>
+MyContainer c1 {1}; // OK MyContainer<int>
 MyContainer c2; // OK MyContainer<float>
 ```
 
 ### Declaring non-type template parameters with auto
 Following the deduction rules of `auto`, while respecting the non-type template parameter list of allowable types[\*], template arguments can be deduced from the types of its arguments:
 ```c++
-template <auto ... seq>
+template <auto... seq>
 struct my_integer_sequence {
   // Implementation here ...
 };
@@ -146,22 +146,22 @@ sum(1.0, 2.0f, 3); // == 6.0
 ```
 
 ### New rules for auto deduction from braced-init-list
-Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x{ 3 };` deduces a `std::initializer_list<int>`, which now deduces to `int`.
+Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
-auto x1{ 1, 2, 3 }; // error: not a single element
-auto x2 = { 1, 2, 3 }; // decltype(x2) is std::initializer_list<int>
-auto x3{ 3 }; // decltype(x3) is int
-auto x4{ 3.0 }; // decltype(x4) is double
+auto x1 {1, 2, 3}; // error: not a single element
+auto x2 = {1, 2, 3}; // decltype(x2) is std::initializer_list<int>
+auto x3 {3}; // decltype(x3) is int
+auto x4 {3.0}; // decltype(x4) is double
 ```
 
 ### constexpr lambda
 Compile-time lambdas using `constexpr`.
 ```c++
-auto identity = [] (int n) constexpr { return n; };
+auto identity = [](int n) constexpr { return n; };
 static_assert(identity(123) == 123);
 ```
 ```c++
-constexpr auto add = [] (int x, int y) {
+constexpr auto add = [](int x, int y) {
   auto L = [=] { return x; };
   auto R = [=] { return y; };
   return [=] { return L() + R(); };
@@ -181,7 +181,7 @@ static_assert(addOne(1) == 2);
 Capturing `this` in a lambda's environment was previously reference-only. An example of where this is problematic is asynchronous code using callbacks that require an object to be available, potentially past its lifetime. `*this` (C++17) will now make a copy of the current object, while `this` (C++11) continues to capture by reference.
 ```c++
 struct MyObj {
-  int value{ 123 };
+  int value {123};
   auto getValueCopy() {
     return [*this] { return value; };
   }
@@ -292,8 +292,8 @@ char x = u8'x';
 Enums can now be initialized using braced syntax.
 ```c++
 enum byte : unsigned char {};
-byte b{0}; // OK
-byte c{-1}; // ERROR
+byte b {0}; // OK
+byte c {-1}; // ERROR
 byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
 ```
@@ -303,7 +303,7 @@ byte e = byte{256}; // ERROR
 ### std::variant
 The class template `std::variant` represents a type-safe `union`. An instance of `std::variant` at any given time holds a value of one of its alternative types (it's also possible for it to be valueless).
 ```c++
-std::variant<int, double> v{ 12 };
+std::variant<int, double> v {12};
 std::get<int>(v); // == 12
 std::get<0>(v); // == 12
 v = 12.0;
@@ -333,7 +333,7 @@ if (auto str = create(true)) {
 ### std::any
 A type-safe container for single values of any type.
 ```c++
-std::any x{ 5 };
+std::any x {5};
 x.has_value() // == true
 std::any_cast<int>(x) // == 5
 std::any_cast<int&>(x) = 10;
@@ -344,16 +344,16 @@ std::any_cast<int>(x) // == 10
 A non-owning reference to a string. Useful for providing an abstraction on top of strings (e.g. for parsing).
 ```c++
 // Regular strings.
-std::string_view cppstr{ "foo" };
+std::string_view cppstr {"foo"};
 // Wide strings.
-std::wstring_view wcstr_v{ L"baz" };
+std::wstring_view wcstr_v {L"baz"};
 // Character arrays.
 char array[3] = {'b', 'a', 'r'};
 std::string_view array_v(array, std::size(array));
 ```
 ```c++
-std::string str{ "   trim me" };
-std::string_view v{ str };
+std::string str {"   trim me"};
+std::string_view v {str};
 v.remove_prefix(std::min(v.find_first_not_of(" "), v.size()));
 str; //  == "   trim me"
 v; // == "trim me"
@@ -373,20 +373,20 @@ public:
         return std::invoke(c, std::forward<Args>(args)...);
     }
 };
-auto add = [] (int x, int y) {
+auto add = [](int x, int y) {
   return x + y;
 };
-Proxy<decltype(add)> p{ add };
+Proxy<decltype(add)> p {add};
 p(1, 2); // == 3
 ```
 
 ### std::apply
 Invoke a `Callable` object with a tuple of arguments.
 ```c++
-auto add = [] (int x, int y) {
+auto add = [](int x, int y) {
   return x + y;
 };
-std::apply(add, std::make_tuple( 1, 2 )); // == 3
+std::apply(add, std::make_tuple(1, 2)); // == 3
 ```
 
 ### std::filesystem
@@ -421,8 +421,8 @@ Moving nodes and merging containers without the overhead of expensive copies, mo
 
 Moving elements from one map to another:
 ```c++
-std::map<int, string> src{ { 1, "one" }, { 2, "two" }, { 3, "buckle my shoe" } };
-std::map<int, string> dst{ { 3, "three" } };
+std::map<int, string> src {{1, "one"}, {2, "two"}, {3, "buckle my shoe"}};
+std::map<int, string> dst {{3, "three"}};
 dst.insert(src.extract(src.find(1))); // Cheap remove and insert of { 1, "one" } from `src` to `dst`.
 dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src` to `dst`.
 // dst == { { 1, "one" }, { 2, "two" }, { 3, "three" } };
@@ -430,8 +430,8 @@ dst.insert(src.extract(2)); // Cheap remove and insert of { 2, "two" } from `src
 
 Inserting an entire set:
 ```c++
-std::set<int> src{1, 3, 5};
-std::set<int> dst{2, 4, 5};
+std::set<int> src {1, 3, 5};
+std::set<int> dst {2, 4, 5};
 dst.merge(src);
 // src == { 5 }
 // dst == { 1, 2, 3, 4, 5 }
@@ -449,7 +449,7 @@ s2.insert(elementFactory());
 
 Changing the key of a map element:
 ```c++
-std::map<int, string> m{ { 1, "one" }, { 2, "two" }, { 3, "three" } };
+std::map<int, string> m {{1, "one"}, {2, "two"}, {3, "three"}};
 auto e = m.extract(2);
 e.key() = 4;
 m.insert(std::move(e));
@@ -631,7 +631,7 @@ decltype(auto) a2t(const std::array<T, N>& a) {
 * Prevents code repetition when specifying the underlying type the pointer shall hold.
 * Most importantly, it provides exception-safety. Suppose we were calling a function `foo` like so:
 ```c++
-foo(std::unique_ptr<T>{ new T{} }, function_that_throws(), std::unique_ptr<T>{ new T{} });
+foo(std::unique_ptr<T>{new T{}}, function_that_throws(), std::unique_ptr<T>{new T{}});
 ```
 The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_unique`, we are given exception-safety:
 ```c++
@@ -723,9 +723,9 @@ int sum(const std::initializer_list<int>& list) {
   return total;
 }
 
-auto list = { 1, 2, 3 };
+auto list = {1, 2, 3};
 sum(list); // == 6
-sum({ 1, 2, 3 }); // == 6
+sum({1, 2, 3}); // == 6
 sum({}); // == 0
 ```
 
@@ -784,7 +784,7 @@ A `lambda` is an unnamed function object capable of capturing variables in scope
 ```c++
 int x = 1;
 
-auto getX = [=]{ return x; };
+auto getX = [=] { return x; };
 getX(); // == 1
 
 auto addX = [=](int y) { return x + y; };
@@ -801,7 +801,7 @@ auto f1 = [&x] { x = 2; }; // OK: x is a reference and modifies the original
 
 auto f2 = [x] { x = 2; }; // ERROR: the lambda can only perform const-operations on the captured value
 // vs.
-auto f3 = [x] () mutable { x = 2; }; // OK: the lambda can perform any operations on the captured value
+auto f3 = [x]() mutable { x = 2; }; // OK: the lambda can perform any operations on the captured value
 ```
 
 ### decltype
@@ -831,10 +831,10 @@ Semantically similar to using a `typedef` however, template aliases with `using`
 ```c++
 template <typename T>
 using Vec = std::vector<T>;
-Vec<int> v{}; // std::vector<int>
+Vec<int> v; // std::vector<int>
 
 using String = std::string;
-String s{"foo"};
+String s {"foo"};
 ```
 
 ### nullptr
@@ -913,7 +913,7 @@ struct Foo {
   Foo() : Foo(0) {}
 };
 
-Foo foo{};
+Foo foo;
 foo.foo; // == 0
 ```
 
@@ -987,16 +987,16 @@ A more elegant, efficient way to provide a default implementation of a function,
 struct A {
   A() = default;
   A(int x) : x(x) {}
-  int x{ 1 };
+  int x {1};
 };
-A a{}; // a.x == 1
-A a2{ 123 }; // a.x == 123
+A a; // a.x == 1
+A a2 {123}; // a.x == 123
 ```
 
 With inheritance:
 ```c++
 struct B {
-  B() : x(1);
+  B() : x(1) {}
   int x;
 };
 
@@ -1005,7 +1005,7 @@ struct C : B {
   C() = default;
 };
 
-C c{}; // c.x == 1
+C c; // c.x == 1
 ```
 
 ### Deleted functions
@@ -1020,7 +1020,7 @@ public:
   A& operator=(const A&) = delete;
 };
 
-A x{ 123 };
+A x {123};
 A y = x; // error -- call to deleted copy constructor
 y = x; // error -- operator= deleted
 ```
@@ -1028,14 +1028,14 @@ y = x; // error -- operator= deleted
 ### Range-based for loops
 Syntactic sugar for iterating over a container's elements.
 ```c++
-std::array<int, 5> a{ 1, 2, 3, 4, 5 };
+std::array<int, 5> a {1, 2, 3, 4, 5};
 for (int& x : a) x *= 2;
 // a == { 2, 4, 6, 8, 10 }
 ```
 
 Note the difference when using `int` as opposed to `int&`:
 ```c++
-std::array<int, 5> a{ 1, 2, 3, 4, 5 };
+std::array<int, 5> a {1, 2, 3, 4, 5};
 for (int x : a) x *= 2;
 // a == { 1, 2, 3, 4, 5 }
 ```
@@ -1074,10 +1074,10 @@ struct A {
   A(int, int, int) {}
 };
 
-A a{0, 0}; // calls A::A(int, int)
+A a {0, 0}; // calls A::A(int, int)
 A b(0, 0); // calls A::A(int, int)
 A c = {0, 0}; // calls A::A(int, int)
-A d{0, 0, 0}; // calls A::A(int, int, int)
+A d {0, 0, 0}; // calls A::A(int, int, int)
 ```
 
 Note that the braced list syntax does not allow narrowing:
@@ -1087,7 +1087,7 @@ struct A {
 };
 
 A a(1.1); // OK
-A b{1.1}; // Error narrowing conversion from double to int
+A b {1.1}; // Error narrowing conversion from double to int
 ```
 
 Note that if a constructor accepts a `std::initializer_list`, it will be called instead:
@@ -1099,10 +1099,10 @@ struct A {
   A(std::initializer_list<int>) {}
 };
 
-A a{0, 0}; // calls A::A(std::initializer_list<int>)
+A a {0, 0}; // calls A::A(std::initializer_list<int>)
 A b(0, 0); // calls A::A(int, int)
 A c = {0, 0}; // calls A::A(std::initializer_list<int>)
-A d{0, 0, 0}; // calls A::A(std::initializer_list<int>)
+A d {0, 0, 0}; // calls A::A(std::initializer_list<int>)
 ```
 
 ### Explicit conversion functions
@@ -1116,11 +1116,11 @@ struct B {
   explicit operator bool() const { return true; }
 };
 
-A a{};
+A a;
 if (a); // OK calls A::operator bool()
 bool ba = a; // OK copy-initialization selects A::operator bool()
 
-B b{};
+B b;
 if (b); // OK calls B::operator bool()
 bool bb = b; // error copy-initialization does not consider B::operator bool()
 ```
@@ -1156,10 +1156,9 @@ class Human {
 // Default initialization on C++11
 class Human {
   private:
-    unsigned age{0};
+    unsigned age {0};
 };
 ```
-
 
 ### Right angle Brackets
 C++11 is now able to infer when a series of right angle brackets is used as an operator or as a closing statement of typedef, without having to add whitespace.
@@ -1184,7 +1183,7 @@ typename remove_reference<T>::type&& move(T&& arg) {
 
 Transferring `std::unique_ptr`s:
 ```c++
-std::unique_ptr<int> p1{ new int };
+std::unique_ptr<int> p1 {new int{0}};
 std::unique_ptr<int> p2 = p1; // error -- cannot copy unique pointers
 std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p3`
                                          // now unsafe to dereference object held by `p1`
@@ -1211,11 +1210,11 @@ struct A {
 
 template <typename T>
 A wrapper(T&& arg) {
-  return A{ std::forward<T>(arg) };
+  return A{std::forward<T>(arg)};
 }
 
 wrapper(A{}); // moved
-A a{};
+A a;
 wrapper(a); // copied
 wrapper(std::move(a)); // moved
 ```
@@ -1230,11 +1229,12 @@ void foo(bool clause) { /* do something... */ }
 
 std::vector<std::thread> threadsVector;
 threadsVector.emplace_back([]() {
-    // Lambda function that will be invoked    
+  // Lambda function that will be invoked    
 });
 threadsVector.emplace_back(foo, true);  // thread will run foo(true)
-for (auto& thread : threadsVector)
-    thread.join(); // Wait for threads to finish
+for (auto& thread : threadsVector) {
+  thread.join(); // Wait for threads to finish
+}
 ```
 
 ### std::to_string
@@ -1257,17 +1257,21 @@ C++11 introduces new smart(er) pointers: `std::unique_ptr`, `std::shared_ptr`, `
 
 `std::unique_ptr` is a non-copyable, movable smart pointer that properly manages arrays and STL containers. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](#stdmake_unique) and [std::make_shared](#stdmake_shared).**
 ```c++
-std::unique_ptr<Foo> p1 { new Foo{} };  // `p1` owns `Foo`
-if (p1) p1->bar();
+std::unique_ptr<Foo> p1 {new Foo{}};  // `p1` owns `Foo`
+if (p1) {
+  p1->bar();
+}
 
 {
-  std::unique_ptr<Foo> p2 { std::move(p1) };  // Now `p2` owns `Foo`
+  std::unique_ptr<Foo> p2 {std::move(p1)};  // Now `p2` owns `Foo`
   f(*p2);
 
   p1 = std::move(p2);  // Ownership returns to `p1` -- `p2` gets destroyed
 }
 
-if (p1) p1->bar();
+if (p1) {
+  p1->bar();
+}
 // `Foo` instance is destroyed when `p1` goes out of scope
 ```
 
@@ -1285,7 +1289,7 @@ void baz(std::shared_ptr<T> t) {
   // Do something with `t`...
 }
 
-std::shared_ptr<T> p1 { new T{} };
+std::shared_ptr<T> p1 {new T{}};
 // Perhaps these take place in another threads?
 foo(p1);
 bar(p1);
@@ -1300,8 +1304,7 @@ start = std::chrono::steady_clock::now();
 // Some computations...
 end = std::chrono::steady_clock::now();
 
-std::chrono::duration<double> elapsed_seconds = end-start;
-
+std::chrono::duration<double> elapsed_seconds = end - start;
 elapsed_seconds.count(); // t number of seconds, represented as a `double`
 ```
 
@@ -1348,7 +1351,7 @@ These containers maintain average constant-time complexity for search, insert, a
 * Prevents code repetition when specifying the underlying type the pointer shall hold.
 * It provides exception-safety. Suppose we were calling a function `foo` like so:
 ```c++
-foo(std::shared_ptr<T>{ new T{} }, function_that_throws(), std::shared_ptr<T>{ new T{} });
+foo(std::shared_ptr<T>{new T{}}, function_that_throws(), std::shared_ptr<T>{new T{}});
 ```
 The compiler is free to call `new T{}`, then `function_that_throws()`, and so on... Since we have allocated data on the heap in the first construction of a `T`, we have introduced a leak here. With `std::make_shared`, we are given exception-safety:
 ```c++
@@ -1371,10 +1374,10 @@ The first parameter is the policy which can be:
 1. `std::launch::async` Run the callable object on a new thread.
 1. `std::launch::deferred` Perform lazy evaluation on the current thread.
 
-```
+```c++
 int foo() {
-    /* Do something here, then return the result. */
-    return 1000;
+  /* Do something here, then return the result. */
+  return 1000;
 }
 
 auto handle = std::async(std::launch::async, foo);  // create an async task
