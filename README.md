@@ -19,6 +19,7 @@ C++17 includes the following new language features:
 - [constexpr if](#constexpr-if)
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
+- [\[\[fallthrough\]\], \[\[nodiscard\]\] and \[\[maybe_unused\]\] attributes](#standard-attributes)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -296,6 +297,27 @@ byte b {0}; // OK
 byte c {-1}; // ERROR
 byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
+```
+
+### Standard Attributes
+C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`:
+```c++
+// Will warn if return of foo() is ignored
+[[nodiscard]] int foo();
+
+int main () {
+  int a {1};
+  switch(a)
+  {
+      // Indicates that falling through on case 1 is intentional
+      case 1: [[fallthrough]]
+      case 2:
+      // Indicates that b might be unused, such as on production builds
+        [[maybe_unused]] int b = foo();
+        assert(b > 0);
+        break;
+  }
+}
 ```
 
 ## C++17 Library Features
