@@ -271,7 +271,7 @@ Color c = Color::Red;
 ```
 
 ### Attributes
-Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, etc.
+Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, etc.  There are 2 standard attributes as of C++11 `noreturn` and `carries_dependency`:
 ```c++
 // `noreturn` attribute indicates `f` doesn't return.
 [[ noreturn ]] void f() {
