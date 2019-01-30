@@ -719,7 +719,7 @@ start = std::chrono::steady_clock::now();
 end = std::chrono::steady_clock::now();
 
 std::chrono::duration<double> elapsed_seconds = end - start;
-elapsed_seconds.count(); // t number of seconds, represented as a `double`
+double t = elapsed_seconds.count(); // t number of seconds, represented as a `double`
 ```
 
 ### Tuples
