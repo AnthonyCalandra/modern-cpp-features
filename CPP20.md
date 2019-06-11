@@ -187,3 +187,73 @@ using namespace std::ranges;
 std::vector<int> vi = read_data() | action::sort | action::unique;
 vi |= action::sort | action::unique; // Mutate the container in-place
 ```
+
+### concepts-library
+The concepts library provides definitions of fundamental library concepts that can be used to perform
+compile-time validation of template arguments and perform function dispatch based on properties of types.
+These concepts provide a foundation for equational reasoning in programs.
+
+Most concepts in the standard library impose both syntactic and semantic requirements.
+In general, only the syntactic requirements can be checked by the compiler.
+If a semantic requirement is not met at the point of use, the program is ill-formed, no diagnostic required.
+
+Core language concepts
+```c++
+template <class T, class U>
+concept Common =
+  std::Same<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
+  requires {
+    static_cast<std::common_type_t<T, U>>(std::declval<T>());
+    static_cast<std::common_type_t<T, U>>(std::declval<U>());
+  } &&
+  std::CommonReference<
+    std::add_lvalue_reference_t<const T>,
+    std::add_lvalue_reference_t<const U>> &&
+  std::CommonReference<
+    std::add_lvalue_reference_t<std::common_type_t<T, U>>,
+    std::common_reference_t<
+      std::add_lvalue_reference_t<const T>,
+      std::add_lvalue_reference_t<const U>>>;
+```
+
+Comparison concepts
+```c++
+template <class B>
+concept Boolean =
+  std::Movable<std::remove_cvref_t<B>> &&
+  requires(const std::remove_reference_t<B>& b1,
+           const std::remove_reference_t<B>& b2, const bool a) {
+    requires std::ConvertibleTo<const std::remove_reference_t<B>&, bool>;
+    !b1;      requires std::ConvertibleTo<decltype(!b1), bool>;
+    b1 && a;  requires std::Same<decltype(b1 && a), bool>;
+    b1 || a;  requires std::Same<decltype(b1 || a), bool>;
+    b1 && b2; requires std::Same<decltype(b1 && b2), bool>;
+    a && b2;  requires std::Same<decltype(a && b2), bool>;
+    b1 || b2; requires std::Same<decltype(b1 || b2), bool>;
+    a || b2;  requires std::Same<decltype(a || b2), bool>;
+    b1 == b2; requires std::ConvertibleTo<decltype(b1 == b2), bool>;
+    b1 == a;  requires std::ConvertibleTo<decltype(b1 == a), bool>;
+    a == b2;  requires std::ConvertibleTo<decltype(a == b2), bool>;
+    b1 != b2; requires std::ConvertibleTo<decltype(b1 != b2), bool>;
+    b1 != a;  requires std::ConvertibleTo<decltype(b1 != a), bool>;
+    a != b2;  requires std::ConvertibleTo<decltype(a != b2), bool>;
+  };
+```
+
+Object concepts
+```c++
+template < class T >
+concept Movable =
+  std::is_object_v<T> &&
+  std::MoveConstructible<T> &&
+  std::Assignable<T&, T> &&
+  std::Swappable<T>;
+```
+
+Callable concepts
+```c++
+template <class R, class T, class U>
+concept Relation =
+  std::Predicate<R, T, T> && std::Predicate<R, U, U> &&
+  std::Predicate<R, T, U> && std::Predicate<R, U, T>;
+```
