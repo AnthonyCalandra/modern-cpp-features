@@ -226,14 +226,62 @@ with templated lambda, template parameters is easily accessible in the body of t
 auto f = []<typename T>(std::vector<T>& v) {
 // ...
 };
-```
-```c++
+
 auto l = []<typename T>(){
      std::cout << typeid(T).name() << std::endl;
 };
 
 l.template operator()<int>();
 ```
+
+Non-type template parameter, reverse a tuple
+```c++
+template <typename... Args, typename F, typename... args>
+void tuple_transform(const std::tuple<Args...>& t, F&& f, args&&... rest)
+{
+    [&]<size_t... N>(const std::index_sequence<N...>&)
+    {
+        (std::forward<F>(f)(std::get<N>(t), std::integral_constant<size_t, N>(), std::forward<args>(rest)...), ...);
+    }
+    (std::make_index_sequence<sizeof...(Args)>());
+}
+
+template <typename T, auto N = std::tuple_size_v<T>>
+struct reverse
+{
+    template <typename>
+    struct impl;
+
+    template <auto... i>
+    struct impl<std::index_sequence<i...>>
+    {
+        using type = std::tuple<std::tuple_element_t<N - i - 1, T>...>;
+    };
+
+    using type = typename impl<std::make_index_sequence<N>>::type;
+};
+
+template <typename T>
+using reverse_t = typename reverse<T>::type;
+
+template <typename... Args>
+auto tuple_reverse(const std::tuple<Args...>& t)
+{
+    constexpr auto size = sizeof...(Args);
+    auto reversed = reverse_t<std::tuple<Args...>>();
+
+    tuple_transform(t, [&](auto&& e, auto&& index, auto& tuple)
+    {
+        std::get<size - std::remove_cvref_t<decltype(index)>::value - 1>(tuple) = e;
+    }, reversed);
+
+    return reversed;
+};
+
+auto t = tuple_reverse(std::make_tuple(1, 2.0, "string"))
+// t == std::make_tuple("string", 2.0, 1)
+```
+
 ## C++20 Library Features
 
 ### std::ranges
