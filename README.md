@@ -310,7 +310,8 @@ concept Boolean = std::Movable<std::remove_cvref_t<B>> &&
 Object concepts
 ```c++
 template <typename T>
-concept Movable = std::is_object_v<T> && std::MoveConstructible<T> && std::Assignable<T&, T> && std::Swappable<T>;
+concept Movable = std::is_object_v<T> && std::MoveConstructible<T> &&
+                  std::Assignable<T&, T> && std::Swappable<T>;
 ```
 
 Callable concepts
