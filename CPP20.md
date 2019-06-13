@@ -8,6 +8,9 @@ Also, there are now dedicated readme pages for each major C++ version.
 C++20 includes the following new language features:
 - [concepts](#concepts)
 - [lambda templates](#lambda-templates)
+- [Nested Inline Namespaces](#Nested-Inline-Namespaces)
+- [pack expansion in lambda init-capture](#pack-expansion-in-lambda-init-capture)
+- [Range-based for statements with initializer](#Range-based-for-statements-with-initializer)
 
 C++20 includes the following new library features:
 - [std::ranges](#stdranges)
@@ -195,11 +198,72 @@ auto t = tuple_reverse(std::make_tuple(1, 2.0, "string"))
 // t == std::make_tuple("string", 2.0, 1)
 ```
 
+### Nested Inline Namespaces
+```c++
+namespace std::experimental::inline parallelism_v2::execution {
+  // 5.7, Unsequenced execution policy
+  class unsequenced_policy;
+
+  // 5.8, Vector execution policy
+  class vector_policy;
+
+  // 5.10, execution policy objects
+  inline constexpr sequenced_policy seq{ unspecified };
+  inline constexpr parallel_policy par{ unspecified };
+}
+```
+instead of
+```c++
+namespace std::experimental {
+inline namespace parallelism_v2 {
+namespace execution {
+  // 5.7, Unsequenced execution policy
+  class unsequenced_policy;
+
+  // 5.8, Vector execution policy
+  class vector_policy;
+
+  // 5.10, execution policy objects
+  inline constexpr sequenced_policy seq{ unspecified };
+  inline constexpr parallel_policy par{ unspecified };
+}
+}
+}
+```
+
+### pack expansion in lambda init-capture
+Generate a pack of closure data members by placing an ellipsis (...) before a pack expansion as part of a lambda capture.
+```c++
+template <class... Args>
+auto delay_invoke_foo(Args... args) {
+    return [...args=std::move(args)]() -> decltype(auto) {
+
+        return foo(args...);
+
+    };
+}
+```
+
+### Range-based for statements with initializer
+A new versions of the range-based for statement for C++: `for (init; decl : expr)`.  
+This statement simplifies common code patterns, help users keep scopes tight and offers an elegant solution to a common lifetime problem.
+```c++
+for (T thing = f(); auto& x : thing.items()) {
+  mutate(&x);
+  log(x);
+}
+
+for (std::size_t i = 0; const auto& x : foo()) {
+  bar(x, i);
+  ++i;
+}
+```
+
 ## C++20 Library Features
 
 ### std::ranges
-Ranges are an abstration layer on top of iterators. 
-Ranges are an extension of the Standard Template Library that makes its iterators and algorithms more powerful by making them composable. 
+Ranges are an extension of the Standard Template Library and an abstration layer on top of iterators
+that makes its iterators and algorithms more powerful by making them composable.
 
 Filter a container using a predicate and transform it.
 ```c++
