@@ -22,11 +22,11 @@ C++20 includes the following new library features:
 ## C++20 Language Features
 
 ### Concepts
-*Class templates, function templates, and non-template functions (typically members of class templates) may be associated with a constraint,
-which specifies requirements on template arguments, which can be used to select the most appropriate function overloads and template specializations.*
+Class templates, function templates, and non-template functions (typically members of class templates) may be associated with a *constraint*,
+which specifies requirements on template arguments, which can be used to select the most appropriate function overloads and template specializations.
 
-Named sets of such requirements are called concepts. Each concept is a predicate, evaluated at compile time,
-and becomes a part of the interface of a template where it is used as a constraint.
+Named sets of such requirements are called *concepts*. Each concept is a predicate, evaluated at compile time,
+and becomes a part of the interface of a template where it is used as a *constraint*.
 
 ```c++
 #include <string>
@@ -235,8 +235,8 @@ vi |= action::sort | action::unique; // Mutate the container in-place
 ```
 
 ### std::bind_front
-Generates a forwarding call wrapper for a callable object f with parameters `Args&&... args`.
-Calling this wrapper is equivalent to invoking f with its first sizeof...(Args) parameters bound to args.
+Generates a forwarding call wrapper for a callable object `f` with parameters `Args&&... args`.
+Calling this wrapper is equivalent to invoking `f` with its first `sizeof...(Args)` parameters bound to `args`.
 ```c++
 std::bind_front(f, bound_args...)(call_args...);
 ```
@@ -246,8 +246,7 @@ std::invoke(f, bound_args..., call_args....);
 ```
 
 ### std::remove_cvref
-If the type T is a reference type, provides the member typedef type which is the type referred to
-by T with its topmost cv-qualifiers removed. Otherwise type is T with its topmost cv-qualifiers removed.
+If the type T is a reference type, strip cv-qualifiers and remove references, returning T.
 ```c++
 std::is_same_v<std::remove_cvref_t<int>, int>; // true
 std::is_same_v<std::remove_cvref_t<int&>, int>; // true
@@ -257,8 +256,8 @@ std::is_same_v<std::remove_cvref_t<const int(&)[2]>, int[2]>; // true
 ```
 
 ### std::type_identity
-Provides the member typedef type that names T (i.e., the identity transformation).  
-type_identity can be used to block template argument deduction:
+Returns the given type T passed in to `std::type_identity` (i.e. the identity function).
+`type_identity` can be used to block template argument deduction:
 ```c++
 template <typename T>
 void f(T, T);
