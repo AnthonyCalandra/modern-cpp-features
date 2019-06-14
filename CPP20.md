@@ -15,12 +15,15 @@ C++20 includes the following new language features:
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
 - [ranges library](#ranges-library)
+- [std::bind_front](#stdbind_front)
+- [std::remove_cvref](#stdremove_cvref)
+- [std::type_identity](#stdtype_identity)
 
 ## C++20 Language Features
 
 ### Concepts
-Class templates, function templates, and non-template functions (typically members of class templates) may be associated with a constraint,
-which is a sequence of logical operations and operands that specifies requirements on template arguments.
+*Class templates, function templates, and non-template functions (typically members of class templates) may be associated with a constraint,
+which specifies requirements on template arguments, which can be used to select the most appropriate function overloads and template specializations.*
 
 Named sets of such requirements are called concepts. Each concept is a predicate, evaluated at compile time,
 and becomes a part of the interface of a template where it is used as a constraint.
@@ -38,7 +41,7 @@ concept Hashable = requires(T a) {
     { std::hash<T>{}(a) } -> std::size_t;
 };
 
-struct meow {};
+struct foo {};
 
 template <Hashable T>
 void f(T); // constrained C++20 function template
@@ -53,12 +56,12 @@ void f(T); // constrained C++20 function template
 
 int main() {
   f("abc"s); // OK, std::string satisfies Hashable
-  f(meow{}); // Error: meow does not satisfy Hashable
+  f(foo{}); // Error: foo does not satisfy Hashable
 }
 ```
 
 The intent of concepts is to model semantic categories (Number, Range, RegularFunction) rather than syntactic restrictions (HasPlus, Array).
-The definition of a concept must appear at namespace scope and has the form:
+The definition of a concept must appear at namespace scope and has the form:  
 `
 template <template-parameter-list>
 concept concept-name = constraint-expression;
@@ -93,16 +96,6 @@ concept Common = requires (T t, U u) {
     { CommonType<T, U>{std::forward<U>(u)} };
 };
 
-template <typename T>
-concept Semiregular = DefaultConstructible<T> &&  CopyConstructible<T> && 
-    Destructible<T> && CopyAssignable<T> && requires(T a, size_t n) {
-    requires Same<T*, decltype(&a)>;  // nested: "Same<...> evaluates to true"
-    { a.~T() } noexcept;  // compound: "a.~T()" is a valid expression that doesn't throw
-    requires Same<T*, decltype(new T)>; // nested: "Same<...> evaluates to true"
-    requires Same<T*, decltype(new T[n])>; // nested
-    { delete new T };  // compound
-    { delete new T[n] }; // compound
-};
 ```
 
 ```c++
@@ -145,8 +138,8 @@ namespace A::inline B::C {
 }
 // vs 
 namespace A {
-    inline namespace B {
-        namespace C {
+inline namespace B {
+namespace C {
     class X{};
 }
 }
@@ -183,57 +176,25 @@ for (std::size_t i = 0; const auto& x : foo()) {
 ### Concepts library
 The concepts library provides definitions of fundamental library concepts that can be used to perform
 compile-time validation of template arguments and perform function dispatch based on properties of types.
-These concepts provide a foundation for equational reasoning in programs.
 
-Core language concepts
-```c++
-template <typename T, typename U>
-concept Common = std::Same<std::common_type_t<T, U>, std::common_type_t<U, T>> &&
-  requires {
-    static_cast<std::common_type_t<T, U>>(std::declval<T>());
-    static_cast<std::common_type_t<T, U>>(std::declval<U>());
-  } &&
-  std::CommonReference<std::add_lvalue_reference_t<const T>, std::add_lvalue_reference_t<const U>> &&
-  std::CommonReference<std::add_lvalue_reference_t<std::common_type_t<T, U>>,
-  std::common_reference_t<std::add_lvalue_reference_t<const T>, std::add_lvalue_reference_t<const U>>>;
-```
+**Core language concepts**
+- Same - specifies two types are the same
+- DerivedFrom - specifies that a type is derived from another type
+- ConvertibleTo - specifies that a type is implicitly convertible to another type
+- Common - specifies that two types share a common type
+- Integral - specifies that a type is an integral type
 
-Comparison concepts
-```c++
-template <typename B>
-concept Boolean = std::Movable<std::remove_cvref_t<B>> &&
-    requires(const std::remove_reference_t<B>& b1, const std::remove_reference_t<B>& b2, const bool a)
-    {
-        requires std::ConvertibleTo<const std::remove_reference_t<B>&, bool>;
-        !b1;      requires std::ConvertibleTo<decltype(!b1), bool>;
-        b1 && a;  requires std::Same<decltype(b1 && a), bool>;
-        b1 || a;  requires std::Same<decltype(b1 || a), bool>;
-        b1 && b2; requires std::Same<decltype(b1 && b2), bool>;
-        a && b2;  requires std::Same<decltype(a && b2), bool>;
-        b1 || b2; requires std::Same<decltype(b1 || b2), bool>;
-        a || b2;  requires std::Same<decltype(a || b2), bool>;
-        b1 == b2; requires std::ConvertibleTo<decltype(b1 == b2), bool>;
-        b1 == a;  requires std::ConvertibleTo<decltype(b1 == a), bool>;
-        a == b2;  requires std::ConvertibleTo<decltype(a == b2), bool>;
-        b1 != b2; requires std::ConvertibleTo<decltype(b1 != b2), bool>;
-        b1 != a;  requires std::ConvertibleTo<decltype(b1 != a), bool>;
-        a != b2;  requires std::ConvertibleTo<decltype(a != b2), bool>;
-  };
-```
+**Comparison concepts**
+- Boolean - specifies that a type can be used in Boolean contexts
+- EqualityComparable - specifies that operator == is an equivalence relation
 
-Object concepts
-```c++
-template <typename T>
-concept Movable = std::is_object_v<T> && std::MoveConstructible<T> &&
-                  std::Assignable<T&, T> && std::Swappable<T>;
-```
+**Object concepts**
+- Movable - specifies that an object of a type can be moved and swapped
+- Copyable - pecifies that an object of a type can be copied, moved, and swapped
 
-Callable concepts
-```c++
-template <typename R, typename T, typename U>
-concept Relation = std::Predicate<R, T, T> && std::Predicate<R, U, U> &&
-                   std::Predicate<R, T, U> && std::Predicate<R, U, T>;
-```
+**Callable concepts**
+- Invocable - specifies that a callable type can be invoked with a given set of argument types
+- Predicate - specifies that a callable type is a Boolean predicate
 
 ### Ranges library
 Ranges are an extension of the Standard Template Library and an abstration layer on top of iterators
@@ -271,4 +232,40 @@ extern std::vector<int> read_data();
 using namespace std::ranges;
 std::vector<int> vi = read_data() | action::sort | action::unique;
 vi |= action::sort | action::unique; // Mutate the container in-place
+```
+
+### std::bind_front
+Generates a forwarding call wrapper for a callable object f with parameters `Args&&... args`.
+Calling this wrapper is equivalent to invoking f with its first sizeof...(Args) parameters bound to args.
+```c++
+std::bind_front(f, bound_args...)(call_args...);
+```
+is equivalent to
+```c++
+std::invoke(f, bound_args..., call_args....);
+```
+
+### std::remove_cvref
+If the type T is a reference type, provides the member typedef type which is the type referred to
+by T with its topmost cv-qualifiers removed. Otherwise type is T with its topmost cv-qualifiers removed.
+```c++
+std::is_same_v<std::remove_cvref_t<int>, int>; // true
+std::is_same_v<std::remove_cvref_t<int&>, int>; // true
+std::is_same_v<std::remove_cvref_t<int&&>, int>; // true
+std::is_same_v<std::remove_cvref_t<const int&>, int>; // true
+std::is_same_v<std::remove_cvref_t<const int(&)[2]>, int[2]>; // true
+```
+
+### std::type_identity
+Provides the member typedef type that names T (i.e., the identity transformation).  
+type_identity can be used to block template argument deduction:
+```c++
+template <typename T>
+void f(T, T);
+
+template <typename T>
+void g(T, std::type_identity_t<T>);
+
+f(4.2, 0); // error, deduced conflicting types for 'T'
+g(4.2, 0); // OK, calls g<double>
 ```
