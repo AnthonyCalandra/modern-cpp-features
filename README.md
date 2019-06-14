@@ -1188,6 +1188,7 @@ struct Foo {
   Bar getBar() & { return bar; }
   Bar getBar() const& { return bar; }
   Bar getBar() && { return std::move(bar); }
+  Bar getBar() const&& { return std::move(bar); }
 private:
   Bar bar{};
 };
@@ -1200,6 +1201,8 @@ Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
 
 Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
 std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
+
+std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
 ```
 
 ## C++11 Library Features
