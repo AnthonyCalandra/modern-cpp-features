@@ -31,6 +31,7 @@ C++11 includes the following new language features:
 - [inline-namespaces](#inline-namespaces)
 - [non-static data member initializers](#non-static-data-member-initializers)
 - [right angle brackets](#right-angle-brackets)
+- [ref-qualified member functions](#ref-qualified-member-functions)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -575,12 +576,38 @@ class Human {
 };
 ```
 
-### Right angle Brackets
+### Right angle brackets
 C++11 is now able to infer when a series of right angle brackets is used as an operator or as a closing statement of typedef, without having to add whitespace.
 
 ```c++
 typedef std::map<int, std::map <int, std::map <int, int> > > cpp98LongTypedef;
 typedef std::map<int, std::map <int, std::map <int, int>>>   cpp11LongTypedef;
+```
+
+### Ref-qualified member functions
+Member functions can now be qualified depending on whether `*this` is an lvalue or rvalue reference.
+
+```c++
+struct Bar {
+  // ...
+};
+
+struct Foo {
+  Bar getBar() & { return bar; }
+  Bar getBar() const& { return bar; }
+  Bar getBar() && { return std::move(bar); }
+private:
+  Bar bar{};
+};
+
+Foo foo{};
+Bar bar = foo.getBar(); // calls `Bar getBar() &`
+
+const Foo foo2{};
+Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
+
+Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
+std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
 ```
 
 ## C++11 Library Features
