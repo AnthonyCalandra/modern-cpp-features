@@ -32,6 +32,7 @@ C++11 includes the following new language features:
 - [non-static data member initializers](#non-static-data-member-initializers)
 - [right angle brackets](#right-angle-brackets)
 - [ref-qualified member functions](#ref-qualified-member-functions)
+- [trailing return types](#trailing-return-types)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -611,6 +612,38 @@ std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
 
 std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
 ```
+
+### Trailing return types
+C++11 allows functions and lambdas an alternative syntax for specifying their return types.
+```c++
+int f() {
+  return 123;
+}
+// vs.
+auto f() -> int {
+  return 123;
+}
+```
+```c++
+auto g = []() -> int {
+  return 123;
+};
+```
+This feature is especially useful when certain return types cannot be resolved:
+```c++
+// NOTE: This does not compile!
+template <typename T, typename U>
+decltype(a + b) add(T a, U b) {
+    return a + b;
+}
+
+// Trailing return types allows this:
+template <typename T, typename U>
+auto add(T a, U b) -> decltype(a + b) {
+    return a + b;
+}
+```
+In C++14, `decltype(auto)` can be used instead.
 
 ## C++11 Library Features
 
