@@ -102,48 +102,86 @@ C++11 includes the following new library features:
 ## C++20 Language Features
 
 ### Concepts
-_Concepts_ are named compile-time predicates which constrain template arguments. They take the following form:
+_Concepts_ are named compile-time predicates which constrain types. They take the following form:
 ```
 template < template-parameter-list >
 concept concept-name = constraint-expression;
 ```
-where `constraint-expression` evaluates to a constexpr Boolean. Example:
+where `constraint-expression` evaluates to a constexpr Boolean. _Constraints_ should model semantic requirements, such as whether a type is a numeric or hashable. A compiler error results if a given type does not satisfy the concept it's bound by (i.e. `constraint-expression` returns `false`). Because constraints are evaluated at compile-time, they can provide more meaningful error messages and runtime safety.
 ```c++
-// `MyConcept` is always satisfied.
+// `T` is not limited by any constraints.
 template <typename T>
-concept MyConcept = true;
-
-// Three syntactic forms for constraints (same for lambdas):
-template <MyConcept T>
-void f(T);
-
-template <typename T>
-  requires MyConcept<T>
-void f(T);
-
-template <typename T>
-void f(T) requires MyConcept<T>;
-```
-_Constraints_ should model semantic requirements, such as whether a type is a numeric or hashable. Because constraints are evaluated at compile-time, they can provide more meaningful error messages and runtime safety.
-```c++
+concept AlwaysSatisfied = true;
+// Limit `T` to integrals.
 template <typename T>
 concept Integral = std::is_integral_v<T>;
+// Limit `T` to both the `Integral` constraint and signedness.
 template <typename T>
 concept SignedIntegral = Integral<T> && std::is_signed_v<T>;
+// Limit `T` to both the `Integral` constraint and the negation of the `SignedIntegral` constraint.
 template <typename T>
 concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
+```
+There are a variety of syntactic forms for enforcing concepts:
+```c++
+// Forms for function parameters:
+// `T` is a constrained type template parameter.
+template <MyConcept T>
+void f(T v);
+
+// `T` is a constrained type template parameter.
+template <typename T>
+  requires MyConcept<T>
+void f(T v);
+
+// `T` is a constrained type template parameter.
+template <typename T>
+void f(T v) requires MyConcept<T>;
+
+// `v` is a constrained deduced parameter.
+void f(MyConcept auto v);
+
+// `v` is a constrained non-type template parameter.
+template <MyConcept auto v>
+void g();
+
+// Forms for auto-deduced variables:
+// `foo` is a constrained auto-deduced value.
+MyConcept auto foo = ...;
+
+// Forms for lambdas:
+// `T` is a constrained type template parameter.
+auto f = []<MyConcept T> (T v) {
+  // ...
+};
+// `T` is a constrained type template parameter.
+auto f = []<typename T> requires MyConcept<T> (T v) {
+  // ...
+};
+// `T` is a constrained type template parameter.
+auto f = []<typename T> (T v) requires MyConcept<T> {
+  // ...
+};
+// `v` is a constrained deduced parameter.
+auto f = [](MyConcept auto v) {
+  // ...
+};
+// `v` is a constrained non-type template parameter.
+auto g = []<MyConcept auto v> () {
+  // ...
+};
 ```
 The `requires` keyword is used either to start a requires clause or a requires expression:
 ```c++
 template <typename T>
-  requires MyConcept<T> // requires clause
+  requires MyConcept<T> // `requires` clause.
 void f(T);
 
 template <typename T>
-concept Callable = requires (T f) { f(); }; // requires expression
+concept Callable = requires (T f) { f(); }; // `requires` expression.
 
 template <typename T>
-  requires requires (T x) { x + x; } // requires clause and expression on same line
+  requires requires (T x) { x + x; } // `requires` clause and expression on same line.
 T add(T a, T b) {
   return a + b;
 }
@@ -182,9 +220,10 @@ using Ref = T&;
 
 template <typename T>
 concept C = requires {
-  typename T::value; // A) required nested member name
-  typename S<T>;     // B) required class template specialization
-  typename Ref<T>;   // C) required alias template substitution
+                     // Requirements on type `T`:
+  typename T::value; // A) has an inner member named `value`
+  typename S<T>;     // B) must have a valid class template specialization for `S`
+  typename Ref<T>;   // C) must be a valid alias template substitution
 };
 
 template <C T>
@@ -199,14 +238,9 @@ g(Baz{}); // PASS.
 ```c++
 template <typename T>
 concept C = requires(T x) {
-  {*x} -> typename T::inner; // the expression *x must be valid
-                             // AND the type T::inner must be valid
-                             // AND the result of *x must be convertible to T::inner
-  {x + 1} -> std::Same<int>; // the expression x + 1 must be valid
-                             // AND std::Same<decltype((x + 1)), int> must be satisfied
-                             // i.e., (x + 1) must be a prvalue of type int
-  {x * 1} -> T; // the expression x * 1 must be valid
-                // AND its result must be convertible to T
+  {*x} -> typename T::inner; // the type of the expression `*x` is convertible to `T::inner`
+  {x + 1} -> std::Same<int>; // the expression `x + 1` satisfies `std::Same<decltype((x + 1))>`
+  {x * 1} -> T; // the type of the expression `x * 1` is convertible to `T`
 };
 ```
 * **Nested requirements** - denoted by the `requires` keyword, specify additional constraints (such as those on local parameter arguments).
