@@ -111,7 +111,7 @@ int& y = x;
 f(y); // deduces as f(int& &&) => f(int&)
 
 int&& z = 0; // NOTE: `z` is an lvalue with type `int&&`.
-f(z); // deduces as f(int&& &) => f(int&&)
+f(z); // deduces as f(int&& &) => f(int&)
 f(std::move(z)); // deduces as f(int&& &&) => f(int&&)
 ```
 
