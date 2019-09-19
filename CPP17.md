@@ -177,6 +177,13 @@ Coordinate origin() {
 const auto [ x, y ] = origin();
 x; // == 0
 y; // == 0
+
+auto pr = std::make_pair(0, 0);
+auto& [ a, b ] = pr;
+b = 2;
+// pr.first == 0
+// pr.second == 2
+
 ```
 
 ### Selection statements with initializer
