@@ -183,7 +183,6 @@ auto& [ a, b ] = pr;
 b = 2;
 // pr.first == 0
 // pr.second == 2
-
 ```
 
 ### Selection statements with initializer
