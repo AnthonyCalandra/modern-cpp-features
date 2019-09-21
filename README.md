@@ -62,7 +62,7 @@ C++11 includes the following new language features:
 - [auto](#auto)
 - [lambda expressions](#lambda-expressions)
 - [decltype](#decltype)
-- [template aliases](#template-aliases)
+- [type aliases](#type-aliases)
 - [nullptr](#nullptr)
 - [strongly-typed enums](#strongly-typed-enums)
 - [attributes](#attributes)
@@ -1054,8 +1054,8 @@ add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 
 See also: [`decltype(auto)`](#decltypeauto).
 
-### Template aliases
-Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.
+### Type aliases
+Semantically similar to using a `typedef` however, type aliases with `using` are easier to read and are compatible with templates.
 ```c++
 template <typename T>
 using Vec = std::vector<T>;
