@@ -545,10 +545,10 @@ if (auto str = create(true)) {
 A type-safe container for single values of any type.
 ```c++
 std::any x {5};
-x.has_value() // == true
-std::any_cast<int>(x) // == 5
-std::any_cast<int&>(x) = 10;
-std::any_cast<int>(x) // == 10
+x.has_value(); // == true
+std::any_cast<int>(x); // == 5
+std::any_cast<int&>(x); = 10;
+std::any_cast<int>(x); // == 10
 ```
 
 ### std::string_view
