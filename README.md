@@ -710,7 +710,7 @@ std::string foo = identity("foo"); // == "foo"
 auto Plus = [](auto x, auto y) { return x + y; };
 
 auto a = Plus(1.0, 1.0); // deduced to be double 2.0
-auto b = Plus(1, 1);     // deduced to be int 1.0
+auto b = Plus(1, 1);     // deduced to be int 2
 
 using namespace std::string_literals;
 auto c = Plus("Hello"s, " World!"s); // deduced to be string "Hello World!"
