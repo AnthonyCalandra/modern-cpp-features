@@ -429,6 +429,17 @@ const auto [ x, y ] = origin();
 x; // == 0
 y; // == 0
 ```
+```c++
+std::unordered_map<std::string, int> mapping {
+  {"a", 1}, 
+  {"b", 2}, 
+  {"c", 3},
+};
+
+for (const auto [key, value] : mapping) {
+  // do something with key and value
+}
+```
 
 ### Selection statements with initializer
 New versions of the `if` and `switch` statements which simplify common code patterns and help users keep scopes tight.
