@@ -436,8 +436,9 @@ std::unordered_map<std::string, int> mapping {
   {"c", 3},
 };
 
-for (const auto [key, value] : mapping) {
-  // do something with key and value
+// Destructure by reference.
+for (const auto& [key, value] : mapping) {
+  // Do something with key and value
 }
 ```
 
@@ -705,15 +706,6 @@ C++14 now allows the `auto` type-specifier in the parameter list, enabling polym
 auto identity = [](auto x) { return x; };
 int three = identity(3); // == 3
 std::string foo = identity("foo"); // == "foo"
-```
-```c++
-auto Plus = [](auto x, auto y) { return x + y; };
-
-auto a = Plus(1.0, 1.0); // deduced to be double 2.0
-auto b = Plus(1, 1);     // deduced to be int 2
-
-using namespace std::string_literals;
-auto c = Plus("Hello"s, " World!"s); // deduced to be string "Hello World!"
 ```
 
 ### Lambda capture initializers

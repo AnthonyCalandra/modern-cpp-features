@@ -35,15 +35,6 @@ auto identity = [](auto x) { return x; };
 int three = identity(3); // == 3
 std::string foo = identity("foo"); // == "foo"
 ```
-```c++
-auto Plus = [](auto x, auto y) { return x + y; };
-
-auto a = Plus(1.0, 1.0); // deduced to be double 2.0
-auto b = Plus(1, 1);     // deduced to be int 2  
-
-using namespace std::string_literals;
-auto c = Plus("Hello"s, " World!"s); // deduced to be string "Hello World!"
-```
 
 ### Lambda capture initializers
 This allows creating lambda captures initialized with arbitrary expressions. The name given to the captured value does not need to be related to any variables in the enclosing scopes and introduces a new name inside the lambda body. The initializing expression is evaluated when the lambda is _created_ (not when it is _invoked_).

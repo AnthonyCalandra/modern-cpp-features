@@ -185,8 +185,9 @@ std::unordered_map<std::string, int> mapping {
   {"c", 3},
 };
 
-for (const auto [key, value] : mapping) {
-  // do something with key and value
+// Destructure by reference.
+for (const auto& [key, value] : mapping) {
+  // Do something with key and value
 }
 ```
 
