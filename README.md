@@ -1694,6 +1694,7 @@ auto result = handle.get();  // wait for the result
 * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
 * [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
 * [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
+* This doesn't ends here, using these library also makes us to learn about how to create them, visit here to have a good read on how you can do that(https://docs.microsoft.com/en-us/cpp/build/walkthrough-creating-and-using-a-static-library-cpp?view=vs-2019)
 * And many more SO posts I'm forgetting...
 
 ## Author
