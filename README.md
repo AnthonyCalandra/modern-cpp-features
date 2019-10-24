@@ -951,6 +951,19 @@ static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
 ```
 
+An interesting use for this is creating an _initializer list_ from a _parameter pack_ in order to iterate over variadic function arguments.
+```c++
+template <typename First, typename... Args>
+auto sum(const First first, const Args... args) -> decltype(first) {
+  const auto values = {first, args...};
+  return std::accumulate(values.begin(), values.end(), First{0});
+}
+
+sum(1, 2, 3, 4, 5); // 15
+sum(1, 2, 3);       // 6
+sum(1.5, 2.0, 3.7); // 7.2
+```
+
 ### Initializer lists
 A lightweight array-like container of elements created using a "braced list" syntax. For example, `{ 1, 2, 3 }` creates a sequences of integers, that has type `std::initializer_list<int>`. Useful as a replacement to passing a vector of objects to a function.
 ```c++
