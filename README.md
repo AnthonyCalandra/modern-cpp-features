@@ -873,7 +873,7 @@ foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
 
 See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
-## C++11 Language Features
+### C++11 Language Features
 
 ### Move semantics
 Move semantics is mostly about performance optimization: the ability to move an object without the expensive overhead of copying. The difference between a copy and a move is that a copy leaves the source unchanged, and a move will leave the source either unchanged or radically different -- depending on what the source is. For plain old data, a move is the same as a copy.
