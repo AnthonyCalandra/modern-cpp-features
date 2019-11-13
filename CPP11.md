@@ -49,6 +49,7 @@ C++11 includes the following new library features:
 - [std::make_shared](#stdmake_shared)
 - [memory model](#memory-model)
 - [std::async](#stdasync)
+- [std::begin/end](#stdbeginend)
 
 ## C++11 Language Features
 
@@ -873,6 +874,44 @@ int foo() {
 auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
 ```
+
+### std::beginend
+C++98 stl containers provide `Container::begin` and `Container::end` member functions which returns iterator to first and last element respectively. As all containers provide these functions, 
+whether they are sequential or associative container, so that any algorithm can work on any container. In C++11, library provides `std::begin`and `std::end` free functions which also works on raw arrays. The following code snippet would not compile with a C++98 compiler. Because `int[]` does not have `begin`and `end` member function.
+
+```c++
+template <typename T>
+int findNumberOfTwos1(const T & container)
+{
+    return count_if(container.begin(),container.end(),[](const int item){
+        return item == 2;
+    });
+}
+
+vector<int> myVec = {2,2,43,435,4543,534};
+int myArray[8] = {2,43,45,435,32,32,32,32};
+cout<<findNumberOfTwos1(myVec)<<endl;
+//cout<<findNumberOfTwos1(myArray)<<endl; In C++98 Compile Error.
+
+```
+In C++11 following code is legal. 
+
+```c++
+template <typename T>
+int findNumberOfTwos2(const T& container)
+{
+    return count_if(std::begin(container),std::end(container),[](int item){
+        return item == 2;
+    });
+}
+
+  vector<int> myVec = {2,2,43,435,4543,534};
+  int myArray[8] = {2,43,45,435,32,32,32,32};
+  cout<<findNumberOfTwos2(myVec)<<endl;
+  cout<<findNumberOfTwos2(myArray)<<endl;
+
+```
+
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
