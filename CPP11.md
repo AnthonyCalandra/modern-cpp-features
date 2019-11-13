@@ -875,43 +875,22 @@ auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
 ```
 
-### std::beginend
-C++98 stl containers provide `Container::begin` and `Container::end` member functions which returns iterator to first and last element respectively. As all containers provide these functions, 
-whether they are sequential or associative container, so that any algorithm can work on any container. In C++11, library provides `std::begin`and `std::end` free functions which also works on raw arrays. The following code snippet would not compile with a C++98 compiler. Because `int[]` does not have `begin`and `end` member function.
+### std::begin/end
+`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have begin and end member functions.
 
 ```c++
 template <typename T>
-int findNumberOfTwos1(const T & container)
-{
-    return count_if(container.begin(),container.end(),[](const int item){
-        return item == 2;
-    });
+int CountTwos(const T& container) {
+  return std::count_if(std::begin(container), std::end(container), [](int item) {
+    return item == 2;
+  });
 }
 
-vector<int> myVec = {2,2,43,435,4543,534};
-int myArray[8] = {2,43,45,435,32,32,32,32};
-cout<<findNumberOfTwos1(myVec)<<endl;
-//cout<<findNumberOfTwos1(myArray)<<endl; In C++98 Compile Error.
-
+std::vector<int> vec = {2,2,43,435,4543,534};
+int arr[8] = {2,43,45,435,32,32,32,32};
+auto a = CountTwos(vec); // 2
+auto b = CountTwos(arr);  // 1
 ```
-In C++11 following code is legal. 
-
-```c++
-template <typename T>
-int findNumberOfTwos2(const T& container)
-{
-    return count_if(std::begin(container),std::end(container),[](int item){
-        return item == 2;
-    });
-}
-
-  vector<int> myVec = {2,2,43,435,4543,534};
-  int myArray[8] = {2,43,45,435,32,32,32,32};
-  cout<<findNumberOfTwos2(myVec)<<endl;
-  cout<<findNumberOfTwos2(myArray)<<endl;
-
-```
-
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
