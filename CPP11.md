@@ -49,6 +49,7 @@ C++11 includes the following new library features:
 - [std::make_shared](#stdmake_shared)
 - [memory model](#memory-model)
 - [std::async](#stdasync)
+- [std::begin/end](#stdbeginend)
 
 ## C++11 Language Features
 
@@ -872,6 +873,23 @@ int foo() {
 
 auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
+```
+
+### std::begin/end
+`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have begin and end member functions.
+
+```c++
+template <typename T>
+int CountTwos(const T& container) {
+  return std::count_if(std::begin(container), std::end(container), [](int item) {
+    return item == 2;
+  });
+}
+
+std::vector<int> vec = {2,2,43,435,4543,534};
+int arr[8] = {2,43,45,435,32,32,32,32};
+auto a = CountTwos(vec); // 2
+auto b = CountTwos(arr);  // 1
 ```
 
 ## Acknowledgements
