@@ -386,7 +386,7 @@ struct B : A {
 ```
 
 ### Final specifier
-Specifies that a virtual function cannot be overridden in a derived class or that a class cannot be inherited from.
+Specifies that a function cannot be overridden in a derived class or that a class cannot be inherited from.
 ```c++
 struct A {
   virtual void foo();
