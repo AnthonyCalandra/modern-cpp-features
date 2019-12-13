@@ -660,7 +660,7 @@ auto add(T a, U b) -> decltype(a + b) {
 ```
 In C++14, `decltype(auto)` can be used instead.
 
-### noexcept specifier
+### Noexcept specifier
 The `noexcept` specifier specifies whether a function could throw exceptions. It is an improved version of `throw()`.
 
 ```c++
