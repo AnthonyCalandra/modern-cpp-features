@@ -33,6 +33,7 @@ C++11 includes the following new language features:
 - [right angle brackets](#right-angle-brackets)
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
+- [noexcept specifier](#noexcept-specifier)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -658,6 +659,27 @@ auto add(T a, U b) -> decltype(a + b) {
 }
 ```
 In C++14, `decltype(auto)` can be used instead.
+
+### Noexcept specifier
+The `noexcept` specifier specifies whether a function could throw exceptions. It is an improved version of `throw()`.
+
+```c++
+void func1() noexcept;        // does not throw
+void func2() noexcept(true);  // does not throw
+void func3() throw();         // does not throw
+
+void func4() noexcept(false); // may throw
+```
+
+Non-throwing functions are permitted to call potentially-throwing functions. Whenever an exception is thrown and the search for a handler encounters the outermost block of a non-throwing function, the function std::terminate is called.
+
+```c++
+extern void f();  // potentially-throwing
+void g() noexcept {
+    f();          // valid, even if f throws
+    throw 42;     // valid, effectively a call to std::terminate
+}
+```
 
 ## C++11 Library Features
 
