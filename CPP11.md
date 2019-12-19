@@ -121,6 +121,12 @@ See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`rvalue refer
 
 ### Variadic templates
 The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
+
+- `<typename ...T>` packs arguments to T 
+- `T ...t` pack function args to t 
+- `func(t...)` unpacks variable t and calls func
+- `sizeof...` operator returns number of elements in the pack
+
 ```c++
 template <typename... T>
 struct arity {
