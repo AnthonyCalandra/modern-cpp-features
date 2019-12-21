@@ -947,7 +947,7 @@ The `...` syntax creates a _parameter pack_ or expands one. A template _paramete
 ```c++
 template <typename... T>
 struct arity {
-  constexpr static int value = sizeof...(T); // sizeof... gives num. or args in parameter pack
+  constexpr static int value = sizeof...(T); // `sizeof...` returns the number of arguments in the parameter pack
 };
 static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
