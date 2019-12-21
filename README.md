@@ -943,11 +943,11 @@ f(std::move(z)); // deduces as f(int&& &&) => f(int&&)
 See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`rvalue references`](#rvalue-references).
 
 ### Variadic templates
-The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_.
+The `...` syntax creates a _parameter pack_ or expands one. A template _parameter pack_ is a template parameter that accepts zero or more template arguments (non-types, types, or templates). A template with at least one parameter pack is called a _variadic template_. The parameter pack must be at the end of argument list.
 ```c++
 template <typename... T>
 struct arity {
-  constexpr static int value = sizeof...(T);
+  constexpr static int value = sizeof...(T); // sizeof... gives num. or args in parameter pack
 };
 static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
