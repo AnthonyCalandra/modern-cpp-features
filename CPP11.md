@@ -13,7 +13,7 @@ C++11 includes the following new language features:
 - [auto](#auto)
 - [lambda expressions](#lambda-expressions)
 - [decltype](#decltype)
-- [template aliases](#template-aliases)
+- [type aliases](#type-aliases)
 - [nullptr](#nullptr)
 - [strongly-typed enums](#strongly-typed-enums)
 - [attributes](#attributes)
@@ -33,6 +33,7 @@ C++11 includes the following new language features:
 - [right angle brackets](#right-angle-brackets)
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
+- [noexcept specifier](#noexcept-specifier)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -49,6 +50,7 @@ C++11 includes the following new library features:
 - [std::make_shared](#stdmake_shared)
 - [memory model](#memory-model)
 - [std::async](#stdasync)
+- [std::begin/end](#stdbeginend)
 
 ## C++11 Language Features
 
@@ -126,6 +128,19 @@ struct arity {
 };
 static_assert(arity<>::value == 0);
 static_assert(arity<char, short, int>::value == 3);
+```
+
+An interesting use for this is creating an _initializer list_ from a _parameter pack_ in order to iterate over variadic function arguments.
+```c++
+template <typename First, typename... Args>
+auto sum(const First first, const Args... args) -> decltype(first) {
+  const auto values = {first, args...};
+  return std::accumulate(values.begin(), values.end(), First{0});
+}
+
+sum(1, 2, 3, 4, 5); // 15
+sum(1, 2, 3);       // 6               
+sum(1.5, 2.0, 3.7); // 7.2
 ```
 
 ### Initializer lists
@@ -243,8 +258,8 @@ add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 
 See also: `decltype(auto)` (C++14).
 
-### Template aliases
-Semantically similar to using a `typedef` however, template aliases with `using` are easier to read and are compatible with templates.
+### Type aliases
+Semantically similar to using a `typedef` however, type aliases with `using` are easier to read and are compatible with templates.
 ```c++
 template <typename T>
 using Vec = std::vector<T>;
@@ -645,6 +660,27 @@ auto add(T a, U b) -> decltype(a + b) {
 ```
 In C++14, `decltype(auto)` can be used instead.
 
+### Noexcept specifier
+The `noexcept` specifier specifies whether a function could throw exceptions. It is an improved version of `throw()`.
+
+```c++
+void func1() noexcept;        // does not throw
+void func2() noexcept(true);  // does not throw
+void func3() throw();         // does not throw
+
+void func4() noexcept(false); // may throw
+```
+
+Non-throwing functions are permitted to call potentially-throwing functions. Whenever an exception is thrown and the search for a handler encounters the outermost block of a non-throwing function, the function std::terminate is called.
+
+```c++
+extern void f();  // potentially-throwing
+void g() noexcept {
+    f();          // valid, even if f throws
+    throw 42;     // valid, effectively a call to std::terminate
+}
+```
+
 ## C++11 Library Features
 
 ### std::move
@@ -859,6 +895,23 @@ int foo() {
 
 auto handle = std::async(std::launch::async, foo);  // create an async task
 auto result = handle.get();  // wait for the result
+```
+
+### std::begin/end
+`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have begin and end member functions.
+
+```c++
+template <typename T>
+int CountTwos(const T& container) {
+  return std::count_if(std::begin(container), std::end(container), [](int item) {
+    return item == 2;
+  });
+}
+
+std::vector<int> vec = {2,2,43,435,4543,534};
+int arr[8] = {2,43,45,435,32,32,32,32};
+auto a = CountTwos(vec); // 2
+auto b = CountTwos(arr);  // 1
 ```
 
 ## Acknowledgements
