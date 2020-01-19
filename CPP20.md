@@ -5,6 +5,9 @@ Many of these descriptions and examples come from various resources (see [Acknow
 
 C++20 includes the following new language features:
 - [concepts](#concepts)
+- [designated initializers](#designated-initializers)
+- [template syntax for lambdas](#template-syntax-for-lambdas)
+- [range-based for loop with initializer](#range-based-for-loop-with-initializer)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -162,6 +165,35 @@ concept C = requires(T x) {
 };
 ```
 See also: [concepts library](#concepts-library).
+
+### Designated initializers
+C-style designated initializer syntax. Any member fields that are not explicitly listed in the designated initializer list are default-initialized.
+```c++
+struct A {
+  int x;
+  int y;
+  int z = 123;
+};
+
+A a {.x = 1, .z = 2}; // a.x == 1, a.y == 0, a.z == 2
+```
+
+### Template syntax for lambdas
+Use familiar template syntax in lambda expressions.
+```c++
+auto f = []<typename T>(std::vector<T> v) {
+  // ...
+};
+```
+
+### Range-based for loop with initializer
+This feature simplifies common code patterns, helps keep scopes tight, and offers an elegant solution to a common lifetime problem.
+```c++
+for (auto v = std::vector{1, 2, 3}; auto& e : v) {
+  std::cout << e;
+}
+// prints "123"
+```
 
 ## C++20 Library Features
 
