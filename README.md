@@ -26,7 +26,7 @@ C++17 includes the following new language features:
 - [constexpr if](#constexpr-if)
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
-- [New standard attributes](#new-standard-attributes)
+- [new standard attributes](#new-standard-attributes)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -536,22 +536,48 @@ byte e = byte{256}; // ERROR
 ```
 
 ### New standard attributes
-C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`:
+C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`.
+* `[[fallthrough]]` indicates to the compiler that falling through in a switch statement is intended behavior.
 ```c++
-// Will warn if return of foo() is ignored
-[[nodiscard]] int foo();
+switch (n) {
+  case 1: [[fallthrough]]
+    // ...
+  case 2:
+    // ...
+    break;
+}
+```
 
-int main() {
-  int a {1};
-  switch (a) {
-      // Indicates that falling through on case 1 is intentional
-      case 1: [[fallthrough]]
-      case 2:
-      // Indicates that b might be unused, such as on production builds
-        [[maybe_unused]] int b = foo();
-        assert(b > 0);
-        break;
-  }
+* `[[nodiscard]]` issues a warning when either a function or class has this attribute and its return value is discarded.
+```c++
+[[nodiscard]] bool do_something() {
+  return is_success; // true for success, false for failure
+}
+
+do_something(); // warning: ignoring return value of 'bool do_something()',
+                // declared with attribute 'nodiscard'
+```
+```c++
+// Only issues a warning when `error_info` is returned by value.
+struct [[nodiscard]] error_info {
+  // ...
+};
+
+error_info do_something() {
+  error_info ei;
+  // ...
+  return ei;
+}
+
+do_something(); // warning: ignoring returned value of type 'error_info',
+                // declared with attribute 'nodiscard'
+```
+
+* `[[maybe_unused]]` indicates to the compiler that a variable or parameter might be unused and is intended.
+```c++
+void my_callback(std::string msg, [[maybe_unused]] bool error) {
+  // Don't care if `msg` is an error message, just log it.
+  log(msg);
 }
 ```
 
