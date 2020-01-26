@@ -39,8 +39,8 @@ Automatic template argument deduction much like how it's done for functions, but
 template <typename T = float>
 struct MyContainer {
   T val;
-  MyContainer() : val() {}
-  MyContainer(T val) : val(val) {}
+  MyContainer() : val{} {}
+  MyContainer(T val) : val{val} {}
   // ...
 };
 MyContainer c1 {1}; // OK MyContainer<int>
@@ -67,7 +67,7 @@ A fold expression performs a fold of a template parameter pack over a binary ope
 * An expression of the form `(... op e)` or `(e op ...)`, where `op` is a fold-operator and `e` is an unexpanded parameter pack, are called _unary folds_.
 * An expression of the form `(e1 op ... op e2)`, where `op` are fold-operators, is called a _binary fold_. Either `e1` or `e2` is an unexpanded parameter pack, but not both.
 ```c++
-template<typename... Args>
+template <typename... Args>
 bool logicalAnd(Args... args) {
     // Binary folding.
     return (true && ... && args);
@@ -77,7 +77,7 @@ bool& b2 = b;
 logicalAnd(b, b2, true); // == true
 ```
 ```c++
-template<typename... Args>
+template <typename... Args>
 auto sum(Args... args) {
     // Unary folding.
     return (... + args);
@@ -89,9 +89,9 @@ sum(1.0, 2.0f, 3); // == 6.0
 Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
 auto x1 {1, 2, 3}; // error: not a single element
-auto x2 = {1, 2, 3}; // decltype(x2) is std::initializer_list<int>
-auto x3 {3}; // decltype(x3) is int
-auto x4 {3.0}; // decltype(x4) is double
+auto x2 = {1, 2, 3}; // x2 is std::initializer_list<int>
+auto x3 {3}; // x3 is int
+auto x4 {3.0}; // x4 is double
 ```
 
 ### constexpr lambda
@@ -153,10 +153,10 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
 It can also be used to declare and define a static member variable, such that it does not need to be initialized in the source file.
 ```c++
 struct S {
-	S() : id(count++) {}
-	~S() {count--;}
-	int id;
-	static inline int count{0}; // declare and initialize count to 0 within the class
+  S() : id{count++} {}
+  ~S() { count--; }
+  int id;
+  static inline int count{0}; // declare and initialize count to 0 within the class
 };
 ```
 
@@ -192,7 +192,7 @@ y; // == 0
 std::unordered_map<std::string, int> mapping {
   {"a", 1},
   {"b", 2},
-  {"c", 3},
+  {"c", 3}
 };
 
 // Destructure by reference.
@@ -372,14 +372,14 @@ Invoke a `Callable` object with parameters. Examples of `Callable` objects are `
 ```c++
 template <typename Callable>
 class Proxy {
-    Callable c;
+  Callable c;
 public:
-    Proxy(Callable c): c(c) {}
-    template <class... Args>
-    decltype(auto) operator()(Args&&... args) {
-        // ...
-        return std::invoke(c, std::forward<Args>(args)...);
-    }
+  Proxy(Callable c): c(c) {}
+  template <class... Args>
+  decltype(auto) operator()(Args&&... args) {
+    // ...
+    return std::invoke(c, std::forward<Args>(args)...);
+  }
 };
 auto add = [](int x, int y) {
   return x + y;

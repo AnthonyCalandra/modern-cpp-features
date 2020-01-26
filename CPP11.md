@@ -324,7 +324,7 @@ constexpr const int& y = x; // error -- constexpr variable `y` must be initializ
 Constant expressions with classes:
 ```c++
 struct Complex {
-  constexpr Complex(double r, double i) : re(r), im(i) { }
+  constexpr Complex(double r, double i) : re{r}, im{i} { }
   constexpr double real() { return re; }
   constexpr double imag() { return im; }
 
@@ -341,7 +341,7 @@ Constructors can now call other constructors in the same class using an initiali
 ```c++
 struct Foo {
   int foo;
-  Foo(int foo) : foo(foo) {}
+  Foo(int foo) : foo{foo} {}
   Foo() : Foo(0) {}
 };
 
@@ -404,13 +404,8 @@ struct C : B {
 
 Class cannot be inherited from.
 ```c++
-struct A final {
-
-};
-
-struct B : A { // error -- base 'A' is marked 'final'
-
-};
+struct A final {};
+struct B : A {}; // error -- base 'A' is marked 'final'
 ```
 
 ### Default functions
@@ -418,7 +413,7 @@ A more elegant, efficient way to provide a default implementation of a function,
 ```c++
 struct A {
   A() = default;
-  A(int x) : x(x) {}
+  A(int x) : x{x} {}
   int x {1};
 };
 A a; // a.x == 1
@@ -428,7 +423,7 @@ A a2 {123}; // a.x == 123
 With inheritance:
 ```c++
 struct B {
-  B() : x(1) {}
+  B() : x{1} {}
   int x;
 };
 
@@ -447,7 +442,7 @@ class A {
   int x;
 
 public:
-  A(int x) : x(x) {};
+  A(int x) : x{x} {};
   A(const A&) = delete;
   A& operator=(const A&) = delete;
 };
@@ -477,9 +472,9 @@ The copy constructor and copy assignment operator are called when copies are mad
 ```c++
 struct A {
   std::string s;
-  A() : s("test") {}
-  A(const A& o) : s(o.s) {}
-  A(A&& o) : s(std::move(o.s)) {}
+  A() : s{"test"} {}
+  A(const A& o) : s{o.s} {}
+  A(A&& o) : s{std::move(o.s)} {}
   A& operator=(A&& o) {
    s = std::move(o.s);
    return *this;
@@ -581,7 +576,7 @@ Allows non-static data members to be initialized where they are declared, potent
 ```c++
 // Default initialization prior to C++11
 class Human {
-    Human() : age(0) {}
+    Human() : age{0} {}
   private:
     unsigned age;
 };
@@ -613,7 +608,7 @@ struct Foo {
   Bar getBar() const& { return bar; }
   Bar getBar() && { return std::move(bar); }
 private:
-  Bar bar{};
+  Bar bar;
 };
 
 Foo foo{};
@@ -908,8 +903,8 @@ int CountTwos(const T& container) {
   });
 }
 
-std::vector<int> vec = {2,2,43,435,4543,534};
-int arr[8] = {2,43,45,435,32,32,32,32};
+std::vector<int> vec = {2, 2, 43, 435, 4543, 534};
+int arr[8] = {2, 43, 45, 435, 32, 32, 32, 32};
 auto a = CountTwos(vec); // 2
 auto b = CountTwos(arr);  // 1
 ```

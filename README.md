@@ -281,7 +281,7 @@ auto f = []<typename T>(std::vector<T> v) {
 ### Range-based for loop with initializer
 This feature simplifies common code patterns, helps keep scopes tight, and offers an elegant solution to a common lifetime problem.
 ```c++
-for (auto v = std::vector{1, 2, 3}; auto& e : v) {
+for (std::vector v{1, 2, 3}; auto& e : v) {
   std::cout << e;
 }
 // prints "123"
@@ -324,8 +324,8 @@ Automatic template argument deduction much like how it's done for functions, but
 template <typename T = float>
 struct MyContainer {
   T val;
-  MyContainer() : val() {}
-  MyContainer(T val) : val(val) {}
+  MyContainer() : val{} {}
+  MyContainer(T val) : val{val} {}
   // ...
 };
 MyContainer c1 {1}; // OK MyContainer<int>
@@ -352,7 +352,7 @@ A fold expression performs a fold of a template parameter pack over a binary ope
 * An expression of the form `(... op e)` or `(e op ...)`, where `op` is a fold-operator and `e` is an unexpanded parameter pack, are called _unary folds_.
 * An expression of the form `(e1 op ... op e2)`, where `op` are fold-operators, is called a _binary fold_. Either `e1` or `e2` is an unexpanded parameter pack, but not both.
 ```c++
-template<typename... Args>
+template <typename... Args>
 bool logicalAnd(Args... args) {
     // Binary folding.
     return (true && ... && args);
@@ -362,7 +362,7 @@ bool& b2 = b;
 logicalAnd(b, b2, true); // == true
 ```
 ```c++
-template<typename... Args>
+template <typename... Args>
 auto sum(Args... args) {
     // Unary folding.
     return (... + args);
@@ -374,9 +374,9 @@ sum(1.0, 2.0f, 3); // == 6.0
 Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
 auto x1 {1, 2, 3}; // error: not a single element
-auto x2 = {1, 2, 3}; // decltype(x2) is std::initializer_list<int>
-auto x3 {3}; // decltype(x3) is int
-auto x4 {3.0}; // decltype(x4) is double
+auto x2 = {1, 2, 3}; // x2 is std::initializer_list<int>
+auto x3 {3}; // x3 is int
+auto x4 {3.0}; // x4 is double
 ```
 
 ### constexpr lambda
@@ -438,10 +438,10 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
 It can also be used to declare and define a static member variable, such that it does not need to be initialized in the source file.
 ```c++
 struct S {
-	S() : id(count++) {}
-	~S() {count--;}
-	int id;
-	static inline int count{0}; // declare and initialize count to 0 within the class
+  S() : id{count++} {}
+  ~S() { count--; }
+  int id;
+  static inline int count{0}; // declare and initialize count to 0 within the class
 };
 ```
 
@@ -477,7 +477,7 @@ y; // == 0
 std::unordered_map<std::string, int> mapping {
   {"a", 1},
   {"b", 2},
-  {"c", 3},
+  {"c", 3}
 };
 
 // Destructure by reference.
@@ -657,14 +657,14 @@ Invoke a `Callable` object with parameters. Examples of `Callable` objects are `
 ```c++
 template <typename Callable>
 class Proxy {
-    Callable c;
+  Callable c;
 public:
-    Proxy(Callable c): c(c) {}
-    template <class... Args>
-    decltype(auto) operator()(Args&&... args) {
-        // ...
-        return std::invoke(c, std::forward<Args>(args)...);
-    }
+  Proxy(Callable c): c(c) {}
+  template <class... Args>
+  decltype(auto) operator()(Args&&... args) {
+    // ...
+    return std::invoke(c, std::forward<Args>(args)...);
+  }
 };
 auto add = [](int x, int y) {
   return x + y;
@@ -1215,7 +1215,7 @@ constexpr const int& y = x; // error -- constexpr variable `y` must be initializ
 Constant expressions with classes:
 ```c++
 struct Complex {
-  constexpr Complex(double r, double i) : re(r), im(i) { }
+  constexpr Complex(double r, double i) : re{r}, im{i} { }
   constexpr double real() { return re; }
   constexpr double imag() { return im; }
 
@@ -1232,7 +1232,7 @@ Constructors can now call other constructors in the same class using an initiali
 ```c++
 struct Foo {
   int foo;
-  Foo(int foo) : foo(foo) {}
+  Foo(int foo) : foo{foo} {}
   Foo() : Foo(0) {}
 };
 
@@ -1295,13 +1295,8 @@ struct C : B {
 
 Class cannot be inherited from.
 ```c++
-struct A final {
-
-};
-
-struct B : A { // error -- base 'A' is marked 'final'
-
-};
+struct A final {};
+struct B : A {}; // error -- base 'A' is marked 'final'
 ```
 
 ### Default functions
@@ -1309,7 +1304,7 @@ A more elegant, efficient way to provide a default implementation of a function,
 ```c++
 struct A {
   A() = default;
-  A(int x) : x(x) {}
+  A(int x) : x{x} {}
   int x {1};
 };
 A a; // a.x == 1
@@ -1319,7 +1314,7 @@ A a2 {123}; // a.x == 123
 With inheritance:
 ```c++
 struct B {
-  B() : x(1) {}
+  B() : x{1} {}
   int x;
 };
 
@@ -1338,7 +1333,7 @@ class A {
   int x;
 
 public:
-  A(int x) : x(x) {};
+  A(int x) : x{x} {};
   A(const A&) = delete;
   A& operator=(const A&) = delete;
 };
@@ -1368,9 +1363,9 @@ The copy constructor and copy assignment operator are called when copies are mad
 ```c++
 struct A {
   std::string s;
-  A() : s("test") {}
-  A(const A& o) : s(o.s) {}
-  A(A&& o) : s(std::move(o.s)) {}
+  A() : s{"test"} {}
+  A(const A& o) : s{o.s} {}
+  A(A&& o) : s{std::move(o.s)} {}
   A& operator=(A&& o) {
    s = std::move(o.s);
    return *this;
@@ -1472,7 +1467,7 @@ Allows non-static data members to be initialized where they are declared, potent
 ```c++
 // Default initialization prior to C++11
 class Human {
-    Human() : age(0) {}
+    Human() : age{0} {}
   private:
     unsigned age;
 };
@@ -1505,7 +1500,7 @@ struct Foo {
   Bar getBar() && { return std::move(bar); }
   Bar getBar() const&& { return std::move(bar); }
 private:
-  Bar bar{};
+  Bar bar;
 };
 
 Foo foo{};
@@ -1800,8 +1795,8 @@ int CountTwos(const T& container) {
   });
 }
 
-std::vector<int> vec = {2,2,43,435,4543,534};
-int arr[8] = {2,43,45,435,32,32,32,32};
+std::vector<int> vec = {2, 2, 43, 435, 4543, 534};
+int arr[8] = {2, 43, 45, 435, 32, 32, 32, 32};
 auto a = CountTwos(vec); // 2
 auto b = CountTwos(arr);  // 1
 ```
