@@ -150,12 +150,11 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
                       // .L_ZZ4mainE2x2: .long 123
 ```
 
-It can also be used to declare and define a member variable, such that it does not need to be initialized in the source file.
+It can also be used to declare and define a static member variable, such that it does not need to be initialized in the source file.
 ```c++
 struct S {
-	S() : id(count++){};
-	~S(){count--;};
-
+	S() : id(count++) {}
+	~S() {count--;}
 	int id;
 	static inline int count{0}; // declare and initialize count to 0 within the class
 };
