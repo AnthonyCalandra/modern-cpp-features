@@ -150,6 +150,16 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
                       // .L_ZZ4mainE2x2: .long 123
 ```
 
+It can also be used to declare and define a static member variable, such that it does not need to be initialized in the source file.
+```c++
+struct S {
+	S() : id(count++) {}
+	~S() {count--;}
+	int id;
+	static inline int count{0}; // declare and initialize count to 0 within the class
+};
+```
+
 ### Nested namespaces
 Using the namespace resolution operator to create nested namespace definitions.
 ```c++
@@ -393,7 +403,7 @@ The new `std::filesystem` library provides a standard way to manipulate files, d
 Here, a big file is copied to a temporary path if there is available space:
 ```c++
 const auto bigFilePath {"bigFileToCopy"};
-if (std::filesystem::exists(bigFilePath)) {   
+if (std::filesystem::exists(bigFilePath)) {
   const auto bigFileSize {std::filesystem::file_size(bigFilePath)};
   std::filesystem::path tmpPath {"/tmp"};
   if (std::filesystem::space(tmpPath).available > bigFileSize) {
