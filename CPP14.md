@@ -137,7 +137,7 @@ constexpr int factorial(int n) {
 factorial(5); // == 120
 ```
 
-### Variable Templates
+### Variable templates
 C++14 allows variables to be templated:
 
 ```c++
