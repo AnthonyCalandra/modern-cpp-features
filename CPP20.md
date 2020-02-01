@@ -8,6 +8,9 @@ C++20 includes the following new language features:
 - [designated initializers](#designated-initializers)
 - [template syntax for lambdas](#template-syntax-for-lambdas)
 - [range-based for loop with initializer](#range-based-for-loop-with-initializer)
+- [likely and unlikely attributes](#likely-and-unlikely-attributes)
+- [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
+- [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -193,6 +196,53 @@ for (auto v = std::vector{1, 2, 3}; auto& e : v) {
   std::cout << e;
 }
 // prints "123"
+```
+
+### likely and unlikely attributes
+Provides a hint to the optimizer that the labelled statement is likely/unlikely to have its body executed.
+```c++
+int random = get_random_number_between_x_and_y(0, 3);
+[[likely]] if (random > 0) {
+  // body of if statement
+  // ...
+}
+
+[[unlikely]] while (unlikely_truthy_condition) {
+  // body of while statement
+  // ...
+}
+```
+
+### Deprecate implicit capture of this
+Implicitly capturing `this` in a lamdba capture using `[=]` is now deprecated; prefer capturing explicitly using `[=, this]` or `[=, *this]`.
+```c++
+struct int_value {
+  int n = 0;
+  auto getter_fn() {
+    // BAD:
+    // return [=]() { return n; };
+
+    // GOOD:
+    return [=, *this]() { return n; };
+  }
+};
+```
+
+### Class types in non-type template parameters
+Classes can now be used in non-type template parameters. Objects passed in as template arguments have the type `const T`, where `T` is the type of the object, and has static storage duration.
+```c++
+struct foo {
+  foo() = default;
+  constexpr foo(int) {}
+};
+
+template <foo f>
+auto get_foo() {
+  return f;
+}
+
+get_foo(); // uses implicit constructor
+get_foo<foo{123}>();
 ```
 
 ## C++20 Library Features
