@@ -11,6 +11,9 @@ C++20 includes the following new language features:
 - [likely and unlikely attributes](#likely-and-unlikely-attributes)
 - [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
 - [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
+- [constexpr virtual functions](#constexpr-virtual-functions)
+- [explicit(bool)](#explicit-bool)
+- [char8_t](#char8_t)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -335,6 +338,49 @@ auto get_foo() {
 
 get_foo(); // uses implicit constructor
 get_foo<foo{123}>();
+```
+
+### constexpr virtual functions
+Virtual functions can now be `constexpr` and evaluated at compile-time. `constexpr` virtual functions can override non-`constexpr` virtual functions and vice-versa.
+```c++
+struct X1 {
+  virtual int f() const = 0;
+};
+
+struct X2: public X1 {
+  constexpr virtual int f() const { return 2; }
+};
+
+struct X3: public X2 {
+  virtual int f() const { return 3; }
+};
+
+struct X4: public X3 {
+  constexpr virtual int f() const { return 4; }
+};
+
+constexpr X4 x4;
+x4.f(); // == 4
+```
+
+### explicit(bool)
+Conditionally select at compile-time whether a constructor is made explicit or not. `explicit(true)` is the same as specifying `explicit`.
+```c++
+struct foo {
+  // Specify non-integral types (strings, floats, etc.) require explicit construction.
+  template <typename T>
+  explicit(!std::is_integral_v<T>) foo(T) {}
+};
+
+foo a = 123; // OK
+foo b = "123"; // ERROR: explicit constructor is not a candidate (explicit specifier evaluates to true)
+foo c {"123"}; // OK
+```
+
+### char8_t
+Provides a standard type for representing UTF-8 strings.
+```c++
+char8_t utf8_str[] = u8"\u0123";
 ```
 
 ## C++20 Library Features
