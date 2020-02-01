@@ -12,7 +12,7 @@ C++20 includes the following new language features:
 - [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
 - [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
 - [constexpr virtual functions](#constexpr-virtual-functions)
-- [explicit(bool)](#explicit-bool)
+- [explicit(bool)](#explicitbool)
 - [char8_t](#char8_t)
 
 C++20 includes the following new library features:
