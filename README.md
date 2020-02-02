@@ -14,6 +14,8 @@ C++20 includes the following new language features:
 - [constexpr virtual functions](#constexpr-virtual-functions)
 - [explicit(bool)](#explicitbool)
 - [char8_t](#char8_t)
+- [immediate functions](#immediate-functions)
+- [using enum](#using-enum)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -381,6 +383,48 @@ foo c {"123"}; // OK
 Provides a standard type for representing UTF-8 strings.
 ```c++
 char8_t utf8_str[] = u8"\u0123";
+```
+
+### Immediate functions
+Similar to `constexpr` functions, but functions with a `consteval` specifier must produce a constant. These are called `immediate functions`.
+```c++
+consteval int sqr(int n) {
+  return n * n;
+}
+
+constexpr int r = sqr(100); // OK
+int x = 100;
+int r2 = sqr(x); // ERROR: the value of 'x' is not usable in a constant expression
+                 // OK if `sqr` were a `constexpr` function
+```
+
+### using enum
+Bring an enum's members into scope to improve readability. Before:
+```c++
+enum class rgba_color_channel { red, green, blue, alpha };
+
+std::string_view to_string(rgba_color_channel channel) {
+  switch (channel) {
+    case rgba_color_channel::red:   return "red";
+    case rgba_color_channel::green: return "green";
+    case rgba_color_channel::blue:  return "blue";
+    case rgba_color_channel::alpha: return "alpha";
+  }
+}
+```
+After:
+```c++
+enum class rgba_color_channel { red, green, blue, alpha };
+
+std::string_view to_string(rgba_color_channel channel) {
+  switch (my_channel) {
+    using enum rgba_color_channel;
+    case red:   return "red";
+    case green: return "green";
+    case blue:  return "blue";
+    case alpha: return "alpha";
+  }
+}
 ```
 
 ## C++20 Library Features
