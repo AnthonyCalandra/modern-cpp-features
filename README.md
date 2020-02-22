@@ -124,74 +124,74 @@ where `constraint-expression` evaluates to a constexpr Boolean. _Constraints_ sh
 ```c++
 // `T` is not limited by any constraints.
 template <typename T>
-concept AlwaysSatisfied = true;
+concept always_satisfied = true;
 // Limit `T` to integrals.
 template <typename T>
-concept Integral = std::is_integral_v<T>;
-// Limit `T` to both the `Integral` constraint and signedness.
+concept integral = std::is_integral_v<T>;
+// Limit `T` to both the `integral` constraint and signedness.
 template <typename T>
-concept SignedIntegral = Integral<T> && std::is_signed_v<T>;
-// Limit `T` to both the `Integral` constraint and the negation of the `SignedIntegral` constraint.
+concept signed_integral = integral<T> && std::is_signed_v<T>;
+// Limit `T` to both the `integral` constraint and the negation of the `signed_integral` constraint.
 template <typename T>
-concept UnsignedIntegral = Integral<T> && !SignedIntegral<T>;
+concept unsigned_integral = integral<T> && !signed_integral<T>;
 ```
 There are a variety of syntactic forms for enforcing concepts:
 ```c++
 // Forms for function parameters:
 // `T` is a constrained type template parameter.
-template <MyConcept T>
+template <my_concept T>
 void f(T v);
 
 // `T` is a constrained type template parameter.
 template <typename T>
-  requires MyConcept<T>
+  requires my_concept<T>
 void f(T v);
 
 // `T` is a constrained type template parameter.
 template <typename T>
-void f(T v) requires MyConcept<T>;
+void f(T v) requires my_concept<T>;
 
 // `v` is a constrained deduced parameter.
-void f(MyConcept auto v);
+void f(my_concept auto v);
 
 // `v` is a constrained non-type template parameter.
-template <MyConcept auto v>
+template <my_concept auto v>
 void g();
 
 // Forms for auto-deduced variables:
 // `foo` is a constrained auto-deduced value.
-MyConcept auto foo = ...;
+my_concept auto foo = ...;
 
 // Forms for lambdas:
 // `T` is a constrained type template parameter.
-auto f = []<MyConcept T> (T v) {
+auto f = []<my_concept T> (T v) {
   // ...
 };
 // `T` is a constrained type template parameter.
-auto f = []<typename T> requires MyConcept<T> (T v) {
+auto f = []<typename T> requires my_concept<T> (T v) {
   // ...
 };
 // `T` is a constrained type template parameter.
-auto f = []<typename T> (T v) requires MyConcept<T> {
+auto f = []<typename T> (T v) requires my_concept<T> {
   // ...
 };
 // `v` is a constrained deduced parameter.
-auto f = [](MyConcept auto v) {
+auto f = [](my_concept auto v) {
   // ...
 };
 // `v` is a constrained non-type template parameter.
-auto g = []<MyConcept auto v> () {
+auto g = []<my_concept auto v> () {
   // ...
 };
 ```
 The `requires` keyword is used either to start a requires clause or a requires expression:
 ```c++
 template <typename T>
-  requires MyConcept<T> // `requires` clause.
+  requires my_concept<T> // `requires` clause.
 void f(T);
 
 template <typename T>
-concept Callable = requires (T f) { f(); }; // `requires` expression.
+concept callable = requires (T f) { f(); }; // `requires` expression.
 
 template <typename T>
   requires requires (T x) { x + x; } // `requires` clause and expression on same line.
@@ -205,27 +205,27 @@ Note that the parameter list in a requires expression is optional. Each requirem
 
 ```c++
 template <typename T>
-concept Callable = requires (T f) { f(); };
+concept callable = requires (T f) { f(); };
 ```
 * **Type requirements** - denoted by the `typename` keyword followed by a type name, asserts that the given type name is valid.
 
 ```c++
-struct Foo {
+struct foo {
   int foo;
 };
 
-struct Bar {
+struct bar {
   using value = int;
   value data;
 };
 
-struct Baz {
+struct baz {
   using value = int;
   value data;
 };
 
-// Using SFINAE, enable if `T` is a `Baz`.
-template <typename T, typename = std::enable_if_t<std::is_same_v<T, Baz>>>
+// Using SFINAE, enable if `T` is a `baz`.
+template <typename T, typename = std::enable_if_t<std::is_same_v<T, baz>>>
 struct S {};
 
 template <typename T>
@@ -242,9 +242,9 @@ concept C = requires {
 template <C T>
 void g(T a);
 
-g(Foo{}); // ERROR: Fails requirement A.
-g(Bar{}); // ERROR: Fails requirement B.
-g(Baz{}); // PASS.
+g(foo{}); // ERROR: Fails requirement A.
+g(bar{}); // ERROR: Fails requirement B.
+g(baz{}); // PASS.
 ```
 * **Compound requirements** - an expression in braces followed by a trailing return type or type constraint.
 
@@ -252,7 +252,7 @@ g(Baz{}); // PASS.
 template <typename T>
 concept C = requires(T x) {
   {*x} -> typename T::inner; // the type of the expression `*x` is convertible to `T::inner`
-  {x + 1} -> std::Same<int>; // the expression `x + 1` satisfies `std::Same<decltype((x + 1))>`
+  {x + 1} -> std::same_as<int>; // the expression `x + 1` satisfies `std::same_as<decltype((x + 1))>`
   {x * 1} -> T; // the type of the expression `x * 1` is convertible to `T`
 };
 ```
@@ -261,7 +261,7 @@ concept C = requires(T x) {
 ```c++
 template <typename T>
 concept C = requires(T x) {
-  requires std::Same<sizeof(x), size_t>;
+  requires std::same_as<sizeof(x), size_t>;
 };
 ```
 See also: [concepts library](#concepts-library).
@@ -433,26 +433,26 @@ std::string_view to_string(rgba_color_channel channel) {
 Concepts are also provided by the standard library for building more complicated concepts. Some of these include:
 
 **Core language concepts:**
-- `Same` - specifies two types are the same.
-- `DerivedFrom` - specifies that a type is derived from another type.
-- `ConvertibleTo` - specifies that a type is implicitly convertible to another type.
-- `Common` - specifies that two types share a common type.
-- `Integral` - specifies that a type is an integral type.
-- `DefaultConstructible` - specifies that an object of a type can be default-constructed.
+- `same_as` - specifies two types are the same.
+- `derived_from` - specifies that a type is derived from another type.
+- `convertible_to` - specifies that a type is implicitly convertible to another type.
+- `common_with` - specifies that two types share a common type.
+- `integral` - specifies that a type is an integral type.
+- `default_constructible` - specifies that an object of a type can be default-constructed.
 
  **Comparison concepts:**
-- `Boolean` - specifies that a type can be used in Boolean contexts.
-- `EqualityComparable` - specifies that `operator==` is an equivalence relation.
+- `boolean` - specifies that a type can be used in Boolean contexts.
+- `equality_comparable` - specifies that `operator==` is an equivalence relation.
 
  **Object concepts:**
-- `Movable` - specifies that an object of a type can be moved and swapped.
-- `Copyable` - specifies that an object of a type can be copied, moved, and swapped.
-- `Semiregular` - specifies that an object of a type can be copied, moved, swapped, and default constructed.
-- `Regular` - specifies that a type is _regular_, that is, it is both `Semiregular` and `EqualityComparable`.
+- `movable` - specifies that an object of a type can be moved and swapped.
+- `copyable` - specifies that an object of a type can be copied, moved, and swapped.
+- `semiregular` - specifies that an object of a type can be copied, moved, swapped, and default constructed.
+- `regular` - specifies that a type is _regular_, that is, it is both `semiregular` and `equality_comparable`.
 
  **Callable concepts:**
-- `Invocable` - specifies that a callable type can be invoked with a given set of argument types.
-- `Predicate` - specifies that a callable type is a Boolean predicate.
+- `invocable` - specifies that a callable type can be invoked with a given set of argument types.
+- `predicate` - specifies that a callable type is a Boolean predicate.
 
 See also: [concepts](#concepts).
 
