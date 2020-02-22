@@ -19,6 +19,7 @@ C++20 includes the following new language features:
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
+- [synchronized buffered outputstream](#synchronized-buffered-outputstream)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -455,6 +456,12 @@ Concepts are also provided by the standard library for building more complicated
 - `predicate` - specifies that a callable type is a Boolean predicate.
 
 See also: [concepts](#concepts).
+
+### synchronized buffered outputstream
+Buffers output operations for the wrapped output stream ensuring synchronization (i.e. no interleaving of output).
+```c++
+std::osyncstream{std::cout} << "The value of x is:" << x << std::endl;
+```
 
 ## C++17 Language Features
 
