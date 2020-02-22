@@ -1160,16 +1160,16 @@ See the section on [smart pointers](#smart-pointers) for more information on `st
 ## C++11 Language Features
 
 ### Move semantics
-Move semantics is mostly about performance optimization: the ability to move an object without the expensive overhead of copying. The difference between a copy and a move is that a copy leaves the source unchanged, and a move will leave the source either unchanged or radically different -- depending on what the source is. For plain old data, a move is the same as a copy.
+Moving an object means to transfer ownership of some resource it manages to another object.
 
-To move an object means to transfer ownership of some resource it manages to another object. You could think of this as changing pointers held by the source object to be moved, or now held, by the destination object; the resource remains in its location in memory. Such an inexpensive transfer of resources is extremely useful when the source is an `rvalue`, where the potentially dangerous side-effect of changing the source after the move is redundant since the source is a temporary object that won't be accessible later.
+The first benefit of move semantics is performance optimization. When an object is about to reach the end of its lifetime, either because it's a temporary or by explicitly calling `std::move`, a move is often a cheaper way to transfer resources. For example, moving a `std::vector` is just copying some pointers and internal state over to the new vector -- copying would involve having to copy every single contained element in the vector, which is expensive and unnecessary if the old vector will soon be destroyed.
 
-Moves also make it possible to transfer objects such as `std::unique_ptr`s, [smart pointers](#smart-pointers) that are designed to hold a pointer to a unique object, from one scope to another.
+Moves also make it possible for non-copyable types such as `std::unique_ptr`s ([smart pointers](#smart-pointers)) to guarantee at the language level that there is only ever one instance of a resource being managed at a time, while being able to transfer an instance between scopes.
 
-See the sections on: [rvalue references](#rvalue-references), [defining move special member functions](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
+See the sections on: [rvalue references](#rvalue-references), [special member functions for move semantics](#special-member-functions-for-move-semantics), [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
 
 ### Rvalue references
-C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `A`, which is a non-template type parameter (such as `int`, or a user-defined type), is created with the syntax `A&&`. Rvalue references only bind to rvalues.
+C++11 introduces a new reference termed the _rvalue reference_. An rvalue reference to `T`, which is a non-template type parameter (such as `int`, or a user-defined type), is created with the syntax `T&&`. Rvalue references only bind to rvalues.
 
 Type deduction with lvalues and rvalues:
 ```c++
@@ -1182,7 +1182,7 @@ int&& xr2 = 0; // `xr2` is an lvalue of type `int&&` -- binds to the rvalue temp
 See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
 
 ### Forwarding references
-Also known (unofficially) as _universal references_. A forwarding reference is created with the syntax `T&&` where `T` is a template type parameter, or using `auto&&`. This enables two major features: move semantics; and _perfect forwarding_, the ability to pass arguments that are either lvalues or rvalues.
+Also known (unofficially) as _universal references_. A forwarding reference is created with the syntax `T&&` where `T` is a template type parameter, or using `auto&&`. This enables _perfect forwarding_: the ability to pass arguments while maintaining their value category (e.g. lvalues stay as lvalues, temporaries are forwarded as rvalues).
 
 Forwarding references allow a reference to bind to either an lvalue or rvalue depending on the type. Forwarding references follow the rules of _reference collapsing_:
 * `T& &` becomes `T&`
@@ -1785,9 +1785,9 @@ void g() noexcept {
 ## C++11 Library Features
 
 ### std::move
-`std::move` indicates that the object passed to it may have its resources transferred. Moves can often be more efficient than copies. Using objects that have been moved from should be used with care, as they can be left in an unspecified state (see: [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)).
+`std::move` indicates that the object passed to it may have its resources transferred. Using objects that have been moved from should be used with care, as they can be left in an unspecified state (see: [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)).
 
-A definition of `std::move` (performing a move is nothing more than casting to an rvalue):
+A definition of `std::move` (performing a move is nothing more than casting to an rvalue reference):
 ```c++
 template <typename T>
 typename remove_reference<T>::type&& move(T&& arg) {
@@ -1804,7 +1804,7 @@ std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p3`
 ```
 
 ### std::forward
-Returns the arguments passed to it as-is, either as an lvalue or rvalue references, and includes cv-qualification. Useful for generic code that need a reference (either lvalue or rvalue) when appropriate, e.g factories. Used in conjunction with [`forwarding references`](#forwarding-references).
+Returns the arguments passed to it while maintaining their value category and cv-qualifiers. Useful for generic code and factories. Used in conjunction with [`forwarding references`](#forwarding-references).
 
 A definition of `std::forward`:
 ```c++
