@@ -22,6 +22,7 @@ C++20 includes the following new library features:
 - [synchronized buffered outputstream](#synchronized-buffered-outputstream)
 - [std::span](#stdspan)
 - [bit operations](#bit-operations)
+- [math constants](#math-constants)
 
 ## C++20 Language Features
 
@@ -416,6 +417,13 @@ C++20 provides a new `<bit>` header which provides some bit operations including
 std::popcount(0u); // 0
 std::popcount(1u); // 1
 std::popcount(0b1111'0000u); // 4
+```
+
+### math constants
+Mathematical constants including PI, Euler's number, etc. defined in the `<numbers>` header.
+```c++
+std::numbers::pi; // 3.14159...
+std::numbers::e; // 2.71828...
 ```
 
 ## Acknowledgements
