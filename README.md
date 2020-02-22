@@ -20,6 +20,7 @@ C++20 includes the following new language features:
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
 - [synchronized buffered outputstream](#synchronized-buffered-outputstream)
+- [std::span](#stdspan)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -461,6 +462,43 @@ See also: [concepts](#concepts).
 Buffers output operations for the wrapped output stream ensuring synchronization (i.e. no interleaving of output).
 ```c++
 std::osyncstream{std::cout} << "The value of x is:" << x << std::endl;
+```
+
+### std::span
+A span is a view (i.e. non-owning) of a container providing bounds-checked access to a contiguous group of elements. Since views do not own their elements they are cheap to construct and copy -- a simplified way to think about views is they are holding references to their data. Spans can be dynamically-sized or fixed-sized.
+```c++
+void f(std::span<int> ints) {
+    std::for_each(ints.begin(), ints.end(), [](auto i) {
+        // ...
+    });
+}
+
+std::vector<int> v = {1, 2, 3};
+f(v);
+std::array<int, 3> a = {1, 2, 3};
+f(a);
+// etc.
+```
+Example: as opposed to maintaining a pointer and length field, a span wraps both of those up in a single container.
+```c++
+constexpr size_t LENGTH_ELEMENTS = 3;
+int* arr = new int[LENGTH_ELEMENTS]; // arr = {0, 0, 0}
+
+// Fixed-sized span which provides a view of `arr`.
+std::span<int, LENGTH_ELEMENTS> span = arr;
+span[1] = 1; // arr = {0, 1, 0}
+
+// Dynamic-sized span which provides a view of `arr`.
+std::span<int> d_span = arr;
+span[0] = 1; // arr = {1, 1, 0}
+```
+```c++
+constexpr size_t LENGTH_ELEMENTS = 3;
+int* arr = new int[LENGTH_ELEMENTS];
+
+std::span<int, LENGTH_ELEMENTS> span = arr; // OK
+std::span<double, LENGTH_ELEMENTS> span2 = arr; // ERROR
+std::span<int, 1> span3 = arr; // ERROR
 ```
 
 ## C++17 Language Features
