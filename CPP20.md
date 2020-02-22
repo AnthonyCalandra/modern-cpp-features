@@ -21,6 +21,7 @@ C++20 includes the following new library features:
 - [concepts library](#concepts-library)
 - [synchronized buffered outputstream](#synchronized-buffered-outputstream)
 - [std::span](#stdspan)
+- [bit operations](#bit-operations)
 
 ## C++20 Language Features
 
@@ -407,6 +408,14 @@ int* arr = new int[LENGTH_ELEMENTS];
 std::span<int, LENGTH_ELEMENTS> span = arr; // OK
 std::span<double, LENGTH_ELEMENTS> span2 = arr; // ERROR
 std::span<int, 1> span3 = arr; // ERROR
+```
+
+### bit operations
+C++20 provides a new `<bit>` header which provides some bit operations including popcount.
+```c++
+std::popcount(0u); // 0
+std::popcount(1u); // 1
+std::popcount(0b1111'0000u); // 4
 ```
 
 ## Acknowledgements
