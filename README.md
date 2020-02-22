@@ -23,6 +23,7 @@ C++20 includes the following new library features:
 - [std::span](#stdspan)
 - [bit operations](#bit-operations)
 - [math constants](#math-constants)
+- [std::is_constant_evaluated](#stdis_constant_evaluated)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -516,6 +517,17 @@ Mathematical constants including PI, Euler's number, etc. defined in the `<numbe
 ```c++
 std::numbers::pi; // 3.14159...
 std::numbers::e; // 2.71828...
+```
+
+### std::is_constant_evaluated
+Predicate function which is truthy when it is called in a compile-time context.
+```c++
+constexpr bool is_compile_time() {
+    return std::is_constant_evaluated();
+}
+
+constexpr bool a = is_compile_time(); // true
+bool b = is_compile_time(); // false
 ```
 
 ## C++17 Language Features
