@@ -369,7 +369,7 @@ Concepts are also provided by the standard library for building more complicated
 
 See also: [concepts](#concepts).
 
-### synchronized buffered outputstream
+### Synchronized buffered outputstream
 Buffers output operations for the wrapped output stream ensuring synchronization (i.e. no interleaving of output).
 ```c++
 std::osyncstream{std::cout} << "The value of x is:" << x << std::endl;
@@ -412,7 +412,7 @@ std::span<double, LENGTH_ELEMENTS> span2 = arr; // ERROR
 std::span<int, 1> span3 = arr; // ERROR
 ```
 
-### bit operations
+### Bit operations
 C++20 provides a new `<bit>` header which provides some bit operations including popcount.
 ```c++
 std::popcount(0u); // 0
@@ -420,7 +420,7 @@ std::popcount(1u); // 1
 std::popcount(0b1111'0000u); // 4
 ```
 
-### math constants
+### Math constants
 Mathematical constants including PI, Euler's number, etc. defined in the `<numbers>` header.
 ```c++
 std::numbers::pi; // 3.14159...
