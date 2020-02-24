@@ -1126,7 +1126,7 @@ std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
 
 ### Compile-time integer sequences
 The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
-* `std::make_integer_sequence<T, N...>` - creates a sequence of `0, ..., N - 1` with type `T`.
+* `std::make_integer_sequence<T, N>` - creates a sequence of `0, ..., N - 1` with type `T`.
 * `std::index_sequence_for<T...>` - converts a template parameter pack into an integer sequence.
 
 Convert an array into a tuple:
