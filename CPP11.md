@@ -875,7 +875,7 @@ See the section on [smart pointers](#smart-pointers) for more information on `st
 ```c++
 // create a container to store reference of objects.
 auto val = 99;
-vector<reference_wrapper<int> >vec; // vec.push_back(&i) does not compile even if vec is declared as vec<int&>
+vector<reference_wrapper<int> >vec; // vec.push_back(&i) does not compile
 vec.push_back(std::ref(val));
 val++;
 for(auto i: vec) cout << i; // prints 100
