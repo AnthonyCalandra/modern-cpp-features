@@ -48,6 +48,7 @@ C++11 includes the following new library features:
 - [std::array](#stdarray)
 - [unordered containers](#unordered-containers)
 - [std::make_shared](#stdmake_shared)
+- [std::ref](#stdref)
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
