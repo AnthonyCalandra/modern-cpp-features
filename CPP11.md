@@ -869,6 +869,18 @@ foo(std::make_shared<T>(), function_that_throws(), std::make_shared<T>());
 
 See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
+### std::ref
+`std::ref(val)` is used to create object of type `std::reference_wrapper` that holds reference of val. Used in cases when usual reference passing using `&` does not compile or `&` is dropped due to type deduction.
+
+```c++
+// create a container to store reference of objects.
+auto val = 99;
+vector<reference_wrapper<int> >vec; // vec.push_back(&i) does not compile even if vec is declared as vec<int&>
+vec.push_back(std::ref(val));
+val++;
+for(auto i: vec) cout << i; // prints 100
+```
+
 ### Memory model
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
 
