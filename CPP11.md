@@ -871,15 +871,20 @@ foo(std::make_shared<T>(), function_that_throws(), std::make_shared<T>());
 See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
 ### std::ref
-`std::ref(val)` is used to create object of type `std::reference_wrapper` that holds reference of val. Used in cases when usual reference passing using `&` does not compile or `&` is dropped due to type deduction.
+`std::ref(val)` is used to create object of type `std::reference_wrapper` that holds reference of val. Used in cases when usual reference passing using `&` does not compile or `&` is dropped due to type deduction. `std::cref` is similar but created reference wrapper holds a const reference to val.
 
 ```c++
 // create a container to store reference of objects.
 auto val = 99;
-vector<reference_wrapper<int> >vec; // vector<int&>vec does not compile
-vec.push_back(std::ref(val)); // vec.push_back(&i) does not compile
-val++;
-for(auto i: vec) cout << i; // prints 100
+auto _ref = std::ref(val);
+_ref++;
+auto _cref = std::cref(val);
+//_cref++; does not compile
+std::vector<std::reference_wrapper<int>>vec; // vector<int&>vec does not compile
+vec.push_back(_ref); // vec.push_back(&i) does not compile
+cout << val << endl; // prints 100
+cout << vec[0] << endl; // prints 100
+cout << _cref; // prints 100
 ```
 
 ### Memory model
