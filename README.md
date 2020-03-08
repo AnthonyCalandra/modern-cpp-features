@@ -113,6 +113,7 @@ C++11 includes the following new library features:
 - [std::array](#stdarray)
 - [unordered containers](#unordered-containers)
 - [std::make_shared](#stdmake_shared)
+- [std::ref](#stdref)
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
@@ -1974,6 +1975,23 @@ foo(std::make_shared<T>(), function_that_throws(), std::make_shared<T>());
 * Prevents having to do two allocations. When calling `std::shared_ptr{ new T{} }`, we have to allocate memory for `T`, then in the shared pointer we have to allocate memory for the control block within the pointer.
 
 See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
+
+### std::ref
+`std::ref(val)` is used to create object of type `std::reference_wrapper` that holds reference of val. Used in cases when usual reference passing using `&` does not compile or `&` is dropped due to type deduction. `std::cref` is similar but created reference wrapper holds a const reference to val.
+
+```c++
+// create a container to store reference of objects.
+auto val = 99;
+auto _ref = std::ref(val);
+_ref++;
+auto _cref = std::cref(val);
+//_cref++; does not compile
+std::vector<std::reference_wrapper<int>>vec; // vector<int&>vec does not compile
+vec.push_back(_ref); // vec.push_back(&i) does not compile
+cout << val << endl; // prints 100
+cout << vec[0] << endl; // prints 100
+cout << _cref; // prints 100
+```
 
 ### Memory model
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
