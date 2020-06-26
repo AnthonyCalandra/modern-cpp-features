@@ -24,7 +24,7 @@ C++20 includes the following new library features:
 - [bit operations](#bit-operations)
 - [math constants](#math-constants)
 - [std::is_constant_evaluated](#stdis_constant_evaluated)
-- [std::make_shared supports arrays](#stdmake_shared-supports-array)
+- [std::make_shared supports arrays](#stdmake_shared-supports-arrays)
 - [starts_with and ends_with on strings](#starts_with-and-ends_with-on-strings)
 - [check if associative container has element](#check-if-associative-container-has-element)
 - [std::bit_cast](#stdbit_cast)
@@ -542,7 +542,7 @@ auto p = std::make_shared<int[]>(5); // pointer to `int[5]`
 auto p = std::make_shared<int[5]>(); // pointer to `int[5]`
 ```
 
-### starts_with and ends_with
+### starts_with and ends_with on strings
 Strings (and string views) now have the `starts_with` and `ends_with` member functions to check if a string starts or ends with the given string.
 ```c++
 std::string str = "foobar";
