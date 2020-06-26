@@ -24,6 +24,10 @@ C++20 includes the following new library features:
 - [bit operations](#bit-operations)
 - [math constants](#math-constants)
 - [std::is_constant_evaluated](#stdis_constant_evaluated)
+- [std::make_shared supports arrays](#stdmake_shared-supports-array)
+- [starts_with and ends_with on strings](#starts_with-and-ends_with-on-strings)
+- [check if associative container has element](#check-if-associative-container-has-element)
+- [std::bit_cast](#stdbit_cast)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -528,6 +532,39 @@ constexpr bool is_compile_time() {
 
 constexpr bool a = is_compile_time(); // true
 bool b = is_compile_time(); // false
+```
+
+### std::make_shared supports arrays
+```c++
+auto p = std::make_shared<int[]>(5); // pointer to `int[5]`
+// OR
+auto p = std::make_shared<int[5]>(); // pointer to `int[5]`
+```
+
+### starts_with and ends_with
+Strings (and string views) now have the `starts_with` and `ends_with` member functions to check if a string starts or ends with the given string.
+```c++
+std::string str = "foobar";
+str.starts_with("foo"); // true
+str.ends_with("baz"); // false
+```
+
+### Check if associative container has element
+Associative containers such as sets and maps have a `contains` member function, which can be used instead of the "find and check end of iterator" idiom.
+```c++
+std::map<int, char> map {{1, 'a'}, {2, 'b'}};
+map.contains(2); // true
+map.contains(123); // false
+
+std::set<int> set {1, 2, 3};
+set.contains(2); // true
+```
+
+### std::bit_cast
+A safer way to reinterpret an object from one type to another.
+```c++
+float f = 123.0;
+int i = std::bit_cast<int>(f);
 ```
 
 ## C++17 Language Features
