@@ -15,6 +15,7 @@ C++20 includes the following new language features:
 - [explicit(bool)](#explicitbool)
 - [immediate functions](#immediate-functions)
 - [using enum](#using-enum)
+- [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -430,6 +431,28 @@ std::string_view to_string(rgba_color_channel my_channel) {
     case blue:  return "blue";
     case alpha: return "alpha";
   }
+}
+```
+
+### Lambda capture of parameter pack
+Capture parameter packs by value:
+```c++
+template <typename... Args>
+auto f(Args&&... args){
+    // BY VALUE:
+    return [...args = std::forward<Args>(args)] {
+        // ...
+    };
+}
+```
+Capture parameter packs by reference:
+```c++
+template <typename... Args>
+auto f(Args&&... args){
+    // BY REFERENCE:
+    return [&...args = std::forward<Args>(args)] {
+        // ...
+    };
 }
 ```
 
