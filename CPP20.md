@@ -28,6 +28,8 @@ C++20 includes the following new library features:
 - [starts_with and ends_with on strings](#starts_with-and-ends_with-on-strings)
 - [check if associative container has element](#check-if-associative-container-has-element)
 - [std::bit_cast](#stdbit_cast)
+- [std::midpoint](#stdmidpoint)
+- [std::to_array](#stdto_array)
 
 ## C++20 Language Features
 
@@ -473,6 +475,22 @@ A safer way to reinterpret an object from one type to another.
 ```c++
 float f = 123.0;
 int i = std::bit_cast<int>(f);
+```
+
+### std::midpoint
+Calculate the midpoint of two integers safely (without overflow).
+```c++
+std::midpoint(1, 3); // == 2
+```
+
+### std::to_array
+Converts the given array/"array-like" object to a `std::array`.
+```c++
+std::to_array("foo"); // returns `std::array<char, 4>`
+std::to_array<int>({1, 2, 3}); // returns `std::array<int, 3>`
+
+int a[] = {1, 2, 3};
+std::to_array(a); // returns `std::array<int, 3>`
 ```
 
 ## Acknowledgements
