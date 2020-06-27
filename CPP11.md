@@ -211,7 +211,7 @@ A `lambda` is an unnamed function object capable of capturing variables in scope
 * `[]` - captures nothing.
 * `[=]` - capture local objects (local variables, parameters) in scope by value.
 * `[&]` - capture local objects (local variables, parameters) in scope by reference.
-* `[this]` - capture `this` pointer by value.
+* `[this]` - capture `this` by reference.
 * `[a, &b]` - capture objects `a` by value, `b` by reference.
 
 ```c++
