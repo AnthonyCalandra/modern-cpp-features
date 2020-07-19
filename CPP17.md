@@ -170,7 +170,10 @@ namespace A {
     }
   }
 }
-// vs.
+```
+
+The code above can be written like this:
+```c++
 namespace A::B::C {
   int i;
 }
