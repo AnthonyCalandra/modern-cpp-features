@@ -17,6 +17,7 @@ C++17 includes the following new language features:
 - [constexpr if](#constexpr-if)
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
+- [fallthrough, nodiscard, maybe_unused attributes](#fallthrough-nodiscard-maybe_unused-attributes)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -38,8 +39,8 @@ Automatic template argument deduction much like how it's done for functions, but
 template <typename T = float>
 struct MyContainer {
   T val;
-  MyContainer() : val() {}
-  MyContainer(T val) : val(val) {}
+  MyContainer() : val{} {}
+  MyContainer(T val) : val{val} {}
   // ...
 };
 MyContainer c1 {1}; // OK MyContainer<int>
@@ -66,7 +67,7 @@ A fold expression performs a fold of a template parameter pack over a binary ope
 * An expression of the form `(... op e)` or `(e op ...)`, where `op` is a fold-operator and `e` is an unexpanded parameter pack, are called _unary folds_.
 * An expression of the form `(e1 op ... op e2)`, where `op` are fold-operators, is called a _binary fold_. Either `e1` or `e2` is an unexpanded parameter pack, but not both.
 ```c++
-template<typename... Args>
+template <typename... Args>
 bool logicalAnd(Args... args) {
     // Binary folding.
     return (true && ... && args);
@@ -76,7 +77,7 @@ bool& b2 = b;
 logicalAnd(b, b2, true); // == true
 ```
 ```c++
-template<typename... Args>
+template <typename... Args>
 auto sum(Args... args) {
     // Unary folding.
     return (... + args);
@@ -88,9 +89,9 @@ sum(1.0, 2.0f, 3); // == 6.0
 Changes to `auto` deduction when used with the uniform initialization syntax. Previously, `auto x {3};` deduces a `std::initializer_list<int>`, which now deduces to `int`.
 ```c++
 auto x1 {1, 2, 3}; // error: not a single element
-auto x2 = {1, 2, 3}; // decltype(x2) is std::initializer_list<int>
-auto x3 {3}; // decltype(x3) is int
-auto x4 {3.0}; // decltype(x4) is double
+auto x2 = {1, 2, 3}; // x2 is std::initializer_list<int>
+auto x3 {3}; // x3 is int
+auto x4 {3.0}; // x4 is double
 ```
 
 ### constexpr lambda
@@ -149,6 +150,16 @@ S x2 = S{123};        // mov eax, dword ptr [.L_ZZ4mainE2x2]
                       // .L_ZZ4mainE2x2: .long 123
 ```
 
+It can also be used to declare and define a static member variable, such that it does not need to be initialized in the source file.
+```c++
+struct S {
+  S() : id{count++} {}
+  ~S() { count--; }
+  int id;
+  static inline int count{0}; // declare and initialize count to 0 within the class
+};
+```
+
 ### Nested namespaces
 Using the namespace resolution operator to create nested namespace definitions.
 ```c++
@@ -159,7 +170,10 @@ namespace A {
     }
   }
 }
-// vs.
+```
+
+The code above can be written like this:
+```c++
 namespace A::B::C {
   int i;
 }
@@ -176,6 +190,18 @@ Coordinate origin() {
 const auto [ x, y ] = origin();
 x; // == 0
 y; // == 0
+```
+```c++
+std::unordered_map<std::string, int> mapping {
+  {"a", 1},
+  {"b", 2},
+  {"c", 3}
+};
+
+// Destructure by reference.
+for (const auto& [key, value] : mapping) {
+  // Do something with key and value
+}
 ```
 
 ### Selection statements with initializer
@@ -221,13 +247,13 @@ struct S {};
 static_assert(isIntegral<S>() == false);
 ```
 
-### UTF-8 Character Literals
+### UTF-8 character literals
 A character literal that begins with `u8` is a character literal of type `char`. The value of a UTF-8 character literal is equal to its ISO 10646 code point value.
 ```c++
 char x = u8'x';
 ```
 
-### Direct List Initialization of Enums
+### Direct list initialization of enums
 Enums can now be initialized using braced syntax.
 ```c++
 enum byte : unsigned char {};
@@ -235,6 +261,52 @@ byte b {0}; // OK
 byte c {-1}; // ERROR
 byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
+```
+
+### fallthrough, nodiscard, maybe_unused attributes
+C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`.
+* `[[fallthrough]]` indicates to the compiler that falling through in a switch statement is intended behavior.
+```c++
+switch (n) {
+  case 1: [[fallthrough]]
+    // ...
+  case 2:
+    // ...
+    break;
+}
+```
+
+* `[[nodiscard]]` issues a warning when either a function or class has this attribute and its return value is discarded.
+```c++
+[[nodiscard]] bool do_something() {
+  return is_success; // true for success, false for failure
+}
+
+do_something(); // warning: ignoring return value of 'bool do_something()',
+                // declared with attribute 'nodiscard'
+```
+```c++
+// Only issues a warning when `error_info` is returned by value.
+struct [[nodiscard]] error_info {
+  // ...
+};
+
+error_info do_something() {
+  error_info ei;
+  // ...
+  return ei;
+}
+
+do_something(); // warning: ignoring returned value of type 'error_info',
+                // declared with attribute 'nodiscard'
+```
+
+* `[[maybe_unused]]` indicates to the compiler that a variable or parameter might be unused and is intended.
+```c++
+void my_callback(std::string msg, [[maybe_unused]] bool error) {
+  // Don't care if `msg` is an error message, just log it.
+  log(msg);
+}
 ```
 
 ## C++17 Library Features
@@ -303,14 +375,14 @@ Invoke a `Callable` object with parameters. Examples of `Callable` objects are `
 ```c++
 template <typename Callable>
 class Proxy {
-    Callable c;
+  Callable c;
 public:
-    Proxy(Callable c): c(c) {}
-    template <class... Args>
-    decltype(auto) operator()(Args&&... args) {
-        // ...
-        return std::invoke(c, std::forward<Args>(args)...);
-    }
+  Proxy(Callable c): c(c) {}
+  template <class... Args>
+  decltype(auto) operator()(Args&&... args) {
+    // ...
+    return std::invoke(c, std::forward<Args>(args)...);
+  }
 };
 auto add = [](int x, int y) {
   return x + y;
@@ -334,7 +406,7 @@ The new `std::filesystem` library provides a standard way to manipulate files, d
 Here, a big file is copied to a temporary path if there is available space:
 ```c++
 const auto bigFilePath {"bigFileToCopy"};
-if (std::filesystem::exists(bigFilePath)) {   
+if (std::filesystem::exists(bigFilePath)) {
   const auto bigFileSize {std::filesystem::file_size(bigFilePath)};
   std::filesystem::path tmpPath {"/tmp"};
   if (std::filesystem::space(tmpPath).available > bigFileSize) {

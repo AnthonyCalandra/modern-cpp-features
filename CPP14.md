@@ -11,6 +11,7 @@ C++14 includes the following new language features:
 - [decltype(auto)](#decltypeauto)
 - [relaxing constraints on constexpr functions](#relaxing-constraints-on-constexpr-functions)
 - [variable templates](#variable-templates)
+- [\[\[deprecated\]\] attribute](#deprecated-attribute)
 
 C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
@@ -136,7 +137,7 @@ constexpr int factorial(int n) {
 factorial(5); // == 120
 ```
 
-### Variable Templates
+### Variable templates
 C++14 allows variables to be templated:
 
 ```c++
@@ -144,6 +145,15 @@ template<class T>
 constexpr T pi = T(3.1415926535897932385);
 template<class T>
 constexpr T e  = T(2.7182818284590452353);
+```
+
+### [[deprecated]] attribute
+C++14 introduces the `[[deprecated]]` attribute to indicate that a unit (function, class, etc) is discouraged and likely yield compilation warnings. If a reason is provided, it will be included in the warnings.
+```c++
+[[deprecated]]
+void old_method();
+[[deprecated("Use new_method instead")]]
+void legacy_method();
 ```
 
 ## C++14 Library Features
@@ -159,7 +169,7 @@ std::chrono::duration_cast<std::chrono::minutes>(day).count(); // == 1440
 
 ### Compile-time integer sequences
 The class template `std::integer_sequence` represents a compile-time sequence of integers. There are a few helpers built on top:
-* `std::make_integer_sequence<T, N...>` - creates a sequence of `0, ..., N - 1` with type `T`.
+* `std::make_integer_sequence<T, N>` - creates a sequence of `0, ..., N - 1` with type `T`.
 * `std::index_sequence_for<T...>` - converts a template parameter pack into an integer sequence.
 
 Convert an array into a tuple:
