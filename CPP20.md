@@ -31,6 +31,7 @@ C++20 includes the following new library features:
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
 - [char8_t](#char8_t)
+- [ranges](#Ranges_library)
 
 ## C++20 Language Features
 
@@ -515,6 +516,15 @@ Provides a standard type for representing UTF-8 strings.
 ```c++
 char8_t utf8_str[] = u8"\u0123";
 ```
+
+### Ranges_library
+provides functions to deal with the range of elements.
+```c++
+int a[] = {-1,2,3};
+auto vi = std::ranges:begin(a);//begin is one of the functions of range library
+cout<<*vi<<endl;//returns the starting pointer of iterator to the first elemnt of array a and returns the value -1
+```
+
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
