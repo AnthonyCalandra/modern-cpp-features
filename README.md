@@ -1259,6 +1259,17 @@ int x = 0; // `x` is an lvalue of type `int`
 int& xl = x; // `xl` is an lvalue of type `int&`
 int&& xr = x; // compiler error -- `x` is an lvalue
 int&& xr2 = 0; // `xr2` is an lvalue of type `int&&` -- binds to the rvalue temporary, `0`
+
+void f(int& x) {}
+void f(int&& x) {}
+
+f(x);  // calls f(int&)
+f(xl); // calls f(int&)
+f(3);  // calls f(int&&)
+f(std::move(x)) // calls f(int&&)
+
+f(xr2);           // calls f(int&)
+f(std::move(xr2)) // calls f(int&& x)
 ```
 
 See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
@@ -1293,15 +1304,15 @@ void f(T&& t) {
 }
 
 int x = 0;
-f(0); // deduces as f(int&&)
-f(x); // deduces as f(int&)
+f(0); // T is int, deduces as f(int &&) => f(int&&)
+f(x); // T is int&, deduces as f(int& &&) => f(int&)
 
 int& y = x;
-f(y); // deduces as f(int& &&) => f(int&)
+f(y); // T is int&, deduces as f(int& &&) => f(int&)
 
 int&& z = 0; // NOTE: `z` is an lvalue with type `int&&`.
-f(z); // deduces as f(int&& &) => f(int&)
-f(std::move(z)); // deduces as f(int&& &&) => f(int&&)
+f(z); // T is int&, deduces as f(int& &&) => f(int&)
+f(std::move(z)); // T is int, deduces as f(int &&) => f(int&&)
 ```
 
 See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`rvalue references`](#rvalue-references).
