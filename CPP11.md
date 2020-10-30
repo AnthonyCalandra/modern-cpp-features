@@ -34,6 +34,7 @@ C++11 includes the following new language features:
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
 - [noexcept specifier](#noexcept-specifier)
+- [raw-string-literals](#raw-string-literals)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -687,6 +688,15 @@ void g() noexcept {
     throw 42;     // valid, effectively a call to std::terminate
 }
 ```
+
+### Raw-string literals
+" (unescaped_character|escaped_character)* "		
+L" (unescaped_character|escaped_character)* "	
+u8" (unescaped_character|escaped_character)* "
+u" (unescaped_character|escaped_character)* "	
+U" (unescaped_character|escaped_character)* "
+prefix(optional) R"delimiter( raw_characters )delimiter"
+
 
 ## C++11 Library Features
 
