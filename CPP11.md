@@ -34,6 +34,7 @@ C++11 includes the following new language features:
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
 - [noexcept specifier](#noexcept-specifier)
+- [raw string literals](https://en.cppreference.com/w/cpp/language/string_literal)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
