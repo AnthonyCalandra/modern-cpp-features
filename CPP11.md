@@ -34,6 +34,7 @@ C++11 includes the following new language features:
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
 - [noexcept specifier](#noexcept-specifier)
+- [char32_t and char16_t](#char32_t-and-char16_t)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -686,6 +687,13 @@ void g() noexcept {
     f();          // valid, even if f throws
     throw 42;     // valid, effectively a call to std::terminate
 }
+```
+
+### char32_t and char16_t
+Provides standard types for representing UTF-8 strings.
+```c++
+char32_t utf8_str[] = U"\u0123";
+char16_t utf8_str[] = u"\u0123";
 ```
 
 ## C++11 Library Features

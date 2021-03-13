@@ -17,6 +17,7 @@ C++20 includes the following new language features:
 - [immediate functions](#immediate-functions)
 - [using enum](#using-enum)
 - [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
+- [char8_t](#char8_t)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -31,7 +32,6 @@ C++20 includes the following new library features:
 - [std::bit_cast](#stdbit_cast)
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
-- [char8_t](#char8_t)
 
 ## C++20 Language Features
 
@@ -412,6 +412,12 @@ auto f(Args&&... args){
 }
 ```
 
+### char8_t
+Provides a standard type for representing UTF-8 strings.
+```c++
+char8_t utf8_str[] = u8"\u0123";
+```
+
 ## C++20 Library Features
 
 ### Concepts library
@@ -557,12 +563,6 @@ std::to_array<int>({1, 2, 3}); // returns `std::array<int, 3>`
 
 int a[] = {1, 2, 3};
 std::to_array(a); // returns `std::array<int, 3>`
-```
-
-### char8_t
-Provides a standard type for representing UTF-8 strings.
-```c++
-char8_t utf8_str[] = u8"\u0123";
 ```
 
 ## Acknowledgements

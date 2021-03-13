@@ -17,6 +17,7 @@ C++20 includes the following new language features:
 - [immediate functions](#immediate-functions)
 - [using enum](#using-enum)
 - [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
+- [char8_t](#char8_t)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -31,7 +32,6 @@ C++20 includes the following new library features:
 - [std::bit_cast](#stdbit_cast)
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
-- [char8_t](#char8_t)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -107,6 +107,7 @@ C++11 includes the following new language features:
 - [ref-qualified member functions](#ref-qualified-member-functions)
 - [trailing return types](#trailing-return-types)
 - [noexcept specifier](#noexcept-specifier)
+- [char32_t and char16_t](#char32_t-and-char16_t)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
@@ -505,6 +506,12 @@ auto f(Args&&... args){
 }
 ```
 
+### char8_t
+Provides a standard type for representing UTF-8 strings.
+```c++
+char8_t utf8_str[] = u8"\u0123";
+```
+
 ## C++20 Library Features
 
 ### Concepts library
@@ -650,12 +657,6 @@ std::to_array<int>({1, 2, 3}); // returns `std::array<int, 3>`
 
 int a[] = {1, 2, 3};
 std::to_array(a); // returns `std::array<int, 3>`
-```
-
-### char8_t
-Provides a standard type for representing UTF-8 strings.
-```c++
-char8_t utf8_str[] = u8"\u0123";
 ```
 
 ## C++17 Language Features
@@ -1922,6 +1923,13 @@ void g() noexcept {
     f();          // valid, even if f throws
     throw 42;     // valid, effectively a call to std::terminate
 }
+```
+
+### char32_t and char16_t
+Provides standard types for representing UTF-8 strings.
+```c++
+char32_t utf8_str[] = U"\u0123";
+char16_t utf8_str[] = u"\u0123";
 ```
 
 ## C++11 Library Features
