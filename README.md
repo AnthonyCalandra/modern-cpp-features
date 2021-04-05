@@ -108,6 +108,7 @@ C++11 includes the following new language features:
 - [trailing return types](#trailing-return-types)
 - [noexcept specifier](#noexcept-specifier)
 - [char32_t and char16_t](#char32_t-and-char16_t)
+- [raw string literals](#raw-string-literals)
 
 C++11 includes the following new library features:
 - [std::move](#stdmove)
