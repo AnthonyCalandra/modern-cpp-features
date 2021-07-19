@@ -180,7 +180,7 @@ namespace A::B::C {
 ```
 
 ### Structured bindings
-A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include `std::tuple`, `std::pair`, `std::array`, and aggregate structures.
+A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](README.md#tuples), `std::pair`, [`std::array`](README.md##stdarray), and aggregate structures.
 ```c++
 using Coordinate = std::pair<int, int>;
 Coordinate origin() {

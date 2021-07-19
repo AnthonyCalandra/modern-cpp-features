@@ -153,7 +153,7 @@ auto sum(const First first, const Args... args) -> decltype(first) {
 }
 
 sum(1, 2, 3, 4, 5); // 15
-sum(1, 2, 3);       // 6               
+sum(1, 2, 3);       // 6
 sum(1.5, 2.0, 3.7); // 7.2
 ```
 
@@ -779,7 +779,7 @@ void foo(bool clause) { /* do something... */ }
 
 std::vector<std::thread> threadsVector;
 threadsVector.emplace_back([]() {
-  // Lambda function that will be invoked    
+  // Lambda function that will be invoked
 });
 threadsVector.emplace_back(foo, true);  // thread will run foo(true)
 for (auto& thread : threadsVector) {

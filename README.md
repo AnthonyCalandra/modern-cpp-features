@@ -832,7 +832,7 @@ namespace A::B::C {
 ```
 
 ### Structured bindings
-A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include `std::tuple`, `std::pair`, `std::array`, and aggregate structures.
+A proposal for de-structuring initialization, that would allow writing `auto [ x, y, z ] = expr;` where the type of `expr` was a tuple-like object, whose elements would be bound to the variables `x`, `y`, and `z` (which this construct declares). _Tuple-like objects_ include [`std::tuple`](#tuples), `std::pair`, [`std::array`](##stdarray), and aggregate structures.
 ```c++
 using Coordinate = std::pair<int, int>;
 Coordinate origin() {
@@ -1410,7 +1410,7 @@ auto sum(const First first, const Args... args) -> decltype(first) {
 }
 
 sum(1, 2, 3, 4, 5); // 15
-sum(1, 2, 3);       // 6               
+sum(1, 2, 3);       // 6
 sum(1.5, 2.0, 3.7); // 7.2
 ```
 
@@ -2036,7 +2036,7 @@ void foo(bool clause) { /* do something... */ }
 
 std::vector<std::thread> threadsVector;
 threadsVector.emplace_back([]() {
-  // Lambda function that will be invoked    
+  // Lambda function that will be invoked
 });
 threadsVector.emplace_back(foo, true);  // thread will run foo(true)
 for (auto& thread : threadsVector) {
