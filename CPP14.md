@@ -1,7 +1,7 @@
 # C++14
 
 ## Overview
-Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
+Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
