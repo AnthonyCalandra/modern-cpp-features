@@ -11,7 +11,7 @@ I'm not very picky about how you should contribute, but I ask that the following
 example of its usage. An optimal submission would also include a short real-world use case for the feature.
 * Make sure the feature is in the correct C++ version.
 * Make sure you've added the feature to the table of contents.
-* Make sure you have also added the feature to the separate major C++ readme files (ie. CPP11.md, CPP14.md, etc.).
+* Make sure you have also added the feature to the separate major C++ readme files (i.e. CPP11.md, CPP14.md, etc.).
 * Keep additions/deletions of content consistent with the cheatsheet's goals.
 
 ## Goals

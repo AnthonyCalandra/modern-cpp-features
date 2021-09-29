@@ -248,7 +248,7 @@ auto g = []<my_concept auto v> () {
   // ...
 };
 ```
-The `requires` keyword is used either to start a requires clause or a requires expression:
+The `requires` keyword is used either to start a `requires` clause or a `requires` expression:
 ```c++
 template <typename T>
   requires my_concept<T> // `requires` clause.
@@ -263,7 +263,7 @@ T add(T a, T b) {
   return a + b;
 }
 ```
-Note that the parameter list in a requires expression is optional. Each requirement in a requires expression are one of the following:
+Note that the parameter list in a `requires` expression is optional. Each requirement in a `requires` expression are one of the following:
 
 * **Simple requirements** - asserts that the given expression is valid.
 
@@ -392,7 +392,7 @@ while (unlikely_truthy_condition) [[unlikely]] {
 ```
 
 ### Deprecate implicit capture of this
-Implicitly capturing `this` in a lamdba capture using `[=]` is now deprecated; prefer capturing explicitly using `[=, this]` or `[=, *this]`.
+Implicitly capturing `this` in a lambda capture using `[=]` is now deprecated; prefer capturing explicitly using `[=, this]` or `[=, *this]`.
 ```c++
 struct int_value {
   int n = 0;
@@ -1254,7 +1254,7 @@ constexpr T e  = T(2.7182818284590452353);
 ```
 
 ### [[deprecated]] attribute
-C++14 introduces the `[[deprecated]]` attribute to indicate that a unit (function, class, etc) is discouraged and likely yield compilation warnings. If a reason is provided, it will be included in the warnings.
+C++14 introduces the `[[deprecated]]` attribute to indicate that a unit (function, class, etc.) is discouraged and likely yield compilation warnings. If a reason is provided, it will be included in the warnings.
 ```c++
 [[deprecated]]
 void old_method();
@@ -2205,7 +2205,7 @@ auto result = handle.get();  // wait for the result
 ```
 
 ### std::begin/end
-`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have begin and end member functions.
+`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have `begin` and `end` member functions.
 
 ```c++
 template <typename T>
