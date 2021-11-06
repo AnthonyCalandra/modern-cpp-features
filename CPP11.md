@@ -54,6 +54,7 @@ C++11 includes the following new library features:
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
+- [random functions](#random-functions)
 
 ## C++11 Language Features
 
@@ -932,6 +933,23 @@ cout << _cref; // prints 100
 C++11 introduces a memory model for C++, which means library support for threading and atomic operations. Some of these operations include (but aren't limited to) atomic loads/stores, compare-and-swap, atomic flags, promises, futures, locks, and condition variables.
 
 See the sections on: [std::thread](#stdthread)
+
+### Random functions
+According to CERT, the rand function doesn't have "good statistical properties" and can be predictable, which makes programs less secure (CERT Guideline MSC30-CPP), C++11 has a new and more secure library of tools for generating random numbers that can produce non-deterministic numbers for simulations and security cases, where predictability is not convenient. These new tools are found in the <random> header of the C++ standard library.
+An engine implements a random number generation algorithm that produces pseudo-random numbers. A distribution controls the range of values produced by an engine, the types of values (for example int, double, etc), and the statistical properties of the values.
+`std::default_random_engine` it´s the motor for default
+`std::uniform_int_distribution`evenly distributes pseudo-random integers across a specified range of values, the default range is 0 to the maximum value of an int on your platform
+```c++
+#include <ctime> // includes time
+#include <random> // contains random number generation tools
+
+// use the generator motor of random numbers predetermined for 
+// produce pseudo-random values from 1 to 6, evenly distributed
+std::default_random_engine motor( static_cast<unsigned int>( std::time( 0 ) ) );
+std::uniform_int_distribution<unsigned int> intRandom( 1, 6 );
+
+intRandom( motor ); // returns a random number between 1 to 6
+```
 
 ### std::async
 `std::async` runs the given function either asynchronously or lazily-evaluated, then returns a `std::future` which holds the result of that function call.
