@@ -1,7 +1,7 @@
 # C++20
 
 ## Overview
-Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
+Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -153,7 +153,7 @@ auto g = []<my_concept auto v> () {
   // ...
 };
 ```
-The `requires` keyword is used either to start a requires clause or a requires expression:
+The `requires` keyword is used either to start a `requires` clause or a `requires` expression:
 ```c++
 template <typename T>
   requires my_concept<T> // `requires` clause.
@@ -168,7 +168,7 @@ T add(T a, T b) {
   return a + b;
 }
 ```
-Note that the parameter list in a requires expression is optional. Each requirement in a requires expression are one of the following:
+Note that the parameter list in a `requires` expression is optional. Each requirement in a `requires` expression are one of the following:
 
 * **Simple requirements** - asserts that the given expression is valid.
 
@@ -297,7 +297,7 @@ while (unlikely_truthy_condition) [[unlikely]] {
 ```
 
 ### Deprecate implicit capture of this
-Implicitly capturing `this` in a lamdba capture using `[=]` is now deprecated; prefer capturing explicitly using `[=, this]` or `[=, *this]`.
+Implicitly capturing `this` in a lambda capture using `[=]` is now deprecated; prefer capturing explicitly using `[=, this]` or `[=, *this]`.
 ```c++
 struct int_value {
   int n = 0;

@@ -1,7 +1,7 @@
 # C++11
 
 ## Overview
-Many of these descriptions and examples come from various resources (see [Acknowledgements](#acknowledgements) section), summarized in my own words.
+Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -805,7 +805,7 @@ static_assert(std::is_same<std::conditional<true, int, double>::type, int>::valu
 ### Smart pointers
 C++11 introduces new smart pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17.
 
-`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](#stdmake_unique) and [std::make_shared](#stdmake_shared).**
+`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md#stdmake_unique) and [std::make_shared](#stdmake_shared).**
 ```c++
 std::unique_ptr<Foo> p1 { new Foo{} };  // `p1` owns `Foo`
 if (p1) {
@@ -952,7 +952,7 @@ auto result = handle.get();  // wait for the result
 ```
 
 ### std::begin/end
-`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have begin and end member functions.
+`std::begin` and `std::end` free functions were added to return begin and end iterators of a container generically. These functions also work with raw arrays which do not have `begin` and `end` member functions.
 
 ```c++
 template <typename T>
