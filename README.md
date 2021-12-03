@@ -1,6 +1,7 @@
-# C++
+# C++20/17/14/11
 
 ## Overview
+
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -2060,7 +2061,7 @@ static_assert(std::is_same<std::conditional<true, int, double>::type, int>::valu
 ### Smart pointers
 C++11 introduces new smart pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17.
 
-`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](#stdmake_unique) and [std::make_shared](#stdmake_shared).**
+`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md#stdmake_unique) and [std::make_shared](#stdmake_shared).**
 ```c++
 std::unique_ptr<Foo> p1 { new Foo{} };  // `p1` owns `Foo`
 if (p1) {
