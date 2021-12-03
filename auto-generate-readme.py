@@ -6,7 +6,7 @@ class MarkdownParser():
     def __init__(self, text):
         self.text = text
         self.lines = text.split('\n')
-    
+
     def title(self):
         return self.lines[0].split(' ')[1]
 
@@ -47,7 +47,7 @@ def combine(text, parsers):
     features = ''
     title = ''
     for p in parsers:
-        title += p.title().replace('C++', '') + '/' 
+        title += p.title().replace('C++', '') + '/'
         overview += p.overview() + '\n'
         features += p.features() + '\n'
 
@@ -74,7 +74,7 @@ def main():
         p = MarkdownParser(text)
         parsers.append(p)
 
-    template_file = src_dir / 'template.md'
+    template_file = src_dir / 'readme-template.md'
     with open(template_file, 'r') as fp:
         text = fp.read()
 

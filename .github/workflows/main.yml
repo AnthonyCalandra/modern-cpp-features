@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.7'
       - name: Update README
-        run: python script.py
+        run: python auto-generate-readme.py
       - name: Commit
         run: |
           git config --global user.name 'Github Action Bot'
