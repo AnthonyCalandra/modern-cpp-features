@@ -122,7 +122,7 @@ static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
 
-See also: `decltype` (C++11).
+See also: [`decltype (C++11)`](README.md#decltype).
 
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
@@ -198,7 +198,7 @@ The compiler is free to call `new T{}`, then `function_that_throws()`, and so on
 foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
 ```
 
-See the C++11 section on smart pointers for more information on `std::unique_ptr` and `std::shared_ptr`.
+See the section on [smart pointers (C++11)](README.md#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
