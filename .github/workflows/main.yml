@@ -1,0 +1,23 @@
+name: auto-generate-readme
+on:
+  push:
+
+jobs:
+  auto-generate-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Install Python3
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Update README
+        run: python auto-generate-readme.py
+      - name: Commit
+        run: |
+          git config --global user.name 'Github Action Bot'
+          git config --global user.email 'bot@example.com'
+          git add -u .
+          git commit -m 'Update README' || echo "No changes to commit"
+          git push origin || echo "No changes to push"

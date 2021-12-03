@@ -153,7 +153,7 @@ auto sum(const First first, const Args... args) -> decltype(first) {
 }
 
 sum(1, 2, 3, 4, 5); // 15
-sum(1, 2, 3);       // 6               
+sum(1, 2, 3);       // 6
 sum(1.5, 2.0, 3.7); // 7.2
 ```
 
@@ -270,7 +270,7 @@ auto add(X x, Y y) -> decltype(x + y) {
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
 
-See also: `decltype(auto)` (C++14).
+See also: [`decltype(auto) (C++14)`](README.md#decltypeauto).
 
 ### Type aliases
 Semantically similar to using a `typedef` however, type aliases with `using` are easier to read and are compatible with templates.
@@ -667,7 +667,7 @@ auto add(T a, U b) -> decltype(a + b) {
     return a + b;
 }
 ```
-In C++14, `decltype(auto)` can be used instead.
+In C++14, [`decltype(auto) (C++14)`](README.md#decltypeauto) can be used instead.
 
 ### Noexcept specifier
 The `noexcept` specifier specifies whether a function could throw exceptions. It is an improved version of `throw()`.
@@ -779,7 +779,7 @@ void foo(bool clause) { /* do something... */ }
 
 std::vector<std::thread> threadsVector;
 threadsVector.emplace_back([]() {
-  // Lambda function that will be invoked    
+  // Lambda function that will be invoked
 });
 threadsVector.emplace_back(foo, true);  // thread will run foo(true)
 for (auto& thread : threadsVector) {

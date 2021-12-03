@@ -1,7 +1,7 @@
 # C++20/17/14/11
 
 ## Overview
-Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
+
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -33,6 +33,7 @@ C++20 includes the following new library features:
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
 
+
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
@@ -61,6 +62,7 @@ C++17 includes the following new library features:
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
 - [parallel algorithms](#parallel-algorithms)
 
+
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
 - [generic lambda expressions](#generic-lambda-expressions)
@@ -75,6 +77,7 @@ C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile-time-integer-sequences)
 - [std::make_unique](#stdmake_unique)
+
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -127,6 +130,8 @@ C++11 includes the following new library features:
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
+
+
 
 ## C++20 Language Features
 
@@ -353,7 +358,7 @@ auto f = []<typename T>(std::vector<T> v) {
 ### Range-based for loop with initializer
 This feature simplifies common code patterns, helps keep scopes tight, and offers an elegant solution to a common lifetime problem.
 ```c++
-for (std::vector v{1, 2, 3}; auto& e : v) {
+for (auto v = std::vector{1, 2, 3}; auto& e : v) {
   std::cout << e;
 }
 // prints "123"
@@ -960,7 +965,7 @@ void my_callback(std::string msg, [[maybe_unused]] bool error) {
 ### std::variant
 The class template `std::variant` represents a type-safe `union`. An instance of `std::variant` at any given time holds a value of one of its alternative types (it's also possible for it to be valueless).
 ```c++
-std::variant<int, double> v {12};
+std::variant<int, double> v{ 12 };
 std::get<int>(v); // == 12
 std::get<0>(v); // == 12
 v = 12.0;
@@ -1228,7 +1233,7 @@ static_assert(std::is_same<int, decltype(f(x))>::value == 1);
 static_assert(std::is_same<const int&, decltype(g(x))>::value == 1);
 ```
 
-See also: [`decltype`](#decltype).
+See also: [`decltype (C++11)`](#decltype).
 
 ### Relaxing constraints on constexpr functions
 In C++11, `constexpr` function bodies could only contain a very limited set of syntaxes, including (but not limited to): `typedef`s, `using`s, and a single `return` statement. In C++14, the set of allowable syntaxes expands greatly to include the most common syntax such as `if` statements, multiple `return`s, loops, etc.
@@ -1258,7 +1263,6 @@ C++14 introduces the `[[deprecated]]` attribute to indicate that a unit (functio
 ```c++
 [[deprecated]]
 void old_method();
-
 [[deprecated("Use new_method instead")]]
 void legacy_method();
 ```
@@ -1305,7 +1309,7 @@ The compiler is free to call `new T{}`, then `function_that_throws()`, and so on
 foo(std::make_unique<T>(), function_that_throws(), std::make_unique<T>());
 ```
 
-See the section on [smart pointers](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
+See the section on [smart pointers (C++11)](#smart-pointers) for more information on `std::unique_ptr` and `std::shared_ptr`.
 
 ## C++11 Language Features
 
@@ -1522,7 +1526,7 @@ auto add(X x, Y y) -> decltype(x + y) {
 add(1, 2.0); // `decltype(x + y)` => `decltype(3.0)` => `double`
 ```
 
-See also: [`decltype(auto)`](#decltypeauto).
+See also: [`decltype(auto) (C++14)`](#decltypeauto).
 
 ### Type aliases
 Semantically similar to using a `typedef` however, type aliases with `using` are easier to read and are compatible with templates.
@@ -1873,7 +1877,6 @@ struct Foo {
   Bar getBar() & { return bar; }
   Bar getBar() const& { return bar; }
   Bar getBar() && { return std::move(bar); }
-  Bar getBar() const&& { return std::move(bar); }
 private:
   Bar bar;
 };
@@ -1920,7 +1923,7 @@ auto add(T a, U b) -> decltype(a + b) {
     return a + b;
 }
 ```
-In C++14, [decltype(auto)](#decltypeauto) can be used instead.
+In C++14, [`decltype(auto) (C++14)`](#decltypeauto) can be used instead.
 
 ### Noexcept specifier
 The `noexcept` specifier specifies whether a function could throw exceptions. It is an improved version of `throw()`.
@@ -1986,7 +1989,7 @@ typename remove_reference<T>::type&& move(T&& arg) {
 
 Transferring `std::unique_ptr`s:
 ```c++
-std::unique_ptr<int> p1 {new int{0}}; // in practice, use std::make_unique
+std::unique_ptr<int> p1 {new int{0}};  // in practice, use std::make_unique
 std::unique_ptr<int> p2 = p1; // error -- cannot copy unique pointers
 std::unique_ptr<int> p3 = std::move(p1); // move `p1` into `p3`
                                          // now unsafe to dereference object held by `p1`
@@ -2058,9 +2061,9 @@ static_assert(std::is_same<std::conditional<true, int, double>::type, int>::valu
 ### Smart pointers
 C++11 introduces new smart pointers: `std::unique_ptr`, `std::shared_ptr`, `std::weak_ptr`. `std::auto_ptr` now becomes deprecated and then eventually removed in C++17.
 
-`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](#stdmake_unique) and [std::make_shared](#stdmake_shared).**
+`std::unique_ptr` is a non-copyable, movable pointer that manages its own heap-allocated memory. **Note: Prefer using the `std::make_X` helper functions as opposed to using constructors. See the sections for [std::make_unique](https://github.com/AnthonyCalandra/modern-cpp-features/blob/master/CPP14.md#stdmake_unique) and [std::make_shared](#stdmake_shared).**
 ```c++
-std::unique_ptr<Foo> p1 {new Foo{}};  // `p1` owns `Foo`
+std::unique_ptr<Foo> p1 { new Foo{} };  // `p1` owns `Foo`
 if (p1) {
   p1->bar();
 }
@@ -2221,16 +2224,17 @@ auto a = CountTwos(vec); // 2
 auto b = CountTwos(arr);  // 1
 ```
 
+
+
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
 * [C++ Rvalue References Explained](http://thbecker.net/articles/rvalue_references/section_01.html) - a great introduction I used to understand rvalue references, perfect forwarding, and move semantics.
 * [clang](http://clang.llvm.org/cxx_status.html) and [gcc](https://gcc.gnu.org/projects/cxx-status.html)'s standards support pages. Also included here are the proposals for language/library features that I used to help find a description of, what it's meant to fix, and some examples.
 * [Compiler explorer](https://godbolt.org/)
-* [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended book!
+* [Scott Meyers' Effective Modern C++](https://www.amazon.com/Effective-Modern-Specific-Ways-Improve/dp/1491903996) - highly recommended series of books!
 * [Jason Turner's C++ Weekly](https://www.youtube.com/channel/UCxHAlbZQNFU2LgEtiqd2Maw) - nice collection of C++-related videos.
 * [What can I do with a moved-from object?](http://stackoverflow.com/questions/7027523/what-can-i-do-with-a-moved-from-object)
 * [What are some uses of decltype(auto)?](http://stackoverflow.com/questions/24109737/what-are-some-uses-of-decltypeauto)
-* And many more SO posts I'm forgetting...
 
 ## Author
 Anthony Calandra
