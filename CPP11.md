@@ -940,15 +940,19 @@ An engine implements a random number generation algorithm that produces pseudo-r
 `std::default_random_engine` it´s the motor for default
 `std::uniform_int_distribution`evenly distributes pseudo-random integers across a specified range of values, the default range is 0 to the maximum value of an int on your platform
 ```c++
+#include <iostream> // includes cout and endl
 #include <ctime> // includes time
 #include <random> // contains random number generation tools
+#include <assert.h> // include assert validation
 
 // use the generator motor of random numbers predetermined for 
 // produce pseudo-random values from 1 to 6, evenly distributed
 std::default_random_engine motor( static_cast<unsigned int>( std::time( 0 ) ) );
 std::uniform_int_distribution<unsigned int> intRandom( 1, 6 );
 
-intRandom( motor ); // returns a random number between 1 to 6
+const auto n = intRandom( motor ); // returns a random number between 1 to 6
+assert( n >= 1 && i <= 6 ); // validation
+std::cout << n << std::endl; // show the random number
 ```
 
 ### std::async
