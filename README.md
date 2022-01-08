@@ -18,6 +18,7 @@ C++20 includes the following new language features:
 - [using enum](#using-enum)
 - [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
 - [char8_t](#char8_t)
+- [constinit specifier](#constinit-specifier)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -533,6 +534,20 @@ auto f(Args&&... args){
 Provides a standard type for representing UTF-8 strings.
 ```c++
 char8_t utf8_str[] = u8"\u0123";
+```
+
+### constinit specifier
+`constinit` specifier can only be applied to variables with static storage allocation. A static storage variable is initialized in one of the following ways:
+- At compile time. (constant initialization)
+- When the control passes through its declaration. (Now this may lead to some dangerous bugs because, C++ does not gurantee the order of static variable initialization at runtime)
+
+A variable with static storage allocation if decorated with `constinit`, then the variable must be initialized at compile-time. If not the program will give a compiler error.
+```c++
+const char *g() { return "dynamic initialization"; }
+constexpr const char *f(bool p) { return p ? "const initialization" : g(); }
+
+ constinit const char *c = f(true); // OK
+// constinit const char *d = f(false); // will throw a compile-time error
 ```
 
 ## C++20 Library Features
