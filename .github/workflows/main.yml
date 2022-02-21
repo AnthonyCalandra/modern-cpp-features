@@ -1,6 +1,9 @@
 name: auto-generate-readme
 on:
   push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   auto-generate-readme:
@@ -8,6 +11,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Install Python3
         uses: actions/setup-python@v2
         with:
