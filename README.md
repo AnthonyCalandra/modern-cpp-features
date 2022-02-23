@@ -1338,10 +1338,10 @@ void f(int&& x) {}
 f(x);  // calls f(int&)
 f(xl); // calls f(int&)
 f(3);  // calls f(int&&)
-f(std::move(x)) // calls f(int&&)
+f(std::move(x)); // calls f(int&&)
 
 f(xr2);           // calls f(int&)
-f(std::move(xr2)) // calls f(int&& x)
+f(std::move(xr2)); // calls f(int&& x)
 ```
 
 See also: [`std::move`](#stdmove), [`std::forward`](#stdforward), [`forwarding references`](#forwarding-references).
