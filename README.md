@@ -537,16 +537,19 @@ char8_t utf8_str[] = u8"\u0123";
 ```
 
 ### constinit specifier
-`constinit` specifier can only be applied to variables with static storage allocation. A static storage variable is initialized in one of the following ways:
-- At compile time. (constant initialization)
-- When the control passes through its declaration. (Now this may lead to some dangerous bugs because, C++ does not gurantee the order of static variable initialization at runtime)
+`constinit` specifier asserts that a variable has a constant or zero initialization and `constinit` can only be applied to variables with static storage duration.
+The initialization of a variable with static storage duration can take place in one of the following two cases:
+1. At compile time using either constant initialization or zero initialization.
+2. At runtime when the control first passes through its declaration.
 
-A variable with static storage allocation if decorated with `constinit`, then the variable must be initialized at compile-time. If not the program will give a compiler error.
+The second way of initialization may lead to some dangerous bugs because, C++ does not guarantee the order of static variable initialization at runtime which is generally referred as *static initialization order fiasco*.
+
+A variable with static storage duration if decorated with `constinit`, then the variable **must** be initialized at compile-time. If not the program will give a compiler error.
 ```c++
 const char *g() { return "dynamic initialization"; }
 constexpr const char *f(bool p) { return p ? "const initialization" : g(); }
 
- constinit const char *c = f(true); // OK
+constinit const char *c = f(true); // OK
 // constinit const char *d = f(false); // will throw a compile-time error
 ```
 
