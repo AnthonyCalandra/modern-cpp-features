@@ -49,6 +49,7 @@ C++17 includes the following new language features:
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
 - [fallthrough, nodiscard, maybe_unused attributes](#fallthrough-nodiscard-maybe_unused-attributes)
+- [\_\_has\_include](#\_\_has\_include)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -958,6 +959,43 @@ void my_callback(std::string msg, [[maybe_unused]] bool error) {
   // Don't care if `msg` is an error message, just log it.
   log(msg);
 }
+```
+
+### \_\_has\_include
+
+`__has_include (operand)` operator may be used in `#if` and `#elif` expressions to check whether a header or source file (`operand`) is available for inclusion or not.
+
+One use case of this would be using two libraries that work the same way, using the backup/experimental one if the preferred one is not found on the system.
+
+```c++
+#ifdef __has_include
+#  if __has_include(<optional>)
+#    include <optional>
+#    define have_optional 1
+#  elif __has_include(<experimental/optional>)
+#    include <experimental/optional>
+#    define have_optional 1
+#    define experimental_optional
+#  else
+#    define have_optional 0
+#  endif
+#endif
+```
+
+It can also be used to include headers existing under different names or locations on various platforms, without knowing which platform the program is running on, OpenGL headers are a good example for this which are located in `OpenGL\` directory on macOS and `GL\` on other platforms.
+
+```c++
+#ifdef __has_include
+#  if __has_include(<OpenGL/gl.h>)
+#    include <OpenGL/gl.h>
+#    include <OpenGL/glu.h>
+#  elif __has_include(<GL/gl.h>)
+#    include <GL/gl.h>
+#    include <GL/glu.h>
+#  else
+#    error No suitable OpenGL headers found.
+# endif
+#endif
 ```
 
 ## C++17 Library Features
