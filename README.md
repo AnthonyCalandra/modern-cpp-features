@@ -917,14 +917,20 @@ byte e = byte{256}; // ERROR
 
 ### fallthrough, nodiscard, maybe_unused attributes
 C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`.
-* `[[fallthrough]]` indicates to the compiler that falling through in a switch statement is intended behavior.
+* `[[fallthrough]]` indicates to the compiler that falling through in a switch statement is intended behavior. This attribure may only be used in a switch statement and next statement to be executed must be a case or default label. 
 ```c++
 switch (n) {
-  case 1: [[fallthrough]]
+  case 1: 
     // ...
+    [[fallthrough]];
   case 2:
     // ...
     break;
+  case 3:
+    // ...
+    [[fallthrough]];
+  default:
+    // ...
 }
 ```
 
