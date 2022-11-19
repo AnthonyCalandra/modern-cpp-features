@@ -423,7 +423,7 @@ class Proxy {
 public:
   Proxy(Callable c): c(c) {}
   template <class... Args>
-  decltype(auto) operator()(Args&&... args) {
+  auto operator()(Args&&... args) {
     // ...
     return std::invoke(c, std::forward<Args>(args)...);
   }
@@ -431,7 +431,7 @@ public:
 auto add = [](int x, int y) {
   return x + y;
 };
-Proxy<decltype(add)> p {add};
+Proxy p {add};
 p(1, 2); // == 3
 ```
 
