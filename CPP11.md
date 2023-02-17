@@ -312,7 +312,7 @@ Attributes provide a universal syntax over `__attribute__(...)`, `__declspec`, e
 ```
 
 ### constexpr
-Constant expressions are expressions evaluated by the compiler at compile-time. Only non-complex computations can be carried out in a constant expression. Use the `constexpr` specifier to indicate the variable, function, etc. is a constant expression.
+Constant expressions are expressions that are *possibly* evaluated by the compiler at compile-time. Only non-complex computations can be carried out in a constant expression (these rules are progressively relaxed in later versions). Use the `constexpr` specifier to indicate the variable, function, etc. is a constant expression.
 ```c++
 constexpr int square(int x) {
   return x * x;
@@ -328,8 +328,9 @@ int b = square2(2); // mov edi, 2
                     // call square2(int)
                     // mov DWORD PTR [rbp-8], eax
 ```
+In the previous snippet, notice that the computation when calling `square` is carried out at compile-time, and then the result is embedded in the code generation, while `square2` is called at run-time.
 
-`constexpr` values are those that the compiler can evaluate at compile-time:
+`constexpr` values are those that the compiler can evaluate, but are not guaranteed to, at compile-time:
 ```c++
 const int x = 123;
 constexpr const int& y = x; // error -- constexpr variable `y` must be initialized by a constant expression
