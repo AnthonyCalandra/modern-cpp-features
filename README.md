@@ -63,7 +63,7 @@ C++17 includes the following new library features:
 - [std::byte](#stdbyte)
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
 - [parallel algorithms](#parallel-algorithms)
-
+- [std::sample](#stdsample)
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -1182,6 +1182,18 @@ std::vector<int> longVector;
 auto result1 = std::find(std::execution::par, std::begin(longVector), std::end(longVector), 2);
 // Sort elements using sequential execution policy
 auto result2 = std::sort(std::execution::seq, std::begin(longVector), std::end(longVector));
+```
+
+### std::sample
+Samples n elements in the given sequence (without replacement) where every element has an equal chance of being selected.
+```c++
+const std::string ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+std::string guid;
+// Sample 5 characters from ALLOWED_CHARS.
+std::sample(ALLOWED_CHARS.begin(), ALLOWED_CHARS.end(), std::back_inserter(guid),
+  5, std::mt19937{ std::random_device{}() });
+
+std::cout << guid; // e.g. G1fW2
 ```
 
 ## C++14 Language Features
