@@ -18,6 +18,7 @@ C++20 includes the following new language features:
 - [using enum](#using-enum)
 - [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
 - [char8_t](#char8_t)
+- [constinit](#constinit)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -534,6 +535,16 @@ auto f(Args&&... args){
 Provides a standard type for representing UTF-8 strings.
 ```c++
 char8_t utf8_str[] = u8"\u0123";
+```
+
+### constinit
+The `constinit` specifier requires that a variable must be initialized at compile-time.
+```c++
+const char* g() { return "dynamic initialization"; }
+constexpr const char* f(bool p) { return p ? "constant initializer" : g(); }
+
+constinit const char* c = f(true); // OK
+constinit const char* d = f(false); // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
 ```
 
 ## C++20 Library Features
