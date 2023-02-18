@@ -9,7 +9,7 @@ C++20 includes the following new language features:
 - [designated initializers](#designated-initializers)
 - [template syntax for lambdas](#template-syntax-for-lambdas)
 - [range-based for loop with initializer](#range-based-for-loop-with-initializer)
-- [likely and unlikely attributes](#likely-and-unlikely-attributes)
+- [\[\[likely\]\] and \[\[unlikely\]\] attributes](#likely-and-unlikely-attributes)
 - [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
 - [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
 - [constexpr virtual functions](#constexpr-virtual-functions)
@@ -265,7 +265,7 @@ for (auto v = std::vector{1, 2, 3}; auto& e : v) {
 // prints "123"
 ```
 
-### likely and unlikely attributes
+### \[\[likely\]\] and \[\[unlikely\]\] attributes
 Provides a hint to the optimizer that the labelled statement has a high probability of being executed.
 ```c++
 switch (n) {

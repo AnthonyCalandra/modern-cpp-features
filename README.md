@@ -2,14 +2,13 @@
 
 ## Overview
 
-
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
 - [concepts](#concepts)
 - [designated initializers](#designated-initializers)
 - [template syntax for lambdas](#template-syntax-for-lambdas)
 - [range-based for loop with initializer](#range-based-for-loop-with-initializer)
-- [likely and unlikely attributes](#likely-and-unlikely-attributes)
+- [\[\[likely\]\] and \[\[unlikely\]\] attributes](#likely-and-unlikely-attributes)
 - [deprecate implicit capture of this](#deprecate-implicit-capture-of-this)
 - [class types in non-type template parameters](#class-types-in-non-type-template-parameters)
 - [constexpr virtual functions](#constexpr-virtual-functions)
@@ -34,7 +33,6 @@ C++20 includes the following new library features:
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
 
-
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
 - [declaring non-type template parameters with auto](#declaring-non-type-template-parameters-with-auto)
@@ -49,7 +47,7 @@ C++17 includes the following new language features:
 - [constexpr if](#constexpr-if)
 - [utf-8 character literals](#utf-8-character-literals)
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
-- [fallthrough, nodiscard, maybe_unused attributes](#fallthrough-nodiscard-maybe_unused-attributes)
+- [\[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe_unused\]\] attributes](#fallthrough-nodiscard-maybe_unused-attributes)
 - [\_\_has\_include](#\_\_has\_include)
 
 C++17 includes the following new library features:
@@ -79,7 +77,6 @@ C++14 includes the following new library features:
 - [user-defined literals for standard library types](#user-defined-literals-for-standard-library-types)
 - [compile-time integer sequences](#compile-time-integer-sequences)
 - [std::make_unique](#stdmake_unique)
-
 
 C++11 includes the following new language features:
 - [move semantics](#move-semantics)
@@ -132,8 +129,6 @@ C++11 includes the following new library features:
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
-
-
 
 ## C++20 Language Features
 
@@ -366,7 +361,7 @@ for (auto v = std::vector{1, 2, 3}; auto& e : v) {
 // prints "123"
 ```
 
-### likely and unlikely attributes
+### \[\[likely\]\] and \[\[unlikely\]\] attributes
 Provides a hint to the optimizer that the labelled statement has a high probability of being executed.
 ```c++
 switch (n) {
@@ -934,7 +929,7 @@ byte d = byte{1}; // OK
 byte e = byte{256}; // ERROR
 ```
 
-### fallthrough, nodiscard, maybe_unused attributes
+### \[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe_unused\]\] attributes
 C++17 introduces three new attributes: `[[fallthrough]]`, `[[nodiscard]]` and `[[maybe_unused]]`.
 * `[[fallthrough]]` indicates to the compiler that falling through in a switch statement is intended behavior. This attribute may only be used in a switch statement, and must be placed before the next case/default label.
 ```c++
