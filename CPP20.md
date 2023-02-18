@@ -482,40 +482,48 @@ std::osyncstream{std::cout} << "The value of x is:" << x << std::endl;
 ```
 
 ### std::span
-A span is a view (i.e. non-owning) of a container providing bounds-checked access to a contiguous group of elements. Since views do not own their elements they are cheap to construct and copy -- a simplified way to think about views is they are holding references to their data. Spans can be dynamically-sized or fixed-sized.
+A span is a view (i.e. non-owning) of a container providing bounds-checked access to a contiguous group of elements. Since views do not own their elements they are cheap to construct and copy -- a simplified way to think about views is they are holding references to their data. As opposed to maintaining a pointer/iterator and length field, a span wraps both of those up in a single object.
+
+Spans can be dynamically-sized or fixed-sized (known as their *extent*). Fixed-sized spans benefit from bounds-checking.
+
+Span doesn't propogate const so to construct a read-only span use `std::span<const T>`.
+
+Example: using a dynamically-sized span to print integers from various containers.
 ```c++
-void f(std::span<int> ints) {
-    std::for_each(ints.begin(), ints.end(), [](auto i) {
-        // ...
-    });
+void print_ints(std::span<const int> ints) {
+    for (const auto n : ints) {
+        std::cout << n << std::endl;
+    }
 }
 
-std::vector<int> v = {1, 2, 3};
-f(v);
-std::array<int, 3> a = {1, 2, 3};
-f(a);
+print_ints(std::vector{ 1, 2, 3 });
+print_ints(std::array<int, 5>{ 1, 2, 3, 4, 5 });
+
+int a[10] = { 0 };
+print_ints(a);
 // etc.
 ```
-Example: as opposed to maintaining a pointer and length field, a span wraps both of those up in a single container.
+
+Example: a statically-sized span will fail to compile for containers that don't match the extent of the span.
 ```c++
-constexpr size_t LENGTH_ELEMENTS = 3;
-int* arr = new int[LENGTH_ELEMENTS]; // arr = {0, 0, 0}
+void print_three_ints(std::span<const int, 3> ints) {
+    for (const auto n : ints) {
+        std::cout << n << std::endl;
+    }
+}
 
-// Fixed-sized span which provides a view of `arr`.
-std::span<int, LENGTH_ELEMENTS> span = arr;
-span[1] = 1; // arr = {0, 1, 0}
+print_three_ints(std::vector{ 1, 2, 3 }); // ERROR
+print_three_ints(std::array<int, 5>{ 1, 2, 3, 4, 5 }); // ERROR
+int a[10] = { 0 };
+print_three_ints(a); // ERROR
 
-// Dynamic-sized span which provides a view of `arr`.
-std::span<int> d_span = arr;
-span[0] = 1; // arr = {1, 1, 0}
-```
-```c++
-constexpr size_t LENGTH_ELEMENTS = 3;
-int* arr = new int[LENGTH_ELEMENTS];
+std::array<int, 3> b = { 1, 2, 3 };
+print_three_ints(b); // OK
 
-std::span<int, LENGTH_ELEMENTS> span = arr; // OK
-std::span<double, LENGTH_ELEMENTS> span2 = arr; // ERROR
-std::span<int, 1> span3 = arr; // ERROR
+// You can construct a span manually if required:
+std::vector c{ 1, 2, 3 };
+print_three_ints(std::span<const int, 3>{ c.data(), 3 }); // OK: set pointer and length field.
+print_three_ints(std::span<const int, 3>{ c.cbegin(), c.cend() }); // OK: use iterator pairs.
 ```
 
 ### Bit operations
