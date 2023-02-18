@@ -1085,23 +1085,24 @@ v; // == "trim me"
 ```
 
 ### std::invoke
-Invoke a `Callable` object with parameters. Examples of `Callable` objects are `std::function` or `std::bind` where an object can be called similarly to a regular function.
+Invoke a `Callable` object with parameters. Examples of *callable* objects are `std::function` or lambdas; objects that can be called similarly to a regular function.
 ```c++
 template <typename Callable>
 class Proxy {
-  Callable c;
+  Callable c_;
+
 public:
-  Proxy(Callable c): c(c) {}
-  template <class... Args>
+  Proxy(Callable c) : c_{ std::move(c) } {}
+
+  template <typename... Args>
   decltype(auto) operator()(Args&&... args) {
     // ...
-    return std::invoke(c, std::forward<Args>(args)...);
+    return std::invoke(c_, std::forward<Args>(args)...);
   }
 };
-auto add = [](int x, int y) {
-  return x + y;
-};
-Proxy<decltype(add)> p {add};
+
+const auto add = [](int x, int y) { return x + y; };
+Proxy p{ add };
 p(1, 2); // == 3
 ```
 
