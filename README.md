@@ -62,6 +62,7 @@ C++17 includes the following new library features:
 - [splicing for maps and sets](#splicing-for-maps-and-sets)
 - [parallel algorithms](#parallel-algorithms)
 - [std::sample](#stdsample)
+- [std::clamp](#stdclamp)
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -1198,6 +1199,17 @@ std::sample(ALLOWED_CHARS.begin(), ALLOWED_CHARS.end(), std::back_inserter(guid)
   5, std::mt19937{ std::random_device{}() });
 
 std::cout << guid; // e.g. G1fW2
+```
+
+### std::clamp
+Clamp given value between a lower and upper bound.
+```c++
+std::clamp(42, -1, 1); // == 1
+std::clamp(-42, -1, 1); // == -1
+std::clamp(0, -1, 1); // == 0
+
+// `std::clamp` also accepts a custom comparator:
+std::clamp(0, -1, 1, std::less<>{}); // == 0
 ```
 
 ## C++14 Language Features
