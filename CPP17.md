@@ -33,6 +33,7 @@ C++17 includes the following new library features:
 - [parallel algorithms](#parallel-algorithms)
 - [std::sample](#stdsample)
 - [std::clamp](#stdclamp)
+- [std::reduce](#stdreduce)
 
 ## C++17 Language Features
 
@@ -546,6 +547,17 @@ std::clamp(0, -1, 1); // == 0
 
 // `std::clamp` also accepts a custom comparator:
 std::clamp(0, -1, 1, std::less<>{}); // == 0
+```
+
+### std::reduce
+Fold over a given range of elements. Conceptually similar to `std::accumulate`, but `std::reduce` will perform the fold in parallel. Due to the fold being done in parallel, if you specify a binary operation, it is required to be associative and commutative. A given binary operation also should not change any element or invalidate any iterators within the given range.
+
+The default binary operation is std::plus with an initial value of 0.
+```c++
+const std::array<int, 3> a{ 1, 2, 3 };
+std::reduce(std::cbegin(a), std::cend(a)); // == 6
+// Using a custom binary op:
+std::reduce(std::cbegin(a), std::cend(a), 1, std::multiplies<>{}); // == 6
 ```
 
 ## Acknowledgements
