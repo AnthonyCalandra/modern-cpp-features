@@ -35,6 +35,7 @@ C++17 includes the following new library features:
 - [std::clamp](#stdclamp)
 - [std::reduce](#stdreduce)
 - [prefix sum algorithms](#prefix-sum-algorithms)
+- [gcd and lcm](#gcd-and-lcm)
 
 ## C++17 Language Features
 
@@ -588,6 +589,15 @@ std::transform_inclusive_scan(std::cbegin(a), std::cend(a),
 
 std::transform_exclusive_scan(std::cbegin(a), std::cend(a),
     std::ostream_iterator<int>{ std::cout, " " }, 0, std::plus<>{}, times_ten); // 0 10 30
+```
+
+### GCD and LCM
+Greatest common divisor (GCD) and least common multiple (LCM).
+```c++
+const int p = 9;
+const int q = 3;
+std::gcd(p, q); // == 3
+std::lcm(p, q); // == 9
 ```
 
 ## Acknowledgements
