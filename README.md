@@ -49,6 +49,7 @@ C++17 includes the following new language features:
 - [direct-list-initialization of enums](#direct-list-initialization-of-enums)
 - [\[\[fallthrough\]\], \[\[nodiscard\]\], \[\[maybe_unused\]\] attributes](#fallthrough-nodiscard-maybe_unused-attributes)
 - [\_\_has\_include](#\_\_has\_include)
+- [class template argument deduction](#class-template-argument-deduction)
 
 C++17 includes the following new library features:
 - [std::variant](#stdvariant)
@@ -1022,6 +1023,39 @@ It can also be used to include headers existing under different names or locatio
 #    error No suitable OpenGL headers found.
 # endif
 #endif
+```
+
+### Class template argument deduction
+*Class template argument deduction* (CTAD) allows the compiler to deduce template arguments from constructor arguments.
+```c++
+std::vector v{ 1, 2, 3 }; // deduces std::vector<int>
+
+std::mutex mtx;
+auto lck = std::lock_guard{ mtx }; // deduces to std::lock_guard<std::mutex>
+
+auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>
+```
+
+For user-defined types, *deduction guides* can be used to guide the compiler how to deduce template arguments if applicable:
+```c++
+template <typename T>
+struct container {
+  container(T t) {}
+
+  template <typename Iter>
+  container(Iter beg, Iter end);
+};
+
+// deduction guide
+template <template Iter>
+container(Iter b, Iter e) -> container<typename std::iterator_traits<Iter>::value_type>;
+
+container a{ 7 }; // OK: deduces container<int>
+
+std::vector<double> v{ 1.0, 2.0, 3.0 };
+auto b = container{ v.begin(), v.end() }; // OK: deduces container<double>
+
+container c{ 5, 6 }; // ERROR: std::iterator_traits<int>::value_type is not a type
 ```
 
 ## C++17 Library Features
