@@ -67,6 +67,7 @@ C++17 includes the following new library features:
 - [prefix sum algorithms](#prefix-sum-algorithms)
 - [gcd and lcm](#gcd-and-lcm)
 - [std::not_fn](#stdnot_fn)
+- [string conversion to/from numbers](#string-conversion-tofrom-numbers)
 
 C++14 includes the following new language features:
 - [binary literals](#binary-literals)
@@ -1276,6 +1277,43 @@ std::vector<int> v{ 0, 1, 2, 3, 4 };
 std::copy_if(std::cbegin(v), std::cend(v), ostream_it, is_even); // 0 2 4
 // Print all odd (not even) numbers.
 std::copy_if(std::cbegin(v), std::cend(v), ostream_it, std::not_fn(is_even)); // 1 3
+```
+
+### String conversion to/from numbers
+Convert integrals and floats to a string or vice-versa. Conversions are non-throwing, do not allocate, and are more secure than the equivalents from the C standard library.
+
+Users are responsible for allocating enough storage required for `std::to_chars`, or the function will fail by setting the error code object in its return value.
+
+These functions allow you to optionally pass a base (defaults to base-10) or a format specifier for floating type input.
+
+* `std::to_chars` returns a (non-const) char pointer which is one-past-the-end of the string that the function wrote to inside the given buffer, and an error code object.
+* `std::from_chars` returns a const char pointer which on success is equal to the end pointer passed to the function, and an error code object.
+
+Both error code objects returned from these functions are equal to the default-initialized error code object on success.
+
+Convert the number `123` to a `std::string`:
+```c++
+const int n = 123;
+
+// Can use any container, string, array, etc.
+std::string str;
+str.resize(3); // hold enough storage for each digit of `n`
+
+const auto [ ptr, ec ] = std::to_chars(str.data(), str.data() + str.size(), n);
+
+if (ec == std::errc{}) { std::cout << str << std::endl; } // 123
+else { /* handle failure */ }
+```
+
+Convert from a `std::string` with value `"123"` to an integer:
+```c++
+const std::string str{ "123" };
+int n;
+
+const auto [ ptr, ec ] = std::from_chars(str.data(), str.data() + str.size(), n);
+
+if (ec == std::errc{}) { std::cout << n << std::endl; } // 123
+else { /* handle failure */ }
 ```
 
 ## C++14 Language Features
