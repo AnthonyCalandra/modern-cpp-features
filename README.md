@@ -324,9 +324,9 @@ g(baz{}); // PASS.
 ```c++
 template <typename T>
 concept C = requires(T x) {
-  {*x} -> typename T::inner; // the type of the expression `*x` is convertible to `T::inner`
+  {*x} -> std::convertible_to<typename T::inner>; // the type of the expression `*x` is convertible to `T::inner`
   {x + 1} -> std::same_as<int>; // the expression `x + 1` satisfies `std::same_as<decltype((x + 1))>`
-  {x * 1} -> T; // the type of the expression `x * 1` is convertible to `T`
+  {x * 1} -> std::convertible_to<T>; // the type of the expression `x * 1` is convertible to `T`
 };
 ```
 * **Nested requirements** - denoted by the `requires` keyword, specify additional constraints (such as those on local parameter arguments).
