@@ -1047,7 +1047,7 @@ struct container {
 };
 
 // deduction guide
-template <template Iter>
+template <typename Iter>
 container(Iter b, Iter e) -> container<typename std::iterator_traits<Iter>::value_type>;
 
 container a{ 7 }; // OK: deduces container<int>
