@@ -546,7 +546,7 @@ const char* g() { return "dynamic initialization"; }
 constexpr const char* f(bool p) { return p ? "constant initializer" : g(); }
 
 constinit const char* c = f(true); // OK
-constinit const char* d = f(false); // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
+constinit const char* d = g(false); // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
 ```
 
 ## C++20 Library Features
