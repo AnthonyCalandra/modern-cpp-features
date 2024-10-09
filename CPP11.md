@@ -635,7 +635,7 @@ Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
 Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
 std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
 
-std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
+std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&`
 ```
 
 ### Trailing return types
