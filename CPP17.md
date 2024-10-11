@@ -369,7 +369,7 @@ std::vector v{ 1, 2, 3 }; // deduces std::vector<int>
 std::mutex mtx;
 auto lck = std::lock_guard{ mtx }; // deduces to std::lock_guard<std::mutex>
 
-auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>
+auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>*
 ```
 
 For user-defined types, *deduction guides* can be used to guide the compiler how to deduce template arguments if applicable:

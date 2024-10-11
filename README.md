@@ -1033,7 +1033,7 @@ std::vector v{ 1, 2, 3 }; // deduces std::vector<int>
 std::mutex mtx;
 auto lck = std::lock_guard{ mtx }; // deduces to std::lock_guard<std::mutex>
 
-auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>
+auto p = new std::pair{ 1.0, 2.0 }; // deduces to std::pair<double, double>*
 ```
 
 For user-defined types, *deduction guides* can be used to guide the compiler how to deduce template arguments if applicable:
@@ -2096,23 +2096,23 @@ struct Bar {
 };
 
 struct Foo {
-  Bar getBar() & { return bar; }
-  Bar getBar() const& { return bar; }
-  Bar getBar() && { return std::move(bar); }
+  Bar& getBar() & { return bar; }
+  const Bar& getBar() const& { return bar; }
+  Bar&& getBar() && { return std::move(bar); }
+  const Bar&& getBar() const&& { return std::move(bar); }
 private:
   Bar bar;
 };
 
 Foo foo{};
-Bar bar = foo.getBar(); // calls `Bar getBar() &`
+Bar bar = foo.getBar(); // calls `Bar& getBar() &`
 
 const Foo foo2{};
-Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
+Bar bar2 = foo2.getBar(); // calls `Bar& Foo::getBar() const&`
 
-Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
-std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
-
-std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&&`
+Foo{}.getBar(); // calls `Bar&& Foo::getBar() &&`
+std::move(foo).getBar(); // calls `Bar&& Foo::getBar() &&`
+std::move(foo2).getBar(); // calls `const Bar&& Foo::getBar() const&`
 ```
 
 ### Trailing return types
