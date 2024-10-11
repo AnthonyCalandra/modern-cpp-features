@@ -2096,23 +2096,23 @@ struct Bar {
 };
 
 struct Foo {
-  Bar getBar() & { return bar; }
-  Bar getBar() const& { return bar; }
-  Bar getBar() && { return std::move(bar); }
+  Bar& getBar() & { return bar; }
+  const Bar& getBar() const& { return bar; }
+  Bar&& getBar() && { return std::move(bar); }
+  const Bar&& getBar() const&& { return std::move(bar); }
 private:
   Bar bar;
 };
 
 Foo foo{};
-Bar bar = foo.getBar(); // calls `Bar getBar() &`
+Bar bar = foo.getBar(); // calls `Bar& getBar() &`
 
 const Foo foo2{};
-Bar bar2 = foo2.getBar(); // calls `Bar Foo::getBar() const&`
+Bar bar2 = foo2.getBar(); // calls `Bar& Foo::getBar() const&`
 
-Foo{}.getBar(); // calls `Bar Foo::getBar() &&`
-std::move(foo).getBar(); // calls `Bar Foo::getBar() &&`
-
-std::move(foo2).getBar(); // calls `Bar Foo::getBar() const&`
+Foo{}.getBar(); // calls `Bar&& Foo::getBar() &&`
+std::move(foo).getBar(); // calls `Bar&& Foo::getBar() &&`
+std::move(foo2).getBar(); // calls `const Bar&& Foo::getBar() const&`
 ```
 
 ### Trailing return types
