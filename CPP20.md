@@ -38,6 +38,9 @@ C++20 includes the following new library features:
 ## C++20 Language Features
 
 ### Coroutines
+
+> **Note:** While these examples illustrate how to use coroutines at a basic level, there is lots more going on when the code is compiled. These examples are not meant to be complete coverage of C++20's coroutines. Since the `generator` and `task` classes are not provided by the standard library yet, I used the cppcoro library to compile these examples.
+
 _Coroutines_ are special functions that can have their execution suspended and resumed. To define a coroutine, the `co_return`, `co_await`, or `co_yield` keywords must be present in the function's body. C++20's coroutines are stackless; unless optimized out by the compiler, their state is allocated on the heap.
 
 An example of a coroutine is a _generator_ function, which yields (i.e. generates) a value at each invocation:
@@ -82,8 +85,6 @@ auto meaning_of_life = calculate_meaning_of_life();
 // ...
 co_await meaning_of_life; // == 42
 ```
-
-**Note:** While these examples illustrate how to use coroutines at a basic level, there is lots more going on when the code is compiled. These examples are not meant to be complete coverage of C++20's coroutines. Since the `generator` and `task` classes are not provided by the standard library yet, I used the cppcoro library to compile these examples.
 
 ### Concepts
 _Concepts_ are named compile-time predicates which constrain types. They take the following form:
