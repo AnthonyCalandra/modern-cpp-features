@@ -424,7 +424,7 @@ struct foo {
   constexpr foo(int) {}
 };
 
-template <foo f>
+template <foo f = {}>
 auto get_foo() {
   return f;
 }
