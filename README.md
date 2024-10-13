@@ -5,6 +5,7 @@
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
 - [concepts](#concepts)
+- [three-way comparison](#three-way-comparison)
 - [designated initializers](#designated-initializers)
 - [template syntax for lambdas](#template-syntax-for-lambdas)
 - [range-based for loop with initializer](#range-based-for-loop-with-initializer)
@@ -35,6 +36,8 @@ C++20 includes the following new library features:
 - [std::to_array](#stdto_array)
 - [std::bind_front](#stdbind_front)
 - [uniform container erasure](#uniform-container-erasure)
+- [three-way comparison helpers](#three-way-comparison-helpers)
+- [std::lexicographical_compare_three_way](#stdlexicographical_compare_three_way)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -343,6 +346,48 @@ concept C = requires(T x) {
 };
 ```
 See also: [concepts library](#concepts-library).
+
+### Three-way comparison
+C++20 introduces the spaceship operator (`<=>`) as a new way to write comparison functions that reduce boilerplate and help developers define clearer comparison semantics. Defining a three-way comparison operator will autogenerate the other comparison operator functions (i.e. `==`, `!=`, `<`, etc.).
+
+Three orderings are introduced:
+* `std::strong_ordering`: The strong ordering distinguishes between items being equal (identical and interchangeable). Provides `less`, `greater`, `equivalent`, and `equal` ordering. Examples of comparisons: searching for a specific value in a list, values of integers, case-sensitive strings.
+* `std::weak_ordering`: The weak ordering distinguishes between items being equivalent (not identical, but can be interchangeable for the purposes of comparison). Provides `less`, `greater`, and `equivalent` ordering. Examples of comparisons: case-insensitive strings, sorting, comparing some but not all visible members of a class.
+* `std::partial_ordering`: The partial ordering follows the same principle of weak ordering but includes the case when an ordering isn't possible. Provides `less`, `greater`, `equivalent`, and `unordered` ordering. Examples of comparisons: floating-point values (e.g. `NaN`).
+
+A defaulted three-way comparison operator does a member-wise comparison:
+```c++
+struct foo {
+  int a;
+  bool b;
+  char c;
+
+  // Compare `a` first, then `b`, then `c` ...
+  auto operator<=>(const foo&) const = default;
+};
+
+foo f1{0, false, 'a'}, f2{0, true, 'b'};
+f1 < f2; // == true
+f1 == f2; // == false
+f1 >= f2; // == false
+```
+
+You can also define your own comparisons:
+```c++
+struct foo {
+  int x;
+  bool b;
+  char c;
+  std::strong_ordering operator<=>(const foo& other) const {
+      return x <=> other.x;
+  }
+};
+
+foo f1{0, false, 'a'}, f2{0, true, 'b'};
+f1 < f2; // == false
+f1 == f2; // == true
+f1 >= f2; // == true
+```
 
 ### Designated initializers
 C-style designated initializer syntax. Any member fields that are not explicitly listed in the designated initializer list are default-initialized.
@@ -735,6 +780,32 @@ std::vector v{0, 1, 0, 2, 0, 3};
 std::erase(v, 0); // v == {1, 2, 3}
 std::erase_if(v, [](int n) { return n == 0; }); // v == {1, 2, 3}
 ```
+
+### Three-way comparison helpers
+Helper functions for giving names to comparison results:
+```c++
+std::is_eq(0 <=> 0); // == true
+std::is_lteq(0 <=> 1); // == true
+std::is_gt(0 <=> 1); // == false
+```
+
+See also: [three-way comparison](#three-way-comparison).
+
+### std::lexicographical_compare_three_way
+Lexicographically compares two ranges using three-way comparison and produces a result of the strongest applicable comparison category type.
+```c++
+std::vector a{0, 0, 0}, b{0, 0, 0}, c{1, 1, 1};
+
+auto cmp_ab = std::lexicographical_compare_three_way(
+    a.begin(), a.end(), b.begin(), b.end());
+std::is_eq(cmp_ab); // == true
+
+auto cmp_ac = std::lexicographical_compare_three_way(
+    a.begin(), a.end(), c.begin(), c.end());
+std::is_lt(cmp_ac); // == true
+```
+
+See also: [three-way comparison](#three-way-comparison), [three-way comparison helpers](#three-way-comparison-helpers).
 
 ## C++17 Language Features
 
