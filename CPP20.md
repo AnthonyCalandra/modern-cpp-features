@@ -34,6 +34,8 @@ C++20 includes the following new library features:
 - [std::bit_cast](#stdbit_cast)
 - [std::midpoint](#stdmidpoint)
 - [std::to_array](#stdto_array)
+- [std::bind_front](#stdbind_front)
+- [uniform container erasure](#uniform-container-erasure)
 
 ## C++20 Language Features
 
@@ -609,6 +611,25 @@ std::to_array<int>({1, 2, 3}); // returns `std::array<int, 3>`
 
 int a[] = {1, 2, 3};
 std::to_array(a); // returns `std::array<int, 3>`
+```
+
+### std::bind_front
+Binds the first N arguments (where N is the number of arguments after the given function to `std::bind_front`) to a given free function, lambda, or member function.
+```c++
+const auto f = [](int a, int b, int c) { return a + b + c; };
+const auto g = std::bind_front(f, 1, 1);
+g(1); // == 3
+```
+
+### Uniform container erasure
+Provides `std::erase` and/or `std::erase_if` for a variety of STL containers such as string, list, vector, map, etc.
+
+For erasing by value use `std::erase`, or to specify a predicate when to erase elements use `std::erase_if`. Both functions return the number of erased elements.
+
+```c++
+std::vector v{0, 1, 0, 2, 0, 3};
+std::erase(v, 0); // v == {1, 2, 3}
+std::erase_if(v, [](int n) { return n == 0; }); // v == {1, 2, 3}
 ```
 
 ## Acknowledgements
