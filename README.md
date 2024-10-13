@@ -18,6 +18,7 @@ C++20 includes the following new language features:
 - [lambda capture of parameter pack](#lambda-capture-of-parameter-pack)
 - [char8_t](#char8_t)
 - [constinit](#constinit)
+- [__VA_OPT__](#__VA_OPT__)
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
@@ -547,6 +548,14 @@ constexpr const char* f(bool p) { return p ? "constant initializer" : g(); }
 
 constinit const char* c = f(true); // OK
 constinit const char* d = g(false); // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
+```
+
+### `__VA_OPT__`
+Helps support variadic macros by evaluating to the given argument if the variadic macro is non-empty.
+```c++
+#define F(...) f(0 __VA_OPT__(,) __VA_ARGS__)
+F(a, b, c) // replaced by f(0, a, b, c)
+F()        // replaced by f(0)
 ```
 
 ## C++20 Library Features
