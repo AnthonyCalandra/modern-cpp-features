@@ -23,6 +23,7 @@ C++20 includes the following new language features:
 
 C++20 includes the following new library features:
 - [concepts library](#concepts-library)
+- [formatting library](#formatting-library)
 - [synchronized buffered outputstream](#synchronized-buffered-outputstream)
 - [std::span](#stdspan)
 - [bit operations](#bit-operations)
@@ -635,6 +636,43 @@ Concepts are also provided by the standard library for building more complicated
 - `predicate` - specifies that a callable type is a Boolean predicate.
 
 See also: [concepts](#concepts).
+
+### Formatting library
+Combine the simplicity of `printf` with the type-safety of `iostream`. Uses braces as placeholders, and supports custom formatting similar to printf-style specifiers.
+```c++
+std::format("{1} {0}", "world", "hello"); // == "hello world"
+
+int x = 123;
+std::string str = std::format("x: {}", x); // str == "x: 123"
+
+// Format to an output iterator:
+for (auto x : {1, 2, 3}) {
+  std::format_to(std::ostream_iterator<char>{std::cout, "\n"}, "{}", x);
+}
+```
+
+To format custom types:
+```c++
+struct fraction {
+  int numerator;
+  int denominator;
+};
+
+template <>
+struct std::formatter<fraction>
+{
+    constexpr auto parse(std::format_parse_context& ctx) {
+      return ctx.begin();
+    }
+
+    auto format(const fraction& f, std::format_context& ctx) const {
+      return std::format_to(ctx.out(), "{0:d}/{1:d}", f.numerator, f.denominator);
+    }
+};
+
+fraction f{1, 2};
+std::format("{}", f); // == "1/2"
+```
 
 ### Synchronized buffered outputstream
 Buffers output operations for the wrapped output stream ensuring synchronization (i.e. no interleaving of output).
