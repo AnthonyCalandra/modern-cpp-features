@@ -594,10 +594,10 @@ char8_t utf8_str[] = u8"\u0123";
 The `constinit` specifier requires that a variable must be initialized at compile-time.
 ```c++
 const char* g() { return "dynamic initialization"; }
-constexpr const char* f(bool p) { return p ? "constant initializer" : g(); }
+constexpr const char* f() { return "constant initializer"; }
 
-constinit const char* c = f(true); // OK
-constinit const char* d = g(false); // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
+constinit const char* c = f();  // OK
+constinit const char* d = g();  // ERROR: `g` is not constexpr, so `d` cannot be evaluated at compile-time.
 ```
 
 ### \_\_VA\_OPT\_\_
