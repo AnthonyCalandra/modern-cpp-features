@@ -364,7 +364,7 @@ struct foo {
   char c;
 
   // Compare `a` first, then `b`, then `c` ...
-  auto operator<=>(const foo&) const = default;
+  friend auto operator<=>(const foo&) const = default;
 };
 
 foo f1{0, false, 'a'}, f2{0, true, 'b'};
@@ -379,7 +379,8 @@ struct foo {
   int x;
   bool b;
   char c;
-  std::strong_ordering operator<=>(const foo& other) const {
+
+  friend std::strong_ordering operator<=>(const foo& other) const {
       return x <=> other.x;
   }
 };
