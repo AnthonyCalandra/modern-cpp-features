@@ -54,6 +54,7 @@ C++11 includes the following new library features:
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
+- [regular expressions](#regex)
 
 ## C++11 Language Features
 
@@ -968,6 +969,39 @@ int arr[8] = {2, 43, 45, 435, 32, 32, 32, 32};
 auto a = CountTwos(vec); // 2
 auto b = CountTwos(arr);  // 1
 ```
+
+### regular expressions
+The <regex> library offers tools to handle regular expressions, supporting POSIX and other common syntaxes for regular expressions.   
+
+The std::regex class is initialized with a regular expression and handles parsing the regular expression.   
+std::regex_search() looks for a regex inside a given string, and std::regex_replace() replaces any instances of the regex inside the given string. 
+std::regex_iterator and std::regex_token_iterator allow iteration through matches and submatches (respectively) within the string. 
+
+The following example illustrates the use of regular expressions to identify an email address: 
+
+#include <iostream>
+#include <regex>
+#include <string>
+
+int main() {
+
+    // Define a simple regex pattern for an email address
+    std::regex email_pattern(R"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
+
+    // Input string to check
+    std::string email = "example@example.com";
+
+    // Check if the input string matches the pattern
+    if (std::regex_match(email, email_pattern)) {
+        std::cout << email << " is a valid email address." << std::endl;
+    } else {
+        std::cout << email << " is not a valid email address." << std::endl;
+    }
+
+    return 0;
+}
+
+
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
