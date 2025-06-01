@@ -1498,7 +1498,7 @@ Provides abs, round, ceil, and floor helper functions for `std::chrono::duration
 using std::chrono::seconds;
 using std::chrono::milliseconds;
 milliseconds a{ -5500 };
-milliseconds d = std::chromo::abs(a); // 5500ms
+milliseconds d = std::chrono::abs(a); // 5500ms
 std::chrono::round<seconds>(d); // == 6s
 std::chrono::ceil<seconds>(d); // == 6s
 std::chrono::floor<seconds>(d); // == 5s
