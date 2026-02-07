@@ -23,6 +23,7 @@ C++20 includes the following new language features:
 - [\_\_VA\_OPT\_\_](#__VA_OPT__)
 
 C++20 includes the following new library features:
+- [text formatting](#text-formatting)
 - [concepts library](#concepts-library)
 - [formatting library](#formatting-library)
 - [synchronized buffered outputstream](#synchronized-buffered-outputstream)
@@ -506,6 +507,29 @@ F()        // replaced by f(0)
 ```
 
 ## C++20 Library Features
+
+### Text formatting
+
+Provides a compile-time, checked string formatting library to the standard library using `std::format`. Text formatting can also be done at runtime for dynamic formatted strings using `std::vformat` and other help utilities. Text formatting follows the given [specification](https://en.cppreference.com/w/cpp/utility/format/spec.html).
+
+`std::format` receives a format string as the first argument, and a variable number of arguments proceeding it. If formatting fails, the compilation will fail:
+
+```cpp
+std::format("{}", 123) // OK -- returns "123"
+std::format("{} {}", 123) // ERROR -- not enough arguments
+std::format("{} {}", "Here's a number:", 123) // OK
+```
+
+Formatting a string based on a formatter created at runtime:
+
+```cpp
+std::string fmt = "{} {}";
+fmt += "{}{}";
+std::vformat(fmt, std::make_format_args("Here's a number:", 1, 2, 3))
+// OK -- returns "Here's a number: 123"
+```
+
+When formatting fails (such as an invalid format string), `std::vformat` will throw a `std::format_error`.
 
 ### Concepts library
 Concepts are also provided by the standard library for building more complicated concepts. Some of these include:
