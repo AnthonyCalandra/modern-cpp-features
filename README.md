@@ -40,6 +40,7 @@ C++20 includes the following new library features:
 - [uniform container erasure](#uniform-container-erasure)
 - [three-way comparison helpers](#three-way-comparison-helpers)
 - [std::lexicographical_compare_three_way](#stdlexicographical_compare_three_way)
+- [std::jthread](#stdjthread)
 
 C++17 includes the following new language features:
 - [template argument deduction for class templates](#template-argument-deduction-for-class-templates)
@@ -869,6 +870,31 @@ std::is_lt(cmp_ac); // == true
 ```
 
 See also: [three-way comparison](#three-way-comparison), [three-way comparison helpers](#three-way-comparison-helpers).
+
+### std::jthread
+A thread of execution (like `std::thread`) that joins on destruction and can be signaled to stop.
+
+As opposed to `std::thread` where you need to check if a thread is joinable and then join on it, a `std::jthread` will automatically attempt to join through its destructor.
+
+Unlike `std::thread` you can request it stop by calling `std::jthread::request_stop` or through the thread's `stop_source`:
+
+```cpp
+std::jthread t{
+    [](std::stop_token stoken) {
+        while (!stoken.stop_requested()) {
+            std::this_thread::sleep_for(1s);
+        }
+    }
+};
+
+// Request stop from the thread object:
+t.request_stop();
+// OR, through the stop source:
+std::stop_source stopSource = t.get_stop_source();
+stopSource.request_stop();
+```
+
+A `std::stop_token` can be used to query the stop state of a thread.
 
 ## C++17 Language Features
 
