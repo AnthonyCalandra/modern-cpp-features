@@ -41,6 +41,7 @@ C++20 includes the following new library features:
 - [three-way comparison helpers](#three-way-comparison-helpers)
 - [std::lexicographical_compare_three_way](#stdlexicographical_compare_three_way)
 - [std::jthread](#stdjthread)
+- [safe integral comparisons](#safe-integral-comparisons)
 
 ## C++20 Language Features
 
@@ -775,6 +776,20 @@ stopSource.request_stop();
 ```
 
 A `std::stop_token` can be used to query the stop state of a thread.
+
+### Safe integral comparisons
+Compare integers, including those of distinct types, without the dangers of integer conversion.
+
+```cpp
+-1 > 0U; // == true
+std::cmp_greater(-1, 0U); // == false
+
+std::cmp_equal(0U, 0); // == true
+std::cmp_less_equal(-1, 1U); // == true
+
+std::in_range<unsigned>(-1); // == false
+std::in_range<char>(999999); // == false
+```
 
 ## Acknowledgements
 * [cppreference](http://en.cppreference.com/w/cpp) - especially useful for finding examples and documentation of new library features.
