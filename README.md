@@ -1,6 +1,11 @@
-# C++20/17/14/11
+# C++23/20/17/14/11
 
 ## Overview
+
+C++23 includes the following new language features:
+- [consteval if](#consteval-if)
+
+C++23 includes the following new library features:
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -146,6 +151,24 @@ C++11 includes the following new library features:
 - [memory model](#memory-model)
 - [std::async](#stdasync)
 - [std::begin/end](#stdbeginend)
+
+## C++23 Language Features
+
+### consteval if
+Write code that is instantiated during constant evaluation.
+```c++
+consteval int f(int i) { return i; }
+
+constexpr int g(int i) {
+  if consteval {
+      return f(i);
+  } else {
+      return 42;
+  }
+}
+```
+
+## C++23 Library Features
 
 ## C++20 Language Features
 
