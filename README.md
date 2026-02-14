@@ -1495,10 +1495,8 @@ else { /* handle failure */ }
 ### Rounding functions for chrono durations and timepoints
 Provides abs, round, ceil, and floor helper functions for `std::chrono::duration` and `std::chrono::time_point`.
 ```c++
-using std::chrono::seconds;
-using std::chrono::milliseconds;
-milliseconds a{ -5500 };
-milliseconds d = std::chrono::abs(a); // 5500ms
+std::chrono::milliseconds a{ -5500 };
+std::chrono::milliseconds d = std::chrono::abs(a); // == 5500ms
 std::chrono::round<seconds>(d); // == 6s
 std::chrono::ceil<seconds>(d); // == 6s
 std::chrono::floor<seconds>(d); // == 5s
