@@ -1,10 +1,11 @@
-# C++14
+# C++23
 
 ## Overview
 Many of these descriptions and examples are taken from various resources (see [Acknowledgements](#acknowledgements) section) and summarized in my own words.
 
 C++23 includes the following new language features:
 - [consteval if](#consteval-if)
+- [deducing `this`](#deducing-this)
 
 C++23 includes the following new library features:
 
@@ -22,6 +23,27 @@ constexpr int g(int i) {
       return 42;
   }
 }
+```
+
+### Deducing `this`
+Using explicit object member functions introduced in C++23, deducing the object's type and value category is now possible by specifying the first parameter of a member function prefixed with the `this` keyword:
+```c++
+// NEW WAY USING DEDUCING THIS:
+struct T {
+  decltype(auto) operator[](this auto& self, std::size_t idx) { 
+    return self.mVector[idx]; 
+  }
+};
+
+// OLD WAY:
+struct T {
+  value_t& operator[](std::size_t idx) {
+    return mVector[idx];
+  }
+  const value_t& operator[](std::size_t idx) const {
+    return mVector[idx];
+  }
+};
 ```
 
 ## C++23 Library Features
