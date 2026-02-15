@@ -5,6 +5,7 @@
 C++23 includes the following new language features:
 - [consteval if](#consteval-if)
 - [deducing `this`](#deducing-this)
+- [multidimensional subscript operator](#multidimensional-subscript-operator)
 
 C++23 includes the following new library features:
 
@@ -188,6 +189,22 @@ struct T {
     return mVector[idx];
   }
 };
+```
+
+### Multidimensional subscript operator
+Specify zero or more arguments to the `operator[]` operator:
+```c++
+template <typename T, std::size_t Z, std::size_t Y, std::size_t X>
+struct Array3d {
+  std::array<T, X * Y * Z> m{};
+
+  T& operator[](std::size_t z, std::size_t y, std::size_t x) {
+      return m[z * Y * X + y * X + x];
+  }
+};
+
+Array3d<int, 4, 3, 2> v;
+v[3, 2, 1] = 42;
 ```
 
 ## C++23 Library Features
