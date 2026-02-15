@@ -692,10 +692,10 @@ void g() noexcept {
 ```
 
 ### char32_t and char16_t
-Provides standard types for representing UTF-8 strings.
+Provides standard types for representing UTF-32 and UTF-16 strings.
 ```c++
-char32_t utf8_str[] = U"\u0123";
-char16_t utf8_str[] = u"\u0123";
+char32_t utf32_str[] = U"\u0123";
+char16_t utf16_str[] = u"\u0123";
 ```
 
 ### Raw string literals
