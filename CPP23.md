@@ -11,6 +11,7 @@ C++23 includes the following new language features:
 
 C++23 includes the following new library features:
 - [stacktrace library](#stacktrace-library)
+- [contains for strings and string views](#contains-for-strings-and-string-views)
 
 ## C++23 Language Features
 
@@ -96,6 +97,13 @@ int main() {
   1#  <unknown> [0x76e76dc29d8f]
   2#  __libc_start_main [0x76e76dc29e3f]
   3#  _start [0x5ee42e3db644]
+```
+
+### `contains` for strings and string views
+A simpler function for querying if a substring is contained within a string or string view:
+```c++
+std::string{"foobarbaz"}.contains("bar"); // == true
+std::string{"foobarbaz"}.contains("bat"); // == false
 ```
 
 ## Acknowledgements
