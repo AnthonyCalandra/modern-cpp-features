@@ -12,6 +12,7 @@ C++23 includes the following new language features:
 C++23 includes the following new library features:
 - [stacktrace library](#stacktrace-library)
 - [contains for strings and string views](#contains-for-strings-and-string-views)
+- [std::to_underlying](#stdto_underlying)
 
 ## C++23 Language Features
 
@@ -104,6 +105,14 @@ A simpler function for querying if a substring is contained within a string or s
 ```c++
 std::string{"foobarbaz"}.contains("bar"); // == true
 std::string{"foobarbaz"}.contains("bat"); // == false
+```
+
+### `std::to_underlying`
+Supports the common utility of converting an enumeration to its underlying type:
+```c++
+enum class MyEnum : int { A = 1, B, C };
+std::to_underlying(MyEnum::A); // == 1
+std::to_underlying(MyEnum::C); // == 3
 ```
 
 ## Acknowledgements
