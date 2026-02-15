@@ -9,6 +9,7 @@ C++23 includes the following new language features:
 - [increasing range-based for safety](#increasing-range-based-for-safety)
 
 C++23 includes the following new library features:
+- [stacktrace library](#stacktrace-library)
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -221,6 +222,25 @@ Some examples of code snippets that were broken pre-C++23 that are now fixed:
 * `for (char c : get<std::string>(getVariant()))`
 
 ## C++23 Library Features
+
+### Stacktrace library
+A stacktrace is an approximate representation of an invocation sequence and consists of stacktrace entries. A stacktrace entry (represented by `std::stacktrace_entry`) consists of information including the source file and line number, and a description field.
+
+Example output on a Linux system:
+```c++
+#include <print>
+#include <stacktrace>
+
+int main() {
+    std::println("{}", std::stacktrace::current());
+}
+```
+```
+  0#  main at /app/example.cpp:5 [0x5ee42e3db747]
+  1#  <unknown> [0x76e76dc29d8f]
+  2#  __libc_start_main [0x76e76dc29e3f]
+  3#  _start [0x5ee42e3db644]
+```
 
 ## C++20 Language Features
 
