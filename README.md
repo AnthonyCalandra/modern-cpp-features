@@ -6,6 +6,7 @@ C++23 includes the following new language features:
 - [consteval if](#consteval-if)
 - [deducing `this`](#deducing-this)
 - [multidimensional subscript operator](#multidimensional-subscript-operator)
+- [increasing range-based for safety](#increasing-range-based-for-safety)
 
 C++23 includes the following new library features:
 
@@ -206,6 +207,18 @@ struct Array3d {
 Array3d<int, 4, 3, 2> v;
 v[3, 2, 1] = 42;
 ```
+
+### Increasing range-based `for` safety
+Fixes some of the notorious lifetime issues with one of the most important control structures in C++.
+
+Some examples of code snippets that were broken pre-C++23 that are now fixed:
+
+* `for (auto e : getTmp().getRef())`
+* `for (auto e : getVector()[0])`
+* `for (auto valueElem : getMap()["key"])`
+* `for (auto e : get<0>(getTuple()))`
+* `for (auto e : getOptionalCollection().value())`
+* `for (char c : get<std::string>(getVariant()))`
 
 ## C++23 Library Features
 
