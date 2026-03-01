@@ -16,6 +16,7 @@ C++23 includes the following new library features:
 - [input/output pointers](#inputoutput-pointers)
 - [monadic operations for `std::optional`](monadic-operations-for-stdoptional)
 - [`std::expected`](#stdexpected)
+- [`std::unreachable`](#stdunreachable)
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -346,6 +347,21 @@ std::expected<double, StringToSqrtDoubleError> stringToSqrtDouble(const std::str
     if (parsedInt < 0) return std::unexpected(StringToSqrtDoubleError::NegativeNumber);
 
     return std::sqrt(parsedInt);
+}
+```
+
+### `std::unreachable`
+Provides a way to explicitly mark a code path as unreachable. May exhibit undefined behavior if the code path is reached.
+```c++
+enum class MyEnum { A, B, C };
+
+int convertMyEnumToInt(MyEnum e) {
+    switch (e) {
+        case MyEnum::A: return 0;
+        case MyEnum::B: return 1;
+        case MyEnum::C: return 2;
+        default: std::unreachable(); 
+    }
 }
 ```
 
