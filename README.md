@@ -15,6 +15,7 @@ C++23 includes the following new library features:
 - [`spanstream`](#spanstream)
 - [input/output pointers](#inputoutput-pointers)
 - [monadic operations for `std::optional`](monadic-operations-for-stdoptional)
+- [`std::expected`](#stdexpected)
 
 C++20 includes the following new language features:
 - [coroutines](#coroutines)
@@ -320,9 +321,31 @@ std::optional<double> stringToSqrtDouble(const std::string& input) {
   return parse_int(input)
     .and_then(ensure_non_negative)
     .transform([](int x) {
-      return std::sqrt(static_cast<double>(x));
+      return std::sqrt(x);
     })
     .or_else(default_value_or_empty);
+}
+```
+
+### `std::expected`
+`std::expected` provides a way to represent a value and a potential error value, both contained in one type. Also supports a variety of monadic operations on both the expected and unexpected (i.e. error) values.
+
+Use `std::unexpected` to store an unexpected (i.e. error) value.
+```c++
+enum class StringToSqrtDoubleError {
+    ParseError, NegativeNumber
+};
+
+std::expected<int, StringToSqrtDoubleError> parse_int(const std::string&);
+
+std::expected<double, StringToSqrtDoubleError> stringToSqrtDouble(const std::string& input) {
+    auto parsed = parse_int(input);
+    if (!parsed) return parsed;
+
+    auto parsedInt = *parsed;
+    if (parsedInt < 0) return std::unexpected(StringToSqrtDoubleError::NegativeNumber);
+
+    return std::sqrt(parsedInt);
 }
 ```
 
