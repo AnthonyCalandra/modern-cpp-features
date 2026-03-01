@@ -168,16 +168,17 @@ Both inout/out pointers support casts to `void**` (implicitly), and explicitly t
 ### Monadic operations for `std::optional`
 Support various `and_then`, `transform`, and `or_else` operations for `std::optional`.
 ```c++
-std::optional<double> stringToDouble(const std::string& input) {
-    return parse_int(input)
-        .and_then(ensure_non_negative)
-        .and_then(safe_sqrt)
-        .transform([](double x) -> std::optional<double> {
-            return x * 2.0;
-        })
-        .or_else([] -> std::optional<double> {
-            throw std::runtime_error{"bad number"};
-        });
+std::optional<int> parse_int(const std::string&);
+std::optional<int> ensure_non_negative(int);
+std::optional<double> default_value_or_empty(double);
+
+std::optional<double> stringToSqrtDouble(const std::string& input) {
+  return parse_int(input)
+    .and_then(ensure_non_negative)
+    .transform([](int x) {
+      return std::sqrt(static_cast<double>(x));
+    })
+    .or_else(default_value_or_empty);
 }
 ```
 
