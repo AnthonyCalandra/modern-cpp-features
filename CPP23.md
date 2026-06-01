@@ -15,7 +15,7 @@ C++23 includes the following new library features:
 - [std::to_underlying](#stdto_underlying)
 - [`spanstream`](#spanstream)
 - [input/output pointers](#inputoutput-pointers)
-- [monadic operations for `std::optional`](monadic-operations-for-stdoptional)
+- [monadic operations for `std::optional`](#monadic-operations-for-stdoptional)
 - [`std::expected`](#stdexpected)
 - [`std::unreachable`](#stdunreachable)
 

@@ -592,7 +592,7 @@ A span is a view (i.e. non-owning) of a container providing bounds-checked acces
 
 Spans can be dynamically-sized or fixed-sized (known as their *extent*). Fixed-sized spans benefit from bounds-checking.
 
-Span doesn't propogate const so to construct a read-only span use `std::span<const T>`.
+Span doesn't propagate const so to construct a read-only span use `std::span<const T>`.
 
 Example: using a dynamically-sized span to print integers from various containers.
 ```c++
