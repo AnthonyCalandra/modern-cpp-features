@@ -589,7 +589,7 @@ std::clamp(0, -1, 1, std::less<>{}); // == 0
 ```
 
 ### std::reduce
-Fold over a given range of elements. Conceptually similar to `std::accumulate`, but `std::reduce` will perform the fold in parallel. Due to the fold being done in parallel, if you specify a binary operation, it is required to be associative and commutative. A given binary operation also should not change any element or invalidate any iterators within the given range.
+Fold over a given range of elements. Conceptually similar to `std::accumulate`, but `std::reduce` may reorder and regroup operations, which allows implementations to parallelize the reduction. If you specify a binary operation, it should be associative and commutative so reordering preserves the result. The operation should not modify elements or invalidate iterators within the range.
 
 The default binary operation is std::plus with an initial value of 0.
 ```c++

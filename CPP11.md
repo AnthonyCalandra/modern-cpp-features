@@ -773,7 +773,7 @@ wrapper(std::move(a)); // moved
 See also: [`forwarding references`](#forwarding-references), [`rvalue references`](#rvalue-references).
 
 ### std::thread
-The `std::thread` library provides a standard way to control threads, such as spawning and killing them. In the example below, multiple threads are spawned to do different calculations and then the program waits for all of them to finish.
+The `std::thread` library provides a standard way to create and manage threads. In the example below, multiple threads are started to do different calculations, then joined after they finish.
 
 ```c++
 void foo(bool clause) { /* do something... */ }
